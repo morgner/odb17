@@ -20,20 +20,35 @@ namespace modb {
 /**
  * An Atom, from whitch Things are built from
  */
-class CAtom : public Identifiable<CAtom>
+template<typename T> // T for 'data'
+class CAtom : public Identifiable<CAtom<T>>
     {
-    public:
+    protected:
                  CAtom();
-        virtual ~CAtom();
-                 CAtom(CAtom const & other);
-                 CAtom& operator=(CAtom const & other);
+    public:
+        virtual ~CAtom(){};
+                 CAtom(CAtom<T> const & src)
+		 {
+			 *this = src;
+		 }
+
+                 CAtom & operator=(CAtom<T> const & src)
+		 {
+		   m_tData = src.data;
+		 }
+
+                 CAtom(T data)
+		 : m_tData(m_tData)
+		 {
+		 }
 
     protected:
+	T m_tData;
 
-    private:
     }; // class CAtom
 
-using CAtoms = std::deque<std::shared_ptr<CAtom>>;
+template<typename T>
+using CAtoms = std::deque<std::shared_ptr<CAtom<T>>>;
 
 } // namespace modb
 

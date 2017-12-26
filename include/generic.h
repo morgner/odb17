@@ -18,8 +18,7 @@
  *
  * @param type A std::type_info object holding a C++ type
  */
-//17 auto demangle(std::type_info const & type)
-inline std::string demangle(std::type_info const & type)
+inline auto demangle(std::type_info const & type)
   {
   auto status = 0;
   auto name = std::unique_ptr<char, void (*)(void *)>(
@@ -34,8 +33,7 @@ inline std::string demangle(std::type_info const & type)
  * @tparam S The starting ID
  */
 template<typename T, unsigned long long S = 0>
-//17 static auto idForObjectOf()
-static unsigned long long idForObjectOf()
+static auto idForObjectOf()
   {
   static auto id = S;
   return id++;
