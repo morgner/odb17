@@ -23,10 +23,10 @@ namespace modb {
 class CAtom : public Identifiable<CAtom>
     {
     public:
-        CAtom();
+                 CAtom();
         virtual ~CAtom();
-        CAtom(const CAtom& other);
-        CAtom& operator=(const CAtom& other);
+                 CAtom(CAtom const & other);
+                 CAtom& operator=(CAtom const & other);
 
     protected:
 

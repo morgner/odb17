@@ -18,12 +18,12 @@ CAtom::~CAtom()
     //dtor
     }
 
-CAtom::CAtom(const CAtom& other)
+CAtom::CAtom(CAtom const & other)
     {
     //copy ctor
     }
 
-CAtom& CAtom::operator=(const CAtom& rhs)
+CAtom& CAtom::operator=(CAtom const & rhs)
     {
     if (this == &rhs) return *this; // handle self assignment
     //assignment operator
