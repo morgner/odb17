@@ -1,7 +1,8 @@
 bin
 obj
+build
 
 *.cbp
 *.depend
 *.o
-
+*.layout

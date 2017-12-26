@@ -1,0 +1,15 @@
+mkdir build
+cd build
+cmake ../
+make
+------------------- OR (e.g.)
+
+mkdir -p build/CodeBlocks
+cd build/CodeBlocks
+cmake ../../ -G "CodeBlocks - Unix Makefiles"
+codeblocks odb.cbp
+
+------------------- OR
+
+use a different CMAKE Generator suitable to you environment
+

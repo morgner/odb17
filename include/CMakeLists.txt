@@ -1,0 +1,9 @@
+set(SOURCE
+  ${SOURCE}
+  ${CMAKE_CURRENT_SOURCE_DIR}/atom.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/generic.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/thing.h
+
+  PARENT_SCOPE
+  )
+
