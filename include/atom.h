@@ -38,9 +38,11 @@ class CAtom : public Identifiable<CAtom<T>>
 		 }
 
                  CAtom(T data)
-		 : m_tData(m_tData)
+		 : m_tData(data)
 		 {
 		 }
+
+	T const & Data() { return m_tData; }
 
     protected:
 	T m_tData;

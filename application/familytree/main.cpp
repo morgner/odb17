@@ -9,6 +9,8 @@
 #include "thing.h"
 #include "atom.h"
 
+#include "odb.h"
+
 #include "generic.h"
 
 /**
@@ -51,6 +53,8 @@ auto print(std::deque<T> const & deq)
     }
   }
 
+modb::COdb g_oOdb{};
+
 /**
  * Demo main program
  */
@@ -70,23 +74,33 @@ int main()
   modb::CAtoms<int>  atomsInt;
   modb::CAtoms<char> atomsChar;
   atomsInt.push_back( std::make_shared<modb::CAtom<int>>(4) );
-  atomsInt.push_back( std::make_shared<modb::CAtom<int>>(3) );
-  atomsInt.push_back( std::make_shared<modb::CAtom<int>>(2) );
-  atomsInt.push_back( std::make_shared<modb::CAtom<int>>(1) );
-  atomsInt.push_back( std::make_shared<modb::CAtom<int>>(2) );
-  atomsInt.push_back( std::make_shared<modb::CAtom<int>>(3) );
+  atomsInt.push_back( g_oOdb.MakeAtomInt(3) );
+  atomsInt.push_back( g_oOdb.MakeAtomInt(2) );
+  atomsInt.push_back( g_oOdb.MakeAtomInt(1) );
+  atomsInt.push_back( g_oOdb.MakeAtomInt(2) );
+  atomsInt.push_back( g_oOdb.MakeAtomInt(3) );
 
   atomsChar.push_back( std::make_shared<modb::CAtom<char>>('Q') );
-  atomsChar.push_back( std::make_shared<modb::CAtom<char>>('u') );
-  atomsChar.push_back( std::make_shared<modb::CAtom<char>>('i') );
-  atomsChar.push_back( std::make_shared<modb::CAtom<char>>('r') );
+  atomsChar.push_back( g_oOdb.MakeAtomChar('Q') );
+  atomsChar.push_back( g_oOdb.MakeAtomChar('u') );
+  atomsChar.push_back( g_oOdb.MakeAtomChar('i') );
+  atomsChar.push_back( g_oOdb.MakeAtomChar('r') );
+  atomsChar.push_back( g_oOdb.MakeAtomChar('k') );
+  atomsChar.push_back( g_oOdb.MakeAtomChar('s') );
 
   modb::CThings things;
   things.push_back( std::make_shared<modb::CThing>() );
-  things.push_back( std::make_shared<modb::CThing>() );
+  things.push_back( g_oOdb.MakeThing("Wundertüte") );
+  things.push_back( g_oOdb.MakeThing("Kinderüberraschung") );
+  things.push_back( g_oOdb.MakeThing("No Poduct") );
+  things.push_back( g_oOdb.MakeThing("Harmlos Tüte") );
   
+/*
   print(atomsInt);
   print(atomsChar);
   print(things);
+*/
+
+  g_oOdb.Dump();
   }
 
