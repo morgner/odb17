@@ -6,6 +6,6 @@
 
 #include "odb.h"
 
-namespace modb {
+namespace odb {
 
-} // namespace modb
+} // namespace odb

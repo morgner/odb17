@@ -15,28 +15,32 @@
 #include "generic.h"
 
 
-namespace modb {
+namespace odb {
+
+typedef int T;
 
 /**
  * An Atom, from whitch Things are built from
  */
-template<typename T> // T for 'data'
-class CAtom : public Identifiable<CAtom<T>>
+class CAtom : public Identifiable<CAtom>
     {
+
     protected:
                  CAtom();
     public:
         virtual ~CAtom(){};
-                 CAtom(CAtom<T> const & src)
+
+                 CAtom(CAtom const & src)
 		 {
 			 *this = src;
 		 }
 
-                 CAtom & operator=(CAtom<T> const & src)
+                 CAtom & operator=(CAtom const & src)
 		 {
-		   m_tData = src.data;
+		   m_tData = src.m_tData;
 		 }
 
+//	template<typename T> // T for 'data'
                  CAtom(T data)
 		 : m_tData(data)
 		 {
@@ -44,15 +48,14 @@ class CAtom : public Identifiable<CAtom<T>>
 
 	T const & Data() { return m_tData; }
 
-    protected:
+//    protected:
 	T m_tData;
 
     }; // class CAtom
 
-template<typename T>
-using CAtoms = std::deque<std::shared_ptr<CAtom<T>>>;
+using CAtoms = std::deque<std::shared_ptr<CAtom>>;
 
-} // namespace modb
+} // namespace odb
 
 // CATOM_H
 #endif

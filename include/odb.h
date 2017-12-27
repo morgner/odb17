@@ -17,7 +17,7 @@
 #include "thing.h"
 
 
-namespace modb {
+namespace odb {
 
 static std::string const g_sUnNamed = "unNamed";
 
@@ -40,41 +40,25 @@ class COdb : public Identifiable<COdb>
 
 	std::shared_ptr<CThing> MakeThing(std::string const & crsName = g_sUnNamed)
 	{
-        auto p = std::make_shared<modb::CThing>();
+        auto p = std::make_shared<odb::CThing>();
         m_oThings.push_back( p );
 	return p;
 	}
 
-	std::shared_ptr<CAtom<int>> const MakeAtomInt(int data, std::string const & crsName = g_sUnNamed)
+	std::shared_ptr<CAtom> const MakeAtom(int data, std::string const & crsName = g_sUnNamed)
 	{
-	auto p = std::make_shared<modb::CAtom<int>>(data);
-	m_oAtomsInt.push_back( p );
-	return p;
-	}
-
-	std::shared_ptr<CAtom<char>> const MakeAtomChar(char data, std::string const & crsName = g_sUnNamed)
-	{
-	auto p = std::make_shared<modb::CAtom<char>>(data);
-	m_oAtomsChar.push_back( p );
+	auto p = std::make_shared<odb::CAtom>(data);
+	m_oAtoms.push_back( p );
 	return p;
 	}
 
 	void Dump()
 	{
 	print(m_oThings);
-	print(m_oAtomsChar);
-	print(m_oAtomsInt);
+	print(m_oAtoms);
 	}
 
-	void print(CAtoms<char> const & deq)
-	  {
-	  for (auto && e : deq)
-	    {
-	    std::cout << e->type << " id: " << e->id << " data: " << e->Data() << '\n';
-	    }
-	  }
-
-	void print(CAtoms<int> const & deq)
+	void print(CAtoms const & deq)
 	  {
 	  for (auto && e : deq)
 	    {
@@ -92,17 +76,12 @@ class COdb : public Identifiable<COdb>
 	  }
 
     protected:
-	CThings             m_oThings;
-	CAtoms<char>        m_oAtomsChar;
-	CAtoms<int>         m_oAtomsInt;
-	CAtoms<long>        m_oAtomsLong;
-	CAtoms<long long>   m_oAtomsLongLong;
-	CAtoms<double>      m_oAtomsDouble;
-	CAtoms<std::string> m_oAtomsString;
+	CThings  m_oThings;
+	CAtoms   m_oAtoms;
 
     }; // class COdb
 
-} // namespace modb
+} // namespace odb
 
 // CODB_H
 #endif

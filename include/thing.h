@@ -14,7 +14,7 @@
 
 #include "generic.h"
 
-namespace modb {
+namespace odb {
 
 /**
  * A Thing as they are many of
@@ -41,7 +41,7 @@ class CThing : public Identifiable<CThing> {
 
 using CThings = std::deque<std::shared_ptr<CThing>>;
 
-} // namespace modb
+} // namespace odb
 
 // THING_H
 #endif

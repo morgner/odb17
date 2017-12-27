@@ -16,21 +16,11 @@
 /**
  * Helper function to print a vector of objects
  */
-auto print(std::vector<modb::CAtom<int>> const & vec)
+auto print(std::vector<odb::CAtom> const & vec)
   {
   for (auto && e : vec)
     {
-//    std::cout << e.type << " id: " << e.id << " data: " << e.m_tData << '\n';
-    std::cout << e.type << " id: " << e.id << '\n';
-    }
-  }
-
-auto print(std::vector<modb::CAtom<char>> const & vec)
-  {
-  for (auto && e : vec)
-    {
-//    std::cout << e.type << " id: " << e.id << " data: " << e.m_tData << '\n';
-    std::cout << e.type << " id: " << e.id << '\n';
+    std::cout << e.type << " id: " << e.id << " data: " << e.m_tData << '\n';
     }
   }
 
@@ -53,7 +43,7 @@ auto print(std::deque<T> const & deq)
     }
   }
 
-modb::COdb g_oOdb{};
+odb::COdb g_oOdb{};
 
 /**
  * Demo main program
@@ -61,35 +51,35 @@ modb::COdb g_oOdb{};
 int main()
   {
 /*
-  modb::CThings things;
-  things.push_back( std::make_shared<modb::CThing>() );
-  things.push_back( std::make_shared<modb::CThing>() );
+  odb::CThings things;
+  things.push_back( std::make_shared<odb::CThing>() );
+  things.push_back( std::make_shared<odb::CThing>() );
 
-  auto a = modb::CAtom<int>(3);
-  print(std::vector<modb::CThing>{ 3 });
-  print(std::vector<modb::CAtom<int>>{3,2,1,2,3});
-  print(std::vector<modb::CAtom<char>>{'h','e','l','o',' ','m','y',' ','o','d','b'});
+  auto a = odb::CAtom<int>(3);
+  print(std::vector<odb::CThing>{ 3 });
+  print(std::vector<odb::CAtom<int>>{3,2,1,2,3});
+  print(std::vector<odb::CAtom<char>>{'h','e','l','o',' ','m','y',' ','o','d','b'});
 */
 
-  modb::CAtoms<int>  atomsInt;
-  modb::CAtoms<char> atomsChar;
-  atomsInt.push_back( std::make_shared<modb::CAtom<int>>(4) );
-  atomsInt.push_back( g_oOdb.MakeAtomInt(3) );
-  atomsInt.push_back( g_oOdb.MakeAtomInt(2) );
-  atomsInt.push_back( g_oOdb.MakeAtomInt(1) );
-  atomsInt.push_back( g_oOdb.MakeAtomInt(2) );
-  atomsInt.push_back( g_oOdb.MakeAtomInt(3) );
+  odb::CAtoms  atoms;
+  atoms.push_back( std::make_shared<odb::CAtom>(4) );
+  atoms.push_back( g_oOdb.MakeAtom(3) );
+  atoms.push_back( g_oOdb.MakeAtom(2) );
+  atoms.push_back( g_oOdb.MakeAtom(1) );
+  atoms.push_back( g_oOdb.MakeAtom(2) );
+  atoms.push_back( g_oOdb.MakeAtom(3) );
 
-  atomsChar.push_back( std::make_shared<modb::CAtom<char>>('Q') );
+/*
+  atomsChar.push_back( std::make_shared<odb::CAtom<char>>('Q') );
   atomsChar.push_back( g_oOdb.MakeAtomChar('Q') );
   atomsChar.push_back( g_oOdb.MakeAtomChar('u') );
   atomsChar.push_back( g_oOdb.MakeAtomChar('i') );
   atomsChar.push_back( g_oOdb.MakeAtomChar('r') );
   atomsChar.push_back( g_oOdb.MakeAtomChar('k') );
   atomsChar.push_back( g_oOdb.MakeAtomChar('s') );
-
-  modb::CThings things;
-  things.push_back( std::make_shared<modb::CThing>() );
+*/
+  odb::CThings things;
+  things.push_back( std::make_shared<odb::CThing>() );
   things.push_back( g_oOdb.MakeThing("Wundertüte") );
   things.push_back( g_oOdb.MakeThing("Kinderüberraschung") );
   things.push_back( g_oOdb.MakeThing("No Poduct") );

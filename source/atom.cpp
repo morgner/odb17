@@ -6,6 +6,6 @@
 
 #include "atom.h"
 
-namespace modb {
+namespace odb {
 
-} // namespace modb
+} // namespace odb
