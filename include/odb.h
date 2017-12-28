@@ -40,15 +40,15 @@ class COdb : public Identifiable<COdb>
 
 	std::shared_ptr<CThing> MakeThing(std::string const & crsName = g_sUnNamed)
 	{
-        auto p = std::make_shared<odb::CThing>();
+        auto p = std::make_shared<odb::CThing>(crsName);
         m_oThings.emplace_back( p );
 	return p;
 	}
 
 	template<typename T>
-	std::shared_ptr<CAtom> const MakeAtom(T data, std::string const & crsName = g_sUnNamed)
+	std::shared_ptr<CAtom> const MakeAtom(T data, std::string const & crsName = CAtom::g_csNameUnnamedAtom)
 	{
-	auto p = std::make_shared<odb::CAtom>(data);
+	auto p = std::make_shared<odb::CAtom>(data, crsName);
 	m_oAtoms.emplace_back( p );
 	return p;
 	}
@@ -63,7 +63,7 @@ class COdb : public Identifiable<COdb>
 	  {
 	  for (auto && e : deq)
 	    {
-	    std::cout << e->type << " id: " << e->id << " data: " << *e << '\n';
+	    std::cout << e->type << '\t' << " id: " << e->id << '\t' << " name: " << e->NameGet() << '\t' << " data: " << *e << '\n';
 	    }
 	  }
 
@@ -72,7 +72,7 @@ class COdb : public Identifiable<COdb>
 	  {
 	  for (auto && e : deq)
 	    {
-	    std::cout << e->type << " id: " << e->id << /* " name: " << e->Name() << */ '\n';
+	    std::cout << e->type << '\t' << " id: " << e->id << '\t' << " name: " << e->NameGet() << '\n';
 	    }
 	  }
 

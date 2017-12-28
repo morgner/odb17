@@ -54,8 +54,8 @@ int main()
   {
 /*
   odb::CThings things;
-  things.push_back( std::make_shared<odb::CThing>() );
-  things.push_back( std::make_shared<odb::CThing>() );
+  things.emplace_back( std::make_shared<odb::CThing>() );
+  things.emplace_back( std::make_shared<odb::CThing>() );
 
   auto a = odb::CAtom<int>(3);
   print(std::vector<odb::CThing>{ 3 });
@@ -78,37 +78,37 @@ int main()
   atoms.emplace_back(100.2, "round", "", "%");
 */
   atoms.emplace_back( g_oOdb.MakeAtom(1.2) );
-  atoms.emplace_back( g_oOdb.MakeAtom(std::vector<int>   {3, 2, 1}) );
-  atoms.emplace_back( g_oOdb.MakeAtom(std::array <int, 3>{3, 2, 1}) );
-  atoms.emplace_back( g_oOdb.MakeAtom(cs) );
-  atoms.emplace_back( g_oOdb.MakeAtom(ns) );
+  atoms.emplace_back( g_oOdb.MakeAtom(std::vector<int>   {3, 2, 1}, "vector") );
+  atoms.emplace_back( g_oOdb.MakeAtom(std::array <int, 3>{3, 2, 1}, "array") );
+  atoms.emplace_back( g_oOdb.MakeAtom(cs, "const string"s) );
+  atoms.emplace_back( g_oOdb.MakeAtom(ns, "non-const string") );
 //  atoms.emplace_back( g_oOdb.MakeAtom(a) );
-  atoms.emplace_back( g_oOdb.MakeAtom(v, "halmen") );
-  atoms.emplace_back( g_oOdb.MakeAtom(w, "geometer") );
+  atoms.emplace_back( g_oOdb.MakeAtom(v, "vector of 3 int") );
+  atoms.emplace_back( g_oOdb.MakeAtom(w, "array of 3 char") );
 
-//  atoms.push_back( std::make_shared<odb::CAtom>(4) );
-  atoms.push_back( g_oOdb.MakeAtom(3) );
-  atoms.push_back( g_oOdb.MakeAtom(2) );
-  atoms.push_back( g_oOdb.MakeAtom(1) );
+//  atoms.emplace_back( std::make_shared<odb::CAtom>(4) );
+  atoms.emplace_back( g_oOdb.MakeAtom(3, "Three") );
+  atoms.emplace_back( g_oOdb.MakeAtom(2, "Two") );
+  atoms.emplace_back( g_oOdb.MakeAtom(1, "One") );
 
-  atoms.emplace_back( g_oOdb.MakeAtom("---------"s) );
+  atoms.emplace_back( g_oOdb.MakeAtom("---------"s, "Line"s) );
 
-//  atoms.push_back( std::make_shared<odb::CAtom>('Q') );
-  atoms.emplace_back( g_oOdb.MakeAtom('H') );
-  atoms.emplace_back( g_oOdb.MakeAtom('e') );
-  atoms.emplace_back( g_oOdb.MakeAtom('l') );
-  atoms.emplace_back( g_oOdb.MakeAtom('o') );
-  atoms.emplace_back( g_oOdb.MakeAtom("Quirks & Quarks") );
-  atoms.emplace_back( g_oOdb.MakeAtom("Quirks & Quarks"s) );
+//  atoms.emplace_back( std::make_shared<odb::CAtom>('Q') );
+  atoms.emplace_back( g_oOdb.MakeAtom('H', "Letter"s) );
+  atoms.emplace_back( g_oOdb.MakeAtom('e', "Letter"s) );
+  atoms.emplace_back( g_oOdb.MakeAtom('l', "Letter"s) );
+  atoms.emplace_back( g_oOdb.MakeAtom('o', "Letter"s) );
+  atoms.emplace_back( g_oOdb.MakeAtom("Quirks & Quarks", "Radio Cast"s) );
+  atoms.emplace_back( g_oOdb.MakeAtom("Quirks & Quarks"s, "Podcast"s) );
 
-  atoms.emplace_back( g_oOdb.MakeAtom("---------"s) );
+  atoms.emplace_back( g_oOdb.MakeAtom("---------"s, "Line"s) );
 
   odb::CThings things;
-//  things.push_back( std::make_shared<odb::CThing>() );
-  things.push_back( g_oOdb.MakeThing("Wundertüte") );
-  things.push_back( g_oOdb.MakeThing("Kinderüberraschung") );
-  things.push_back( g_oOdb.MakeThing("No Poduct") );
-  things.push_back( g_oOdb.MakeThing("Harmlos Tüte") );
+//  things.emplace_back( std::make_shared<odb::CThing>() );
+  things.emplace_back( g_oOdb.MakeThing("Wundertüte") );
+  things.emplace_back( g_oOdb.MakeThing("Kinderüberraschung") );
+  things.emplace_back( g_oOdb.MakeThing("No Poduct") );
+  things.emplace_back( g_oOdb.MakeThing("Harmlos Tüte") );
   
 /*
   print(atomsInt);

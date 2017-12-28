@@ -16,30 +16,45 @@
 
 namespace odb {
 
+using namespace std::string_literals;
+
+
+
 /**
  * A Thing as they are many of
  */
 class CThing : public Identifiable<CThing> {
-    protected:
-	int m_nInt{0};
-
     public:
-	CThing();
-	CThing(CThing const &) = default;
+      static constexpr auto g_csNameUnnamedThing{"unnamedThing"};
+    public:
+	         CThing();
+		 CThing(std::string const & crsName)
+	         : m_sName(crsName)
+		 {
+		 }
+	         CThing(CThing const &) = default;
 	virtual ~CThing();
 
 	std::ostream& operator << (std::ostream& ros)
 	    {
-	    return ros << 'T' << m_nInt;
+	    return ros << m_sName << m_nInt;
 	    }
 
 	operator std::string() const
 	    {
 	    return std::to_string(m_nInt);
 	    }
+
+        std::string const & NameGet() { return m_sName; }
+
+    protected:
+        std::string m_sName{g_csNameUnnamedThing};
+	int         m_nInt {0};
+
     }; // class CThing
 
-using CThings = std::deque<std::shared_ptr<CThing>>;
+using PThing = std::shared_ptr<CThing>;
+using CThings = std::deque<PThing>;
 
 } // namespace odb
 

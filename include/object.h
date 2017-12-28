@@ -15,61 +15,99 @@
 #include <vector>
 #include <array>
 
+#include "atom.h"
 #include "generic.h"
 
 
 namespace odb {
 
-using namespace std::string_literals;
+// using namespace std::string_literals;
 
-std::string const g_csNameUntypedObject("unnamedObject");
-
-// using CObject = std::vector<CAtom>;
-
-
-
-using CReason = std::string;
 
 class CObject;
 
-class CLink
-{
-public:
+class CReason : public Identifiable<CReason>
+  {
+  public:
+    static constexpr auto g_csNameUnnamedReason("unnamedReason");
+  public:
+	  CReason();
+	  CReason(std::string const & crsName)
+	    : m_sName(crsName)
+	    {
+	    }
 
-  CLink(std::shared_ptr<CObject> poObject,
-        std::shared_ptr<CReason> poReason)
-  : m_poLinkedTo(poObject),
-  m_poReason  (poReason)
-  {}
+	  std::string const & operator = (std::string const & sName)
+	    {
+	    return m_sName = sName;
+	    }
 
-  std::shared_ptr<CObject> m_poLinkedTo = nullptr;
-  std::shared_ptr<CReason> m_poReason   = nullptr;
-};
+	  operator std::string const & ()
+	    {
+	    return m_sName;
+	    }
+
+  protected:
+    std::string m_sName{ g_csNameUntypedReason };
+
+  }; // class CReason
+
+using PReason = std::shared_ptr<CReason>;
+using CReasons = std::deque<PReason>;
+
+using PObject = std::shared_ptr<CObject>;
+using CObjects = std::deque<PObject>;
+
+class CLink : public Identifiable<CLink>
+  {
+  public:
+    CLink() = delete;
+    CLink(PObject poObject,
+	  PReason poReason)
+    : m_poLinkedTo(poObject),
+      m_poReason  (poReason)
+    {}
+
+  protected:
+    PObject m_poLinkedTo = nullptr;
+    PReason m_poReason   = nullptr;
+
+}; // class CLink
+
+using PLink = std::shared_ptr<CLink>;
+using CLinks = std::deque<PLink>;
 
 
 
-class CObject : public std::vector<CAtom>
-{
-public:
-  CObject() = default;
-  CObject(const std::string& crsName)
-  : m_sName(crsName)
-  {}
+class CObject : public Identifiable<CObject>
+  {
+  public:
+    static constexpr auto g_csNameUnnamedObject("unnamedObject");
+  public:
+
+             CObject() = default;
+             CObject(const std::string& crsName)
+               : m_sName(crsName)
+               {
+	       }
 
   const std::string& NameGet() { return m_sName; } const
 
-  bool Link(std::shared_ptr<CObject> poObject,
-            std::shared_ptr<CReason> poReason)
+  bool Link(PObject poObject,
+            PReason poReason)
   {
-  m_voLinksTo.emplace_back(CLink(poObject, poReason));
+  m_vpoLinksTo.emplace_back(CLink(poObject, poReason));
   return true;
   }
 
-  std::string m_sName = "unnamed";
+protected:
+  std::string        m_sName{g_csNameUnnamedObject};
+  std::vector<PAtom> m_vpoAtoms;
+  std::vector<CLink> m_vpoLinksTo;
 
-private:
-  std::vector<CLink> m_voLinksTo;
-};
+}; // class CObject
+
+
 
 void print_xml(const CObject& x, std::ostream& out, const size_t cnDepth)
 {
