@@ -82,7 +82,7 @@ class CAtom : public Identifiable<CAtom>
       else if (std::is_convertible<T, std::string>::value) std::cout << "string";
       else if (std::is_class<T>::value)                    std::cout << "class";
       else std::cout << "UNKNOWN TYPE";
-      std::cout << ": " << *this << " (" << tAtomData << ')' << std::endl;
+      std::cout << ": " << *this << " (" << tAtomData << ')' << "\tname: " << m_sName << '\n';
       }
 
       std::string const & NameGet() { return m_sName; }
