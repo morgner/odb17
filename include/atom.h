@@ -8,50 +8,145 @@
  */
 
 #include <deque>
-#include <ostream>
 #include <string>
 #include <memory>
+
+#include <iostream>
+#include <vector>
+#include <array>
 
 #include "generic.h"
 
 
 namespace odb {
 
-typedef int T;
+using namespace std::string_literals;
+
+std::string const g_csNameUntypedAtomdata("value");
+
+template<typename T>
+std::ostream& operator<< (std::ostream& out, const std::vector<T>& v)
+{
+  bool b(false);
+  out << '{';
+  for (const auto& value : v)
+    {
+    if (b) out << ","; else b = true;
+    out << value;
+    }
+  out << '}';
+  return out;
+} // std::ostream& operator<< (std::ostream& out, const std::vector<T>& v)
+
+template <typename T, std::size_t N>
+std::ostream& operator<< (std::ostream& out, const std::array<T, N>& v)
+{
+  bool b(false);
+  out << '{';
+  for (const auto& value : v)
+    {
+    if (b) out << ","; else b = true;
+    out << value;
+    }
+  out << '}';
+  return out;
+} // std::ostream& operator<< (std::ostream& out, const std::array<T, N>& v)
+
 
 /**
  * An Atom, from whitch Things are built from
  */
 class CAtom : public Identifiable<CAtom>
+{
+public:
+  template<typename T>
+  CAtom(T tAtomData,
+        std::string const & crsName   = ""s,
+        std::string const & crsPrefix = ""s,
+        std::string const & crsSuffix = ""s,
+        std::string const & crsFormat = ""s)
+  : m_pAtomData(new SAtomData<T>(std::move(tAtomData))),
+  m_sName(crsName.length() ? crsName : g_csNameUntypedAtomdata),
+  m_sPrefix(crsPrefix),
+  m_sSuffix(crsSuffix)
+  {
+  std::cout << "new atom for ";
+  if (std::is_integral<T>::value)                      std::cout << "integral";
+  else if (std::is_floating_point<T>::value)           std::cout << "floating";
+  else if (std::is_array<T>::value)                    std::cout << "array";
+//  else if (std::is_vector<T>::value)                   std::cout << "vector";
+  else if (std::is_convertible<T, const char*>::value) std::cout << "const char*";
+  else if (std::is_convertible<T, std::string>::value) std::cout << "string";
+  else if (std::is_class<T>::value)                    std::cout << "class";
+  else std::cout << "UNKNOWN TYPE";
+  std::cout << ": " << *this << '(' << tAtomData << ')' << std::endl;
+  }
+
+  friend std::ostream& operator<< (std::ostream& out, CAtom const & croAtom)
+  {
+  croAtom.m_pAtomData->ToStream(out);
+  return out;
+  } // operator << (...)
+
+  void print_xml(std::ostream& out, size_t const cnDepth, bool bFormated = false) const
+  {
+  out << std::string(cnDepth, ' ')
+  << "<" << m_sName << ">";
+
+  if (bFormated)
     {
+    print_atom_data_formated(out);
+    }
+  else
+    {
+    out << *this;
+    }
 
-    protected:
-                 CAtom();
-    public:
-        virtual ~CAtom(){};
+  out << "</" << m_sName << ">" << std::endl;
+  } // void print_xml(...)
 
-                 CAtom(CAtom const & src)
-		 {
-			 *this = src;
-		 }
+  void print_atom_data_formated(std::ostream& out) const
+  {
+  if (m_sPrefix.length() > 0) out << m_sPrefix << " ";
+  out << *this;
+  if (m_sSuffix.length() > 0) out << " " << m_sSuffix;
+  }
 
-                 CAtom & operator=(CAtom const & src)
-		 {
-		   m_tData = src.m_tData;
-		 }
+private:
+  std::string m_sName   = g_csNameUntypedAtomdata;
+  std::string m_sFormat = ""s;
+  std::string m_sPrefix = ""s;
+  std::string m_sSuffix = ""s;
 
-//	template<typename T> // T for 'data'
-                 CAtom(T data)
-		 : m_tData(data)
-		 {
-		 }
+  struct SAtomDataConcept
+  {
+  virtual ~SAtomDataConcept() = default;
+  virtual void ToStream(std::ostream&) const = 0;
+  }; // struct SAtomDataConcept
 
-	T const & Data() { return m_tData; }
+  template<typename T>
+  struct SAtomData : SAtomDataConcept
+  {
+  SAtomData(T tData) : m_tData(std::move(tData))
+    {
+    static_assert
+    (
+     (
+      !std::is_pointer<decltype(tData)>::value || std::is_convertible<T, const char*>::value
+      ), "arrays and pointers not supported"
+     );
+    }
 
-//    protected:
-	T m_tData;
+  void ToStream(std::ostream& roOut) const
+    {
+    roOut << m_tData;
+    }
+  T m_tData;
+  }; // struct SAtomData
 
-    }; // class CAtom
+  ///  std::shared_ptr<const SAtomDataConcept> m_pAtomData;
+  std::unique_ptr<const SAtomDataConcept> m_pAtomData;
+}; // class CAtom
 
 using CAtoms = std::deque<std::shared_ptr<CAtom>>;
 
@@ -59,3 +154,4 @@ using CAtoms = std::deque<std::shared_ptr<CAtom>>;
 
 // CATOM_H
 #endif
+

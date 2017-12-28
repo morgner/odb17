@@ -41,14 +41,15 @@ class COdb : public Identifiable<COdb>
 	std::shared_ptr<CThing> MakeThing(std::string const & crsName = g_sUnNamed)
 	{
         auto p = std::make_shared<odb::CThing>();
-        m_oThings.push_back( p );
+        m_oThings.emplace_back( p );
 	return p;
 	}
 
-	std::shared_ptr<CAtom> const MakeAtom(int data, std::string const & crsName = g_sUnNamed)
+	template<typename T>
+	std::shared_ptr<CAtom> const MakeAtom(T data, std::string const & crsName = g_sUnNamed)
 	{
 	auto p = std::make_shared<odb::CAtom>(data);
-	m_oAtoms.push_back( p );
+	m_oAtoms.emplace_back( p );
 	return p;
 	}
 
@@ -62,7 +63,7 @@ class COdb : public Identifiable<COdb>
 	  {
 	  for (auto && e : deq)
 	    {
-	    std::cout << e->type << " id: " << e->id << " data: " << e->Data() << '\n';
+	    std::cout << e->type << " id: " << e->id << " data: " << *e << '\n';
 	    }
 	  }
 
