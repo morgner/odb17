@@ -63,12 +63,12 @@ class CAtom : public Identifiable<CAtom>
 
     template<typename T>
     CAtom(T tAtomData,
-          std::string const & crsName   = g_csNameUnnamedAtom,
+          std::string const & crsName   = ""s,
           std::string const & crsPrefix = ""s,
           std::string const & crsSuffix = ""s,
           std::string const & crsFormat = ""s)
     : m_pAtomData(new SAtomData<T>(std::move(tAtomData))),
-    m_sName  (crsName),
+    m_sName  (crsName.length() ? crsName : g_csNameUnnamedAtom),
     m_sPrefix(crsPrefix),
     m_sSuffix(crsSuffix),
     m_sFormat(crsFormat)
@@ -88,7 +88,7 @@ class CAtom : public Identifiable<CAtom>
       std::string const & NameGet() { return m_sName; }
 
 
-      friend std::ostream& operator<< (std::ostream& out, CAtom const & croAtom)
+      friend std::ostream& operator << (std::ostream& out, CAtom const & croAtom)
         {
         croAtom.m_pAtomData->ToStream(out);
         return out;
@@ -156,6 +156,17 @@ class CAtom : public Identifiable<CAtom>
 
 using PAtom = std::shared_ptr<CAtom>;
 using CAtoms = std::deque<PAtom>;
+
+inline auto print(CAtoms & collection)
+  {
+  for (auto && e : collection)
+    {
+    e->print_atom_data_formated(std::cout);
+    std::cout << '\n';
+//    std::cout << e->type << '\t' << " id: " << e->id << '\t' << " name: " << e->NameGet() << '\t' << " data: " << *e << '\n';
+    }
+  }
+
 
 } // namespace odb
 

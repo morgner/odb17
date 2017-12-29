@@ -19,8 +19,6 @@
 
 namespace odb {
 
-static std::string const g_sUnNamed = "unNamed";
-
 /**
  * The database
  */
@@ -30,34 +28,40 @@ class COdb : public Identifiable<COdb>
                  COdb(){};
         virtual ~COdb(){};
                  COdb(COdb const & src)
-		 {
-		 *this = src;
-		 }
+		   {
+		   *this = src;
+		   }
 
-                 COdb & operator=(COdb const & src)
-		 {
-		 }
+                 COdb & operator = (COdb const & src)
+		   {
+		   // todo: Implement DB copying or prevent it
+		   }
 
-	std::shared_ptr<CThing> MakeThing(std::string const & crsName = g_sUnNamed)
-	{
-        auto p = std::make_shared<odb::CThing>(crsName);
-        m_oThings.emplace_back( p );
-	return p;
-	}
+	std::shared_ptr<CThing> MakeThing(std::string const & crsName = ""s)
+	  {
+          auto p = std::make_shared<odb::CThing>(crsName);
+          m_oThings.emplace_back( p );
+	  return p;
+	  }
 
 	template<typename T>
-	std::shared_ptr<CAtom> const MakeAtom(T data, std::string const & crsName = CAtom::g_csNameUnnamedAtom)
-	{
-	auto p = std::make_shared<odb::CAtom>(data, crsName);
-	m_oAtoms.emplace_back( p );
-	return p;
-	}
+	std::shared_ptr<CAtom> const MakeAtom(
+	  T data,
+          std::string const & crsName   = ""s,
+          std::string const & crsPrefix = ""s,
+          std::string const & crsSuffix = ""s,
+          std::string const & crsFormat = ""s)
+	  {
+	  auto p = std::make_shared<odb::CAtom>(data, crsName, crsPrefix, crsSuffix, crsFormat);
+	  m_oAtoms.emplace_back( p );
+	  return p;
+	  }
 
 	void Dump()
-	{
-	print(m_oThings);
-	print(m_oAtoms);
-	}
+	  {
+	  print(m_oThings);
+	  print(m_oAtoms);
+	  }
 
 	void print(CAtoms const & deq)
 	  {

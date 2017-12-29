@@ -27,29 +27,23 @@ class CThing : public Identifiable<CThing> {
     public:
       static constexpr auto g_csNameUnnamedThing{"unnamedThing"};
     public:
-	         CThing();
+	         CThing() {};
 		 CThing(std::string const & crsName)
-	         : m_sName(crsName)
+	         : m_sName(crsName.length() ? crsName : g_csNameUnnamedThing)
 		 {
 		 }
 	         CThing(CThing const &) = default;
-	virtual ~CThing();
+	virtual ~CThing() {};
 
-	std::ostream& operator << (std::ostream& ros)
+	auto & operator << (std::ostream& ros)
 	    {
-	    return ros << m_sName << m_nInt;
+	    return ros << m_sName << ":" << id;
 	    }
 
-	operator std::string() const
-	    {
-	    return std::to_string(m_nInt);
-	    }
-
-        std::string const & NameGet() { return m_sName; }
+        auto const & NameGet() { return m_sName; }
 
     protected:
         std::string m_sName{g_csNameUnnamedThing};
-	int         m_nInt {0};
 
     }; // class CThing
 

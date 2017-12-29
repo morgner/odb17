@@ -16,6 +16,7 @@
 /**
  * Helper function to print a vector of objects
  */
+
 auto print(std::vector<odb::CAtom> const & vec)
   {
   for (auto && e : vec)
@@ -38,7 +39,6 @@ auto print(std::deque<T> const & deq)
   {
   for (auto && e : deq)
     {
-//  std::cout << e->type << " id: " << e->id << " data: " << e->m_tData << '\n';
     std::cout << e->type << " id: " << e->id << '\n';
     }
   }
@@ -71,12 +71,12 @@ int main()
   
   odb::CAtoms  atoms;
 /*
-  atoms.emplace_back(0, "size", "V", "dl");
   atoms.emplace_back("hallo", "world");
   atoms.emplace_back(1, "mass", "", "kg");
   atoms.emplace_back(std::string(8, '-'), "line");
-  atoms.emplace_back(100.2, "round", "", "%");
 */
+  atoms.emplace_back( g_oOdb.MakeAtom(100.2, "round", "", "%") );
+  atoms.emplace_back( g_oOdb.MakeAtom(0.9, "size", "V", "dl") );
   atoms.emplace_back( g_oOdb.MakeAtom(1.2) );
   atoms.emplace_back( g_oOdb.MakeAtom(std::vector<int>   {3, 2, 1}, "vector") );
   atoms.emplace_back( g_oOdb.MakeAtom(std::array <int, 3>{3, 2, 1}, "array") );
@@ -91,7 +91,7 @@ int main()
   atoms.emplace_back( g_oOdb.MakeAtom(2, "Two") );
   atoms.emplace_back( g_oOdb.MakeAtom(1, "One") );
 
-  atoms.emplace_back( g_oOdb.MakeAtom("---------"s, "Line"s) );
+  atoms.emplace_back( g_oOdb.MakeAtom(std::string(8, '-'), "Line"s) );
 
 //  atoms.emplace_back( std::make_shared<odb::CAtom>('Q') );
   atoms.emplace_back( g_oOdb.MakeAtom('H', "Letter"s) );
@@ -105,17 +105,14 @@ int main()
 
   odb::CThings things;
 //  things.emplace_back( std::make_shared<odb::CThing>() );
-  things.emplace_back( g_oOdb.MakeThing("Wundertüte") );
-  things.emplace_back( g_oOdb.MakeThing("Kinderüberraschung") );
-  things.emplace_back( g_oOdb.MakeThing("No Poduct") );
-  things.emplace_back( g_oOdb.MakeThing("Harmlos Tüte") );
+  things.emplace_back( g_oOdb.MakeThing("Wundertüte"s) );
+  things.emplace_back( g_oOdb.MakeThing() );
+  things.emplace_back( g_oOdb.MakeThing("No Poduct"s) );
+  things.emplace_back( g_oOdb.MakeThing("Harmlos Tüte"s) );
   
-/*
-  print(atomsInt);
-  print(atomsChar);
+  print(atoms);
   print(things);
-*/
 
-  g_oOdb.Dump();
+//  g_oOdb.Dump();
   }
 

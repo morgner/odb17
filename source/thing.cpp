@@ -9,14 +9,4 @@
 
 namespace odb {
 
-CThing::CThing()
-    : m_nInt(0)
-    {
-    }
-
-CThing::~CThing()
-    {
-    // TODO Auto-generated destructor stub
-    }
-
 } // namespace odb
