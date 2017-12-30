@@ -157,9 +157,9 @@ class CAtom : public Identifiable<CAtom>
 using PAtom = std::shared_ptr<CAtom>;
 using CAtoms = std::deque<PAtom>;
 
-inline auto print(CAtoms & collection)
+inline auto print(CAtoms & container)
   {
-  for (auto && e : collection)
+  for (auto && e : container)
     {
     e->print_atom_data_formated(std::cout);
     std::cout << '\n';
