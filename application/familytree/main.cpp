@@ -81,10 +81,32 @@ int main()
   odb::PThing d2;
   odb::PThing d3;
   odb::PThing d4;
+  odb::PThing d5;
+  odb::PThing d6;
+  odb::PThing d7;
   things.push_back( d1 = g_oOdb.MakeThing("Wundertüte"s) );
   things.push_back( d2 = g_oOdb.MakeThing() );
   things.push_back( d3 = g_oOdb.MakeThing("No Poduct"s) );
-  things.push_back( d4 = g_oOdb.MakeThing("Harmlos Tüte"s) );
+  things.push_back( d4 = g_oOdb.MakeThing("Thoughtless bucket"s) );
+  things.push_back( d5 = g_oOdb.MakeThing("Terry Pratchett"s) );
+  things.push_back( d6 = g_oOdb.MakeThing("'Good Omens'"s) );
+  things.push_back( d7 = g_oOdb.MakeThing("Neil Gaiman"s) );
+
+  odb::CReasons reasons;
+  odb::PReason r1;
+  odb::PReason r2;
+  odb::PReason r3;
+  odb::PReason r4;
+  reasons.push_back( r1 = g_oOdb.MakeReason("made"s) );
+  reasons.push_back( r2 = g_oOdb.MakeReason("delivers"s) );
+  reasons.push_back( r3 = g_oOdb.MakeReason("owns"s) );
+  reasons.push_back( r4 = g_oOdb.MakeReason("wrote"s) );
+
+  d1->Link(d3, r2);
+  d1->Link(d3, r3);
+  d4->Link(d1, r1);
+  d5->Link(d6, r4);
+  d7->Link(d6, r4);
 
   atoms.push_back( d3->Append( g_oOdb.MakeAtom(100.2, "round", "", "%") ) );
 //  d3->Append( atoms.push_back( g_oOdb.MakeAtom(100.2, "round", "", "%") ) );
@@ -117,8 +139,9 @@ int main()
 
   print(atoms);
   print(things);
-  std::cout << *d1 << '\n';
+  print(reasons);
+///  std::cout << *d1 << '\n';
 
-//  g_oOdb.Dump();
+///  g_oOdb.Dump();
   }
 

@@ -11,9 +11,14 @@
 #include <ostream>
 #include <string>
 #include <memory>
+#include <unordered_map>
+#include <set>
+#include <functional>
 
 #include "generic.h"
 #include "atom.h"
+
+#include "reason.h"
 
 namespace odb {
 
@@ -24,7 +29,8 @@ using namespace std::string_literals;
 /**
  * A Thing as they are many of
  */
-class CThing : public std::enable_shared_from_this<CThing>, public Identifiable<CThing> {
+class CThing : public std::enable_shared_from_this<CThing>,
+               public Identifiable<CThing> {
     public:
       static constexpr auto g_csNameUnnamedThing{"unnamedThing"};
     public:
@@ -45,10 +51,21 @@ class CThing : public std::enable_shared_from_this<CThing>, public Identifiable<
           if (bFirst) { bFirst = false; } else { ros << '\n' << "  "; }
 	      a->print_atom_data_formated(ros);
 	      }
+	    for (auto const & a:crThing.m_mLink)
+	      {
+          if (bFirst) { bFirst = false; } else { ros << '\n' << "  "; }
+	      ros << " => linked to: " << '"' << a.first->m_sName << '"' << " for reason: " << '"' << *a.second << '"';
+	      ros << " = " << crThing.m_sName << ' ' << *a.second << ' ' << a.first->m_sName;
+	      }
+	    for (auto const & a:crThing.m_spoThingsRelating)
+	      {
+          if (bFirst) { bFirst = false; } else { ros << '\n' << "  "; }
+	      ros << " <= linked from: " << a->m_sName;
+	      }
 	    return ros;
 	    }
 
-    auto const & NameGet() { return m_sName; }
+    auto const & NameGet() { return m_sName; } const
 
     auto Append (PAtom poAtom)
       {
@@ -57,9 +74,30 @@ class CThing : public std::enable_shared_from_this<CThing>, public Identifiable<
       return poAtom;
       }
 
+    PThing Link(PThing po2Thing, PReason po4Reason)
+      {
+      m_mLink.emplace(po2Thing, po4Reason);
+      po2Thing->RelatingThingAdd( shared_from_this() );
+      return po2Thing;
+      }
+
+    PThing RelatingThingAdd(PThing poThing)
+      {
+      m_spoThingsRelating.insert(poThing);
+      return poThing;
+      }
+
     protected:
-        std::string m_sName{g_csNameUnnamedThing};
-        CAtoms      m_qpoAtoms;
+        std::string                              m_sName{g_csNameUnnamedThing};
+        CAtoms                                   m_qpoAtoms;
+        std::unordered_multimap<PThing, PReason> m_mLink;
+
+        struct lessPThing
+          {
+          bool operator()(PThing const p1, PThing const p2) const
+            { return p1->id < p2->id; }
+          };
+        std::set<PThing, lessPThing>             m_spoThingsRelating;
 
     }; // class CThing
 

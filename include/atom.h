@@ -125,7 +125,7 @@ class CAtom : public Identifiable<CAtom>
 
     auto RelatingThingAdd(PThing poThing)
       {
-      m_qpoThingsRelating.emplace_back(poThing);
+      m_qpoThingsRelating.push_back(poThing);
       return poThing;
       }
 

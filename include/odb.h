@@ -15,6 +15,7 @@
 
 #include "atom.h"
 #include "thing.h"
+#include "reason.h"
 
 
 namespace odb {
@@ -40,7 +41,7 @@ class COdb : public Identifiable<COdb>
 	auto MakeThing(std::string const & crsName = ""s)
 	  {
           auto p = std::make_shared<odb::CThing>(crsName);
-          m_oThings.emplace_back( p );
+          m_oThings.push_back( p );
 	  return p;
 	  }
 
@@ -57,10 +58,18 @@ class COdb : public Identifiable<COdb>
 	  return p;
 	  }
 
+	auto MakeReason(std::string const & crsName = ""s)
+	  {
+      auto p = std::make_shared<odb::CReason>(crsName);
+      m_oReasons.push_back( p );
+	  return p;
+	  }
+
 	void Dump()
 	  {
 	  print(m_oThings);
 	  print(m_oAtoms);
+	  print(m_oReasons);
 	  }
 
 	void print(CAtoms const & deq)
@@ -83,6 +92,7 @@ class COdb : public Identifiable<COdb>
     protected:
 	CThings  m_oThings;
 	CAtoms   m_oAtoms;
+	CReasons m_oReasons;
 
     }; // class COdb
 
