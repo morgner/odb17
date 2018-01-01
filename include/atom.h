@@ -7,13 +7,13 @@
  *      Author: manfred morgner
  */
 
-#include <deque>
-#include <string>
+//#include <deque>
+//#include <string>
 #include <memory>
 
 #include <iostream>
 #include <vector>
-#include <array>
+//#include <array>
 
 #include "generic.h"
 

@@ -91,7 +91,8 @@ class CThing : public std::enable_shared_from_this<CThing>,
         std::string                              m_sName{g_csNameUnnamedThing};
         CAtoms                                   m_qpoAtoms;
         std::unordered_multimap<PThing, PReason> m_mLink;
-
+        /// We need a set to get only one backreference from CThings
+        /// even if there are multiple incoming links
         struct lessPThing
           {
           bool operator()(PThing const p1, PThing const p2) const

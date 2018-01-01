@@ -29,70 +29,70 @@ class COdb : public Identifiable<COdb>
                  COdb(){};
         virtual ~COdb(){};
                  COdb(COdb const & src)
-		   {
-		   *this = src;
-		   }
+                   {
+                   *this = src;
+                   }
 
                  COdb & operator = (COdb const & src)
-		   {
-		   // todo: Implement DB copying or prevent it
-		   }
+                   {
+                   // todo: Implement DB copying or prevent it
+                   }
 
-	auto MakeThing(std::string const & crsName = ""s)
-	  {
+	    auto MakeThing(std::string const & crsName = ""s)
+          {
           auto p = std::make_shared<odb::CThing>(crsName);
           m_oThings.push_back( p );
-	  return p;
-	  }
+          return p;
+          }
 
-	template<typename T>
-	auto const MakeAtom(
-	  T data,
+        template<typename T>
+        auto const MakeAtom(
+          T data,
           std::string const & crsName   = ""s,
           std::string const & crsPrefix = ""s,
           std::string const & crsSuffix = ""s,
           std::string const & crsFormat = ""s)
-	  {
-	  auto p = std::make_shared<odb::CAtom>(data, crsName, crsPrefix, crsSuffix, crsFormat);
-	  m_oAtoms.push_back( p );
-	  return p;
-	  }
+          {
+          auto p = std::make_shared<odb::CAtom>(data, crsName, crsPrefix, crsSuffix, crsFormat);
+	      m_oAtoms.push_back( p );
+          return p;
+          }
 
-	auto MakeReason(std::string const & crsName = ""s)
-	  {
-      auto p = std::make_shared<odb::CReason>(crsName);
-      m_oReasons.push_back( p );
-	  return p;
-	  }
+        auto MakeReason(std::string const & crsName = ""s)
+          {
+          auto p = std::make_shared<odb::CReason>(crsName);
+          m_oReasons.push_back( p );
+          return p;
+          }
 
-	void Dump()
-	  {
-	  print(m_oThings);
-	  print(m_oAtoms);
-	  print(m_oReasons);
-	  }
+	    void Dump()
+          {
+          print(m_oThings);
+          print(m_oAtoms);
+          print(m_oReasons);
+          }
 
-	void print(CAtoms const & deq)
-	  {
-	  for (auto && e : deq)
-	    {
-	    std::cout << e->type << '\t' << " id: " << e->id << '\t' << " name: " << e->NameGet() << '\t' << " data: " << *e << '\n';
-	    }
-	  }
+        void print(CAtoms const & deq)
+          {
+          for (auto && e : deq)
+            {
+            std::cout << e->type << '\t' << " id: " << e->id << '\t' << " name: " << e->NameGet() << '\t' << " data: " << *e << '\n';
+            }
+          }
 
-	template<typename T>
-	void print(std::deque<T> const & deq)
-	  {
-	  for (auto && e : deq)
-	    {
-	    std::cout << e->type << '\t' << " id: " << e->id << '\t' << " name: " << e->NameGet() << '\n';
-	    }
-	  }
+        template<typename T>
+        void print(std::deque<T> const & deq)
+          {
+          for (auto && e : deq)
+            {
+            std::cout << e->type << '\t' << " id: " << e->id << '\t' << " name: " << e->NameGet() << '\n';
+            }
+          }
 
     protected:
-	CThings  m_oThings;
-	CAtoms   m_oAtoms;
-	CReasons m_oReasons;
+      CThings  m_oThings;
+      CAtoms   m_oAtoms;
+      CReasons m_oReasons;
 
     }; // class COdb
 
