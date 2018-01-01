@@ -24,7 +24,7 @@ using namespace std::string_literals;
 /**
  * A Thing as they are many of
  */
-class CThing : public Identifiable<CThing> {
+class CThing : public std::enable_shared_from_this<CThing>, public Identifiable<CThing> {
     public:
       static constexpr auto g_csNameUnnamedThing{"unnamedThing"};
     public:
@@ -36,7 +36,7 @@ class CThing : public Identifiable<CThing> {
 	         CThing(CThing const &) = default;
 	virtual ~CThing() {};
 
-	friend std::ostream & operator << (std::ostream & ros, CThing const & crThing)
+	friend auto & operator << (std::ostream & ros, CThing const & crThing)
 	    {
 	    ros << crThing.m_sName; // << '\n';
         bool bFirst = false; // true;
@@ -50,7 +50,12 @@ class CThing : public Identifiable<CThing> {
 
     auto const & NameGet() { return m_sName; }
 
-    auto emplace_back(PAtom & poAtom) { m_qpoAtoms.emplace_back(poAtom); return poAtom; }
+    auto Append (PAtom poAtom)
+      {
+      m_qpoAtoms.push_back(poAtom);
+      poAtom->RelatingThingAdd( shared_from_this() );
+      return poAtom;
+      }
 
     protected:
         std::string m_sName{g_csNameUnnamedThing};
@@ -58,8 +63,6 @@ class CThing : public Identifiable<CThing> {
 
     }; // class CThing
 
-using PThing = std::shared_ptr<CThing>;
-using CThings = std::deque<PThing>;
 
 } // namespace odb
 

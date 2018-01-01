@@ -13,6 +13,19 @@
 #include <cxxabi.h> // __cxa_demangle
 // #include <memory>   // unique_ptr
 
+#include <deque>
+namespace odb {
+
+class CThing;
+using PThing  = std::shared_ptr<CThing>;
+using CThings = std::deque<PThing>;
+
+class CAtom;
+using PAtom  = std::shared_ptr<CAtom>;
+using CAtoms = std::deque<PAtom>;
+
+}
+
 /**
  * Demangle C++ types into something human readable
  *

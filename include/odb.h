@@ -37,7 +37,7 @@ class COdb : public Identifiable<COdb>
 		   // todo: Implement DB copying or prevent it
 		   }
 
-	std::shared_ptr<CThing> MakeThing(std::string const & crsName = ""s)
+	auto MakeThing(std::string const & crsName = ""s)
 	  {
           auto p = std::make_shared<odb::CThing>(crsName);
           m_oThings.emplace_back( p );
@@ -45,7 +45,7 @@ class COdb : public Identifiable<COdb>
 	  }
 
 	template<typename T>
-	std::shared_ptr<CAtom> const MakeAtom(
+	auto const MakeAtom(
 	  T data,
           std::string const & crsName   = ""s,
           std::string const & crsPrefix = ""s,
@@ -53,7 +53,7 @@ class COdb : public Identifiable<COdb>
           std::string const & crsFormat = ""s)
 	  {
 	  auto p = std::make_shared<odb::CAtom>(data, crsName, crsPrefix, crsSuffix, crsFormat);
-	  m_oAtoms.emplace_back( p );
+	  m_oAtoms.push_back( p );
 	  return p;
 	  }
 

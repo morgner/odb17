@@ -91,6 +91,12 @@ class CAtom : public Identifiable<CAtom>
       friend std::ostream& operator << (std::ostream& out, CAtom const & croAtom)
         {
         croAtom.m_pAtomData->ToStream(out);
+/*
+        for ( auto const & e:croAtom.m_qpoThingsRelating )
+          {
+          out << '\n' << " use by thing: " << e;
+          }
+*/
         return out;
         } // operator << (...)
 
@@ -117,11 +123,20 @@ class CAtom : public Identifiable<CAtom>
         if (m_sSuffix.length() > 0) out << " " << m_sSuffix;
         }
 
+    auto RelatingThingAdd(PThing poThing)
+      {
+      m_qpoThingsRelating.emplace_back(poThing);
+      return poThing;
+      }
+
   protected:
     std::string m_sName  {g_csNameUnnamedAtom};
     std::string m_sFormat{""s};
     std::string m_sPrefix{""s};
     std::string m_sSuffix{""s};
+
+    CThings m_qpoThingsRelating;
+
 
     struct SAtomDataConcept
       {
@@ -151,9 +166,6 @@ class CAtom : public Identifiable<CAtom>
 
   std::unique_ptr<const SAtomDataConcept> m_pAtomData;
   }; // class CAtom
-
-using PAtom = std::shared_ptr<CAtom>;
-using CAtoms = std::deque<PAtom>;
 
 inline auto print(CAtoms & container)
   {
