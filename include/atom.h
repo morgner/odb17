@@ -117,11 +117,11 @@ class CAtom : public Identifiable<CAtom>
         if (m_sSuffix.length() > 0) out << " " << m_sSuffix;
         }
 
-  private:
-    std::string m_sName   = g_csNameUnnamedAtom;
-    std::string m_sFormat = ""s;
-    std::string m_sPrefix = ""s;
-    std::string m_sSuffix = ""s;
+  protected:
+    std::string m_sName  {g_csNameUnnamedAtom};
+    std::string m_sFormat{""s};
+    std::string m_sPrefix{""s};
+    std::string m_sSuffix{""s};
 
     struct SAtomDataConcept
       {
@@ -149,9 +149,7 @@ class CAtom : public Identifiable<CAtom>
     T m_tData;
     }; // struct SAtomData
 
-  ///  std::shared_ptr<const SAtomDataConcept> m_pAtomData;
   std::unique_ptr<const SAtomDataConcept> m_pAtomData;
-
   }; // class CAtom
 
 using PAtom = std::shared_ptr<CAtom>;
@@ -161,6 +159,7 @@ inline auto print(CAtoms & container)
   {
   for (auto && e : container)
     {
+    std::cout << e->type << '\t' << " id: " << e->id << '\t' << " name: " << e->NameGet() << '\t' << " data: " << *e << " odbrep:";
     e->print_atom_data_formated(std::cout);
     std::cout << '\n';
 //    std::cout << e->type << '\t' << " id: " << e->id << '\t' << " name: " << e->NameGet() << '\t' << " data: " << *e << '\n';

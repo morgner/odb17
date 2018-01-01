@@ -7,11 +7,11 @@
  *      Author: felix morgner
  */
 
-#include <vector>   // vector
-#include <string>   // string
-#include <typeinfo> // type_info, required for typeid to be valid
+// #include <vector>   // vector
+// #include <string>   // string
+// #include <typeinfo> // type_info, required for typeid to be valid
 #include <cxxabi.h> // __cxa_demangle
-#include <memory>   // unique_ptr
+// #include <memory>   // unique_ptr
 
 /**
  * Demangle C++ types into something human readable

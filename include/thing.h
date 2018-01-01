@@ -13,6 +13,7 @@
 #include <memory>
 
 #include "generic.h"
+#include "atom.h"
 
 namespace odb {
 
@@ -28,22 +29,32 @@ class CThing : public Identifiable<CThing> {
       static constexpr auto g_csNameUnnamedThing{"unnamedThing"};
     public:
 	         CThing() {};
-		 CThing(std::string const & crsName)
+             CThing(std::string const & crsName)
 	         : m_sName(crsName.length() ? crsName : g_csNameUnnamedThing)
-		 {
-		 }
+             {
+             }
 	         CThing(CThing const &) = default;
 	virtual ~CThing() {};
 
-	auto & operator << (std::ostream& ros)
+	friend std::ostream & operator << (std::ostream & ros, CThing const & crThing)
 	    {
-	    return ros << m_sName << ":" << id;
+	    ros << crThing.m_sName; // << '\n';
+        bool bFirst = false; // true;
+	    for (auto const & a:crThing.m_qpoAtoms)
+	      {
+          if (bFirst) { bFirst = false; } else { ros << '\n' << "  "; }
+	      a->print_atom_data_formated(ros);
+	      }
+	    return ros;
 	    }
 
-        auto const & NameGet() { return m_sName; }
+    auto const & NameGet() { return m_sName; }
+
+    auto emplace_back(PAtom & poAtom) { m_qpoAtoms.emplace_back(poAtom); return poAtom; }
 
     protected:
         std::string m_sName{g_csNameUnnamedThing};
+        CAtoms      m_qpoAtoms;
 
     }; // class CThing
 

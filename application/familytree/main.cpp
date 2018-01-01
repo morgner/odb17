@@ -39,7 +39,7 @@ auto print(std::deque<T> const & deq)
   {
   for (auto && e : deq)
     {
-    std::cout << e->type << " id: " << e->id << '\n';
+    std::cout << e->type << " id: " << e->id << ' ' << *e << '\n';
     }
   }
 
@@ -68,23 +68,31 @@ int main()
   int                 a[10] = {1, 2, 3, 4, 5, 6};
   std::vector<int>    v{1, 2, 3};
   std::array<char, 3> w{'a','b','c'};
-  
+
   odb::CAtoms  atoms;
 /*
   atoms.emplace_back("hallo", "world");
   atoms.emplace_back(1, "mass", "", "kg");
   atoms.emplace_back(std::string(8, '-'), "line");
 */
-  atoms.emplace_back( g_oOdb.MakeAtom(100.2, "round", "", "%") );
-  atoms.emplace_back( g_oOdb.MakeAtom(0.9, "size", "V", "dl") );
-  atoms.emplace_back( g_oOdb.MakeAtom(1.2) );
-  atoms.emplace_back( g_oOdb.MakeAtom(std::vector<int>   {3, 2, 1}, "vector") );
+
+  odb::CThings things;
+//  things.emplace_back( std::make_shared<odb::CThing>() );
+  auto d1 = things.emplace_back( g_oOdb.MakeThing("Wundertüte"s) );
+  auto d2 = things.emplace_back( g_oOdb.MakeThing() );
+  auto d3 = things.emplace_back( g_oOdb.MakeThing("No Poduct"s) );
+  auto d4 = things.emplace_back( g_oOdb.MakeThing("Harmlos Tüte"s) );
+
+  d3->emplace_back( atoms.emplace_back( g_oOdb.MakeAtom(100.2, "round", "", "%") ) );
+  d3->emplace_back( atoms.emplace_back( g_oOdb.MakeAtom(0.9, "size", "V", "dl") ) );
+  d3->emplace_back( atoms.emplace_back( g_oOdb.MakeAtom(1.2) ) );
+  d3->emplace_back( atoms.emplace_back( g_oOdb.MakeAtom(std::vector<int>   {3, 2, 1}, "vector") ) );
   atoms.emplace_back( g_oOdb.MakeAtom(std::array <int, 3>{3, 2, 1}, "array") );
   atoms.emplace_back( g_oOdb.MakeAtom(cs, "const string"s) );
   atoms.emplace_back( g_oOdb.MakeAtom(ns, "non-const string") );
 //  atoms.emplace_back( g_oOdb.MakeAtom(a) );
-  atoms.emplace_back( g_oOdb.MakeAtom(v, "vector of 3 int") );
-  atoms.emplace_back( g_oOdb.MakeAtom(w, "array of 3 char") );
+  d4->emplace_back( atoms.emplace_back( g_oOdb.MakeAtom(v, "vector of 3 int") ) );
+  d4->emplace_back( atoms.emplace_back( g_oOdb.MakeAtom(w, "array of 3 char") ) );
 
 //  atoms.emplace_back( std::make_shared<odb::CAtom>(4) );
   atoms.emplace_back( g_oOdb.MakeAtom(3, "Three") );
@@ -94,24 +102,18 @@ int main()
   atoms.emplace_back( g_oOdb.MakeAtom(std::string(8, '-'), "Line"s) );
 
 //  atoms.emplace_back( std::make_shared<odb::CAtom>('Q') );
-  atoms.emplace_back( g_oOdb.MakeAtom('H', "Letter"s) );
-  atoms.emplace_back( g_oOdb.MakeAtom('e', "Letter"s) );
-  atoms.emplace_back( g_oOdb.MakeAtom('l', "Letter"s) );
-  atoms.emplace_back( g_oOdb.MakeAtom('o', "Letter"s) );
-  atoms.emplace_back( g_oOdb.MakeAtom("Quirks & Quarks", "Radio Cast"s) );
-  atoms.emplace_back( g_oOdb.MakeAtom("Quirks & Quarks"s, "Podcast"s) );
+  d1->emplace_back( atoms.emplace_back( g_oOdb.MakeAtom('H', "Letter"s) ) );
+  d1->emplace_back( atoms.emplace_back( g_oOdb.MakeAtom('e', "Letter"s) ) );
+  d1->emplace_back( atoms.emplace_back( g_oOdb.MakeAtom('l', "Letter"s) ) );
+  d1->emplace_back( atoms.emplace_back( g_oOdb.MakeAtom('o', "Letter"s) ) );
+  d2->emplace_back( atoms.emplace_back( g_oOdb.MakeAtom("Quirks & Quarks", "Radio Cast"s) ) );
+  d2->emplace_back( atoms.emplace_back( g_oOdb.MakeAtom("Thinking alowed"s, "Podcast"s) ) );
 
   atoms.emplace_back( g_oOdb.MakeAtom("---------"s, "Line"s) );
 
-  odb::CThings things;
-//  things.emplace_back( std::make_shared<odb::CThing>() );
-  things.emplace_back( g_oOdb.MakeThing("Wundertüte"s) );
-  things.emplace_back( g_oOdb.MakeThing() );
-  things.emplace_back( g_oOdb.MakeThing("No Poduct"s) );
-  things.emplace_back( g_oOdb.MakeThing("Harmlos Tüte"s) );
-  
   print(atoms);
   print(things);
+///  std::cout << *d1 << '\n';
 
 //  g_oOdb.Dump();
   }
