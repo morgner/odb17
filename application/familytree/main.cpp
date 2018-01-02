@@ -15,39 +15,14 @@
 /**
  * Helper function to print a vector of objects
  */
-/*
-auto print(std::vector<odb::CAtom> const & vec)
-  {
-  for (auto && e : vec)
-    {
-    std::cout << e.type << " id: " << e.id << " data: " << e << '\n';
-    }
-  }
 
-template<typename T>
-auto print(std::vector<T> const & vec)
-  {
-  for (auto && e : vec)
-    {
-    std::cout << e.type << " id: " << e.id << '\n';
-    }
-  }
-*/
-auto print( odb::CReasons & deq)
-  {
-  for (auto const & e : deq)
-    {
-    std::cout << e->type << " id: " << e->id << " data: " << *e << '\n';
-    e->Dump();
-    }
-  }
 
 template<typename T>
 auto print(std::deque<T> & deq)
   {
   for (auto && e : deq)
     {
-    std::cout << e->type << " id: " << e->id << ' ' << *e << '\n';
+    std::cout << e->type << " id: " << e->id << " (" << e.use_count() << ')' << ' ' << *e << '\n';
     }
   }
 

@@ -16,8 +16,8 @@
 // #include <array>
 #include <map>
 
-#include "generic.h"
 #include "thing.h"
+#include "generic.h"
 
 namespace odb {
 
@@ -75,8 +75,17 @@ class CReason : public Identifiable<CReason>
 
   }; // class CReason
 
-using PReason = std::shared_ptr<CReason>;
+using PReason  = std::shared_ptr<CReason>;
 using CReasons = std::deque<PReason>;
+
+inline auto print(CReasons & container)
+  {
+  for (auto const & e : container)
+    {
+    std::cout << e->type << " id: " << e->id << ' ' << '"' << *e << '"' << " (" << e.use_count() << ')' << '\n';
+    e->Dump();
+    }
+  }
 
 } // namespace odb
 
