@@ -15,7 +15,7 @@
 /**
  * Helper function to print a vector of objects
  */
-
+/*
 auto print(std::vector<odb::CAtom> const & vec)
   {
   for (auto && e : vec)
@@ -32,9 +32,18 @@ auto print(std::vector<T> const & vec)
     std::cout << e.type << " id: " << e.id << '\n';
     }
   }
+*/
+auto print( odb::CReasons & deq)
+  {
+  for (auto const & e : deq)
+    {
+    std::cout << e->type << " id: " << e->id << " data: " << *e << '\n';
+    e->Dump();
+    }
+  }
 
 template<typename T>
-auto print(std::deque<T> const & deq)
+auto print(std::deque<T> & deq)
   {
   for (auto && e : deq)
     {
@@ -86,7 +95,7 @@ int main()
   odb::PThing d7;
   things.push_back( d1 = g_oOdb.MakeThing("Wundertüte"s) );
   things.push_back( d2 = g_oOdb.MakeThing() );
-  things.push_back( d3 = g_oOdb.MakeThing("No Poduct"s) );
+  things.push_back( d3 = g_oOdb.MakeThing("No Product"s) );
   things.push_back( d4 = g_oOdb.MakeThing("Thoughtless bucket"s) );
   things.push_back( d5 = g_oOdb.MakeThing("Terry Pratchett"s) );
   things.push_back( d6 = g_oOdb.MakeThing("'Good Omens'"s) );
@@ -140,8 +149,11 @@ int main()
   print(atoms);
   print(things);
   print(reasons);
-///  std::cout << *d1 << '\n';
-
-///  g_oOdb.Dump();
+/*
+  std::cout << "----------------" << '\n';
+  std::cout << *d1 << '\n';
+  std::cout << "----------------" << '\n';
+  g_oOdb.Dump();
+*/
   }
 

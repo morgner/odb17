@@ -14,9 +14,10 @@
 // #include <iostream>
 // #include <vector>
 // #include <array>
+#include <map>
 
 #include "generic.h"
-
+#include "thing.h"
 
 namespace odb {
 
@@ -53,10 +54,24 @@ class CReason : public Identifiable<CReason>
 	    return m_sName;
 	    }
 
+      void RelationAdd( PThing poThingFrom, PThing poThingTo )
+        {
+        m_mRelations.insert( std::pair<PThing, PThing>( poThingFrom, poThingTo ) );
+        }
+
+      void Dump()
+        {
+        for ( auto const & e:m_mRelations )
+          {
+          std::cout << "  " << e.first << " => " << e.second << '\n';
+          }
+        }
+
       auto const & NameGet() { return m_sName; }
 
   protected:
     std::string m_sName{ g_csNameUnnamedReason };
+    std::multimap<PThing, PThing> m_mRelations;
 
   }; // class CReason
 

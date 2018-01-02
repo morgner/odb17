@@ -48,7 +48,7 @@ class CThing : public std::enable_shared_from_this<CThing>,
         bool bFirst = false; // true;
 	    for (auto const & a:crThing.m_qpoAtoms)
 	      {
-          if (bFirst) { bFirst = false; } else { ros << '\n' << "  "; }
+          if (bFirst) { bFirst = false; } else { ros << '\n' << "  " << a->NameGet() << ": "; }
 	      a->print_atom_data_formated(ros);
 	      }
 	    for (auto const & a:crThing.m_mLink)
@@ -78,6 +78,7 @@ class CThing : public std::enable_shared_from_this<CThing>,
       {
       m_mLink.emplace(po2Thing, po4Reason);
       po2Thing->RelatingThingAdd( shared_from_this() );
+      po4Reason->RelationAdd( shared_from_this(), po2Thing );
       return po2Thing;
       }
 
@@ -91,6 +92,7 @@ class CThing : public std::enable_shared_from_this<CThing>,
         std::string                              m_sName{g_csNameUnnamedThing};
         CAtoms                                   m_qpoAtoms;
         std::unordered_multimap<PThing, PReason> m_mLink;
+
         /// We need a set to get only one backreference from CThings
         /// even if there are multiple incoming links
         struct lessPThing

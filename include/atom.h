@@ -73,6 +73,7 @@ class CAtom : public Identifiable<CAtom>
     m_sSuffix(crsSuffix),
     m_sFormat(crsFormat)
       {
+/*
       std::cout << "new atom for ";
       if (std::is_integral<T>::value)                      std::cout << "integral";
       else if (std::is_floating_point<T>::value)           std::cout << "floating";
@@ -83,6 +84,7 @@ class CAtom : public Identifiable<CAtom>
       else if (std::is_class<T>::value)                    std::cout << "class";
       else std::cout << "UNKNOWN TYPE";
       std::cout << ": " << *this << " (" << tAtomData << ')' << "\tname: " << m_sName << '\n';
+*/
       }
 
       std::string const & NameGet() { return m_sName; }

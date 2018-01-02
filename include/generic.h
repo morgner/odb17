@@ -4,7 +4,7 @@
 /*  generic.h
  *
  *  Created on: 26.12.2017
- *      Author: felix morgner
+ *      Author: felix morgner & manfred morgner
  */
 
 // #include <vector>   // vector
