@@ -7,6 +7,7 @@
 #include <iostream> // cout
 
 #include "thing.h"
+#include "reason.h"
 #include "atom.h"
 #include "odb.h"
 #include "generic.h"
@@ -18,13 +19,14 @@
 
 
 template<typename T>
-auto print(std::deque<T> & deq)
+void print(std::deque<T> & deq)
   {
-  for (auto && e : deq)
+  for (auto const & e : deq)
     {
     std::cout << e->type << " id: " << e->id << " (" << e.use_count() << ')' << ' ' << *e << '\n';
     }
   }
+
 
 odb::COdb g_oOdb{};
 

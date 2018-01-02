@@ -72,18 +72,18 @@ class COdb : public Identifiable<COdb>
           print(m_oReasons);
           }
 
-        void print(CAtoms const & deq)
+        void print(CAtoms const & container)
           {
-          for (auto && e : deq)
+          for (auto && e : container)
             {
             std::cout << e->type << '\t' << " id: " << e->id << '\t' << " name: " << e->NameGet() << '\t' << " data: " << *e << '\n';
             }
           }
 
         template<typename T>
-        void print(std::deque<T> const & deq)
+        void print(std::deque<T> const & container)
           {
-          for (auto && e : deq)
+          for (auto && e : container)
             {
             std::cout << e->type << '\t' << " id: " << e->id << '\t' << " name: " << e->NameGet() << '\n';
             }

@@ -7,13 +7,10 @@
  *      Author: felix morgner & manfred morgner
  */
 
-// #include <vector>   // vector
-// #include <string>   // string
-// #include <typeinfo> // type_info, required for typeid to be valid
 #include <cxxabi.h> // __cxa_demangle
-// #include <memory>   // unique_ptr
 
 #include <deque>
+
 namespace odb {
 
 class CThing;
@@ -23,6 +20,10 @@ using CThings = std::deque<PThing>;
 class CAtom;
 using PAtom  = std::shared_ptr<CAtom>;
 using CAtoms = std::deque<PAtom>;
+
+class CReason;
+using PReason  = std::shared_ptr<CReason>;
+using CReasons = std::deque<PReason>;
 
 }
 
