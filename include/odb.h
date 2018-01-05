@@ -65,7 +65,7 @@ class COdb : public Identifiable<COdb>
           return p;
           }
 
-	    void Dump()
+	    void print()
           {
           print(m_oThings);
           print(m_oAtoms);
@@ -83,10 +83,52 @@ class COdb : public Identifiable<COdb>
         template<typename T>
         void print(std::deque<T> const & container)
           {
-          for (auto && e : container)
+          for (auto const & e:container)
             {
             std::cout << e->type << '\t' << " id: " << e->id << '\t' << " name: " << e->NameGet() << '\n';
             }
+          }
+
+
+        static long g_nJsonIndent;
+
+        template<typename T>
+        void print_json(T const & container, long const nRI, std::ostream & ros)
+          {
+          for (auto const & e:container)
+            {
+            ros << std::string((nRI+0)*g_nJsonIndent, ' ') << "\"type\": \"" << e->type      << "\", ";
+            ros                                            << "\"id\": \""   << e->id        << "\", ";
+            ros                                            << "\"name\": \"" << e->NameGet() << "\"\n";
+            ros << std::string((nRI+1)*g_nJsonIndent, ' ') << "\"atoms\": [\n";
+// Atoms
+            ros << std::string((nRI+2)*g_nJsonIndent, ' ') << "{\"name\": \"\", \"id\": \"\", \"prefix\": \"\", \"suffix\": \"\", \"format\": \"\"},\n";
+            ros << std::string((nRI+2)*g_nJsonIndent, ' ') << "{\"name\": \"\", \"id\": \"\", \"prefix\": \"\", \"suffix\": \"\", \"format\": \"\"}\n";
+
+            ros << std::string((nRI+1)*g_nJsonIndent, ' ') << "]\n";
+// Links
+            ros << std::string((nRI+1)*g_nJsonIndent, ' ') << "\"links\": [\n";
+
+            ros << std::string((nRI+2)*g_nJsonIndent, ' ') << "{\"reason-id\": \"\", \"thing-id\": \"\"},\n";
+            ros << std::string((nRI+2)*g_nJsonIndent, ' ') << "{\"reason-id\": \"\", \"thing-id\": \"\"}\n";
+
+            ros << std::string((nRI+1)*g_nJsonIndent, ' ') << "]\n";
+            }
+          }
+
+        void print_json(long const nRI /* RelativeIndent */, std::ostream & ros)
+          {
+          ros << std::string((nRI+0)*g_nJsonIndent, ' ') << '{' << '\n';
+          ros << std::string((nRI+1)*g_nJsonIndent, ' ') << "\"Object Database Dump:\"" << '\n';
+          ros << std::string((nRI+2)*g_nJsonIndent, ' ') << '{' << '\n';
+          ros << std::string((nRI+2)*g_nJsonIndent, ' ') << "\"All Objects:\"" << '\n';
+          ros << std::string((nRI+3)*g_nJsonIndent, ' ') << '{' << '\n';
+
+          print_json(m_oThings, 3, ros);
+
+          ros << std::string((nRI+2)*g_nJsonIndent, ' ') << '}' << '\n';
+          ros << std::string((nRI+1)*g_nJsonIndent, ' ') << '}' << '\n';
+          ros << std::string((nRI+0)*g_nJsonIndent, ' ') << '}' << '\n';
           }
 
     protected:
