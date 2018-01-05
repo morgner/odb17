@@ -19,12 +19,15 @@ namespace odb {
 
 // using namespace std::string_literals;
 
+class COdb;
 
 /**
  * A Reason to link two Things (Unidirectional)
  */
 class CReason : public Identifiable<CReason>
   {
+  friend COdb;
+
   public:
     static constexpr auto g_csNameUnnamedReason{"unnamedReason"};
   public:

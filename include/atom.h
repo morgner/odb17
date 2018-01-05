@@ -54,12 +54,15 @@ std::ostream& operator<< (std::ostream& out, const std::array<T, N>& v)
   return out;
 } // std::ostream& operator<< (std::ostream& out, const std::array<T, N>& v)
 
+class COdb;
 
 /**
  * An Atom, from whitch Things are built from
  */
 class CAtom : public Identifiable<CAtom>
 {
+  friend COdb;
+
   public:
     static constexpr auto g_csNameUnnamedAtom{"unnamedAtom"};
   public:

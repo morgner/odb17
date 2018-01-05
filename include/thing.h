@@ -23,12 +23,16 @@ namespace odb {
 
 using namespace std::string_literals;
 
+class COdb;
 
 /**
  * A Thing as they are many of
  */
 class CThing : public std::enable_shared_from_this<CThing>,
                public Identifiable<CThing> {
+
+    friend class COdb;
+
     public:
       static constexpr auto g_csNameUnnamedThing{"unnamedThing"};
     public:
