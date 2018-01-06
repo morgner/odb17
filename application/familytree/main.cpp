@@ -119,13 +119,14 @@ int main()
   atoms.push_back( d1->Append( g_oOdb.MakeAtom('l', "Letter"s) ) );
   atoms.push_back( d1->Append( g_oOdb.MakeAtom('o', "Letter"s) ) );
   atoms.push_back( d2->Append( g_oOdb.MakeAtom("Quirks & Quarks", "Radio Cast"s) ) );
-  atoms.push_back( d2->Append( g_oOdb.MakeAtom("Thinking alowed"s, "Podcast"s) ) );
+  atoms.push_back( d2->Append( g_oOdb.MakeAtom("Thinking allowed"s, "Podcast"s) ) );
 
   atoms.push_back( g_oOdb.MakeAtom("---------"s, "Line"s) );
 /*
   print(atoms);
   print(things);
   print(reasons);
+*/
 /*
   std::cout << "----------------" << '\n';
   std::cout << *d1 << '\n';

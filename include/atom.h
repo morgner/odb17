@@ -165,7 +165,7 @@ class CAtom : public Identifiable<CAtom>
           );
         }
 
-    void ToStream(std::ostream& roOut) const
+    void ToStream(std::ostream & roOut) const
       {
       roOut << m_tData;
       }
