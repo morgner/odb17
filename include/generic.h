@@ -25,6 +25,10 @@ class CReason;
 using PReason  = std::shared_ptr<CReason>;
 using CReasons = std::deque<PReason>;
 
+class CStrand;
+using PStrand  = std::shared_ptr<CStrand>;
+using CStrands = std::deque<PStrand>;
+
 }
 
 /**

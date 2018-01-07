@@ -16,6 +16,7 @@
 #include "atom.h"
 #include "thing.h"
 #include "reason.h"
+#include "strand.h"
 
 
 namespace odb {
@@ -63,6 +64,13 @@ class COdb : public Identifiable<COdb>
             {
             auto p = std::make_shared<odb::CReason>(crsName);
             m_oReasons.push_back( p );
+            return p;
+            }
+
+        auto MakeStrand(std::string const & crsName = ""s)
+            {
+            auto p = std::make_shared<odb::CStrand>(crsName);
+            m_oStrands.push_back( p );
             return p;
             }
 
@@ -193,6 +201,7 @@ class COdb : public Identifiable<COdb>
       CThings  m_oThings;
       CAtoms   m_oAtoms;
       CReasons m_oReasons;
+      CStrands m_oStrands;
 
     }; // class COdb
 

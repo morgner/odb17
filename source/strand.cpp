@@ -4,11 +4,12 @@
  *      Author: manfred morgner
  */
 
-#include "reason.h"
+#include "strand.h"
 #include "thing.h"
+#include "generic.h"
 
 
-void print(odb::CReasons & crContainer)
+void print(odb::CStrands & crContainer)
     {
     for (auto const & e:crContainer)
         {
@@ -19,42 +20,39 @@ void print(odb::CReasons & crContainer)
 
 namespace odb {
 
-std::ostream & operator << (std::ostream & ros, CReason const & croReason)
+std::ostream & operator << (std::ostream & ros, CStrand const & croStrand)
     {
-    ros << croReason.m_sName; // << '\n';
+    ros << croStrand.m_sName; // << '\n';
     return ros;
     }
 
-CReason::CReason()
+CStrand::CStrand()
     {
     }
 
-CReason::CReason(std::string const & crsName)
-: m_sName(crsName.length() ? crsName : s_csNameUnnamedReason )
+CStrand::CStrand(std::string const & crsName)
+: m_sName(crsName.length() ? crsName : s_csNameUnnamedStrand )
     {
     }
 
-std::string const & CReason::operator = (std::string const & sName)
+std::string const & CStrand::operator = (std::string const & sName)
     {
     return m_sName = sName;
     }
 
-CReason::operator std::string const & ()
+CStrand::operator std::string const & ()
     {
     return m_sName;
     }
 
-void CReason::RelationAdd( PThing poThingFrom, PThing poThingTo )
+void CStrand::print()
     {
-    m_mRelations.insert( std::pair<PThing, PThing>( poThingFrom, poThingTo ) );
-    }
-
-void CReason::print()
-    {
+/*
     for ( auto const & e:m_mRelations )
         {
         std::cout << "  " << e.first->m_sName << " => " << e.second->m_sName << '\n';
         }
+*/
     }
 
 } // namespace odb

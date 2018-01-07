@@ -30,7 +30,7 @@ class CReason : public Identifiable<CReason>
     friend COdb;
 
     public:
-        static constexpr auto g_csNameUnnamedReason{"unnamedReason"};
+        static constexpr auto s_csNameUnnamedReason{"unnamedReason"};
     public:
 
         CReason();
@@ -44,12 +44,10 @@ class CReason : public Identifiable<CReason>
 
         void RelationAdd( PThing poThingFrom, PThing poThingTo );
 
-        void Dump();
-
-        std::string const & NameGet();
+        void print();
 
     protected:
-        std::string m_sName{ g_csNameUnnamedReason };
+        std::string m_sName{ s_csNameUnnamedReason };
         std::multimap<PThing, PThing> m_mRelations;
 
     }; // class CReason
