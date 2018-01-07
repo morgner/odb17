@@ -8,6 +8,5 @@
 
 namespace odb {
 
-long COdb::g_nJsonIndent{4};
 
 } // namespace odb

@@ -67,7 +67,13 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
 
     public:
         static constexpr auto g_csNameUnnamedAtom{"unnamedAtom"};
+        static           bool s_bDebug;
     public:
+
+        template <typename T, typename U>
+        struct decay_equiv :
+            std::is_same<typename std::decay<T>::type, U>::type {};
+
 
         template<typename T>
         CAtom(T tAtomData,
@@ -81,7 +87,30 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
               m_sSuffix(crsSuffix),
               m_sFormat(crsFormat)
             {
+// not bad
+            if ( CAtom::s_bDebug )
+                {
+                std::cout << "new atom for ";
+                if      ( decay_equiv<T, char>::value )                { std::cout << "char "; }
+                else if ( decay_equiv<T, short>::value )               { std::cout << "short "; }
+                else if ( decay_equiv<T, int>::value )                 { std::cout << "int "; }
+                else if ( decay_equiv<T, long>::value )                { std::cout << "long "; }
+                else if ( decay_equiv<T, unsigned>::value )            { std::cout << "unsigned "; }
+                else if ( decay_equiv<T, long long>::value )           { std::cout << "long_long "; }
+                else if ( decay_equiv<T, std::string>::value )         { std::cout << "std::string "; }
+                else if ( decay_equiv<T, float>::value )               { std::cout << "float "; }
+                else if ( decay_equiv<T, double>::value )              { std::cout << "double "; }
+
+                else if ( std::is_convertible<T, const char*>::value)  { std::cout << "const char*"; }
+                else if ( std::is_class<T>::value)                     { std::cout << "class"; }
+
+                else                                              { std::cout << "UNKNOWN TYPE"; }
+
+                std::cout << ": " << *this << " (" << tAtomData << ')' << "\tname: " << m_sName << '\n';
+                }
+
 /*
+// research
             std::cout << "new atom for ";
             if (std::is_integral<T>::value)                      std::cout << "integral";
             else if (std::is_floating_point<T>::value)           std::cout << "floating";

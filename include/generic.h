@@ -80,5 +80,45 @@ class Identifiable
     }; // class Identifiable
 
 
+/**
+ * zero cost indentation like: cout << spcr<3> << "indented line";
+ * indentation depth is N*g_cnIndent;
+ *
+ * @tparam T The amount of space units to assemble
+ */
+
+/// indentation depth factor
+auto const g_cnIndent{4};
+
+/// decollisioner to ensure OUR spaces run through OUR output
+template<typename T, std::size_t N>
+class CIndentWrapper : public std::array<T, N> {};
+
+/// the maker of spaces
+template<char C, std::size_t... I>
+constexpr auto make_char_array(std::index_sequence<I...>)
+    {
+    return CIndentWrapper<char, sizeof...(I)>{((void)I, C)...};
+    }
+
+/// our spaces
+template<std::size_t N>
+constexpr auto spcr = make_char_array<' '>(std::make_index_sequence<N * g_cnIndent>{});
+
+/// print our spaces
+template<typename T, std::size_t ...I>
+std::ostream & print_array(std::ostream & out, std::array<T, sizeof...(I)> const & arr, std::index_sequence<I...>)
+    {
+    return (out << ... << arr[I]);
+    }
+
+/// send our spaces to cout
+template<std::size_t N>
+std::ostream & operator<<(std::ostream & out, CIndentWrapper<char, N> const & arr)
+    {
+    return print_array(out, arr, std::make_index_sequence<N>{});
+    }
+
+
 // GENERIC_H
 #endif

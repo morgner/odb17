@@ -9,4 +9,6 @@
 
 namespace odb {
 
+bool CAtom::s_bDebug;
+
 } // namespace odb
