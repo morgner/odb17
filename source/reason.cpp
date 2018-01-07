@@ -8,14 +8,14 @@
 #include "thing.h"
 
 
-void print(odb::CReasons & container)
-  {
-  for (auto const & e:container)
+void print(odb::CReasons & crContainer)
     {
-    std::cout << e->type << " id: " << e->id << ' ' << '"' << *e << '"' << " (" << e.use_count() << ')' << '\n';
-    e->Dump();
+    for (auto const & e:crContainer)
+        {
+        std::cout << e->type << " id: " << e->id << ' ' << '"' << *e << '"' << " (" << e.use_count() << ')' << '\n';
+        e->Dump();
+        }
     }
-  }
 
 namespace odb {
 
@@ -53,7 +53,7 @@ void CReason::Dump()
     {
     for ( auto const & e:m_mRelations )
         {
-        std::cout << "  " << e.first->NameGet() << " => " << e.second->NameGet() << '\n';
+        std::cout << "  " << e.first->m_sName << " => " << e.second->m_sName << '\n';
         }
     }
 

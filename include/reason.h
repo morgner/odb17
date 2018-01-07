@@ -19,38 +19,40 @@ namespace odb {
 
 // using namespace std::string_literals;
 
+/// forward declarations to befriend with
 class COdb;
 
 /**
  * A Reason to link two Things (Unidirectional)
  */
 class CReason : public Identifiable<CReason>
-  {
-  friend COdb;
+    {
+    friend COdb;
 
-  public:
-    static constexpr auto g_csNameUnnamedReason{"unnamedReason"};
-  public:
-	  CReason();
-	  CReason(std::string const & crsName);
+    public:
+        static constexpr auto g_csNameUnnamedReason{"unnamedReason"};
+    public:
 
-	  std::string const & operator = (std::string const & sName);
+        CReason();
+        CReason(std::string const & crsName);
 
-      friend std::ostream & operator << (std::ostream & ros, CReason const & croReason);
+        std::string const & operator = (std::string const & sName);
 
-	  operator std::string const & ();
+        friend std::ostream & operator << (std::ostream & ros, CReason const & croReason);
 
-      void RelationAdd( PThing poThingFrom, PThing poThingTo );
+        operator std::string const & ();
 
-      void Dump();
+        void RelationAdd( PThing poThingFrom, PThing poThingTo );
 
-      std::string const & NameGet();
+        void Dump();
 
-  protected:
-    std::string m_sName{ g_csNameUnnamedReason };
-    std::multimap<PThing, PThing> m_mRelations;
+        std::string const & NameGet();
 
-  }; // class CReason
+    protected:
+        std::string m_sName{ g_csNameUnnamedReason };
+        std::multimap<PThing, PThing> m_mRelations;
+
+    }; // class CReason
 
 } // namespace odb
 

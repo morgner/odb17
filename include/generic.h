@@ -33,12 +33,12 @@ using CReasons = std::deque<PReason>;
  * @param type A std::type_info object holding a C++ type
  */
 inline auto demangle(std::type_info const & type)
-  {
-  auto status = 0;
-  auto name = std::unique_ptr<char, void (*)(void *)>(
-      abi::__cxa_demangle(type.name(), 0, 0, &status), std::free);
-  return std::string{ name.get() };
-  }
+    {
+    auto status = 0;
+    auto name = std::unique_ptr<char, void (*)(void *)>(
+        abi::__cxa_demangle(type.name(), 0, 0, &status), std::free);
+    return std::string{ name.get() };
+    }
 
 /**
  * Generate IDs
@@ -48,10 +48,10 @@ inline auto demangle(std::type_info const & type)
  */
 template<typename T, unsigned long long S = 0>
 static auto idForObjectOf()
-  {
-  static auto id = S;
-  return id++;
-  }
+    {
+    static auto id = S;
+    return id++;
+    }
 
 /**
  * A baseclass for identifiable objects
@@ -60,24 +60,24 @@ static auto idForObjectOf()
  */
 template<typename T>
 class Identifiable
-  {
-  public:
-    /**
-     * The 'per-type' object ID
-     */
-    unsigned long long const id
-      {
-      idForObjectOf<T>()
-      };
+    {
+    public:
+        /**
+         * The 'per-type' object ID
+         */
+        unsigned long long const id
+            {
+            idForObjectOf<T>()
+            };
 
-    /**
-     * The name of the actual type
-     */
-    std::string const type
-      {
-      demangle(typeid(T))
-      };
-  };
+        /**
+         * The name of the actual type
+         */
+        std::string const type
+            {
+            demangle(typeid(T))
+            };
+    }; // class Identifiable
 
 
 // GENERIC_H

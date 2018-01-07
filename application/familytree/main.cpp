@@ -122,17 +122,17 @@ int main()
   atoms.push_back( d2->Append( g_oOdb.MakeAtom("Thinking allowed"s, "Podcast"s) ) );
 
   atoms.push_back( g_oOdb.MakeAtom("---------"s, "Line"s) );
-/*
+
   print(atoms);
   print(things);
   print(reasons);
-*/
-/*
+
+
   std::cout << "----------------" << '\n';
   std::cout << *d1 << '\n';
   std::cout << "----------------" << '\n';
-  g_oOdb.Dump();
-*/
+  g_oOdb.print();
+  std::cout << "----------------" << '\n';
   g_oOdb.print_json(0, std::cout);
   }
 
