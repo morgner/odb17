@@ -25,10 +25,6 @@ std::ostream & operator << (std::ostream & ros, CReason const & croReason)
     return ros;
     }
 
-CReason::CReason()
-    {
-    }
-
 CReason::CReason(std::string const & crsName)
 : m_sName(crsName.length() ? crsName : s_csNameUnnamedReason )
     {

@@ -108,7 +108,6 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
 
                 std::cout << ": " << *this << " (" << tAtomData << ')' << "\tname: " << m_sName << '\n';
                 }
-
 /*
 // research
             std::cout << "new atom for ";
@@ -123,6 +122,8 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
             std::cout << ": " << *this << " (" << tAtomData << ')' << "\tname: " << m_sName << '\n';
 */
             }
+
+    virtual ~CAtom() = default;
 
     friend void print(CAtoms & crContainer)
 //void print(odb::CAtoms & crContainer)

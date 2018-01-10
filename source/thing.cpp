@@ -46,10 +46,6 @@ CThing::CThing(std::string const & crsName)
     {
     }
 
-CThing::~CThing()
-    {
-    };
-
 PAtom CThing::Append (PAtom poAtom)
     {
     m_qpoAtoms.push_back(poAtom);

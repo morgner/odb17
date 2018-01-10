@@ -28,17 +28,10 @@ namespace odb {
 class COdb : public Identifiable<COdb>
     {
     public:
-                 COdb(){};
-        virtual ~COdb(){};
-                 COdb(COdb const & src)
-                   {
-                   *this = src;
-                   }
-
-                 COdb & operator = (COdb const & src)
-                   {
-                   // todo: Implement DB copying or prevent it
-                   }
+                COdb() = default;
+       virtual ~COdb() = default;
+                COdb(COdb const & src) = delete;
+                COdb & operator = (COdb const & src) = delete;
 
 	    auto MakeThing(std::string const & crsName = ""s)
             {

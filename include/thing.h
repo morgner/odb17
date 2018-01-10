@@ -42,7 +42,13 @@ class CThing : public std::enable_shared_from_this<CThing>,
 	             CThing();
                  CThing(std::string const & crsName);
 	             CThing(CThing const &) = default;
-        virtual ~CThing();
+//        virtual ~CThing() = default;
+               ~CThing()
+                    {
+                    m_qpoAtoms.clear();
+                    m_mLink.clear();
+                    m_spoThingsRelating.clear();
+                    }
 
         friend std::ostream & operator << (std::ostream & ros, CThing const & crThing);
 
@@ -57,14 +63,14 @@ class CThing : public std::enable_shared_from_this<CThing>,
             CAtoms                                   m_qpoAtoms;
             std::unordered_multimap<PThing, PReason> m_mLink;
 
-        /// We need a set to get only one backreference from CThings
-        /// even if there are multiple incoming links
-        struct lessPThing
-            {
-            bool operator()(PThing const p1, PThing const p2) const
-                { return p1->id < p2->id; }
-            };
-        std::set<PThing, lessPThing>             m_spoThingsRelating;
+            /// We need a set to get only one backreference from CThings
+            /// even if there are multiple incoming links
+            struct lessPThing
+                {
+                bool operator()(PThing const p1, PThing const p2) const
+                    { return p1->id < p2->id; }
+                };
+            std::set<PThing, lessPThing>             m_spoThingsRelating;
 
     }; // class CThing
 

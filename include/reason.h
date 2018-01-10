@@ -33,8 +33,9 @@ class CReason : public Identifiable<CReason>
         static constexpr auto s_csNameUnnamedReason{"unnamedReason"};
     public:
 
-        CReason();
-        CReason(std::string const & crsName);
+                CReason() = default;
+                CReason(std::string const & crsName);
+        virtual ~CReason() = default;
 
         std::string const & operator = (std::string const & sName);
 

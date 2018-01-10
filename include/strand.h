@@ -30,8 +30,9 @@ class CStrand : public Identifiable<CStrand>
         static constexpr auto s_csNameUnnamedStrand{"unnamedStrand"};
     public:
 
-        CStrand();
-        CStrand(std::string const & crsName);
+                CStrand() = default;
+                CStrand(std::string const & crsName);
+        virtual ~CStrand() = default;
 
         PAtom Append(PAtom poAtom)
             {

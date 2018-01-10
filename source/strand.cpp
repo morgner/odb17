@@ -26,10 +26,6 @@ std::ostream & operator << (std::ostream & ros, CStrand const & croStrand)
     return ros;
     }
 
-CStrand::CStrand()
-    {
-    }
-
 CStrand::CStrand(std::string const & crsName)
 : m_sName(crsName.length() ? crsName : s_csNameUnnamedStrand )
     {
