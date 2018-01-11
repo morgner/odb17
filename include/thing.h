@@ -39,16 +39,10 @@ class CThing : public std::enable_shared_from_this<CThing>,
     public:
         static constexpr auto g_csNameUnnamedThing{"unnamedThing"};
     public:
-	             CThing();
+                 CThing() = delete;
                  CThing(std::string const & crsName);
-	             CThing(CThing const &) = default;
-//        virtual ~CThing() = default;
-               ~CThing()
-                    {
-                    m_qpoAtoms.clear();
-                    m_mLink.clear();
-                    m_spoThingsRelating.clear();
-                    }
+                 CThing(CThing const &) = default;
+        virtual ~CThing() = default;
 
         friend std::ostream & operator << (std::ostream & ros, CThing const & crThing);
 
@@ -64,7 +58,7 @@ class CThing : public std::enable_shared_from_this<CThing>,
             std::unordered_multimap<PThing, PReason> m_mLink;
 
             /// We need a set to get only one backreference from CThings
-            /// even if there are multiple incoming links
+            /// even if there are multiple incoming links from the same thing
             struct lessPThing
                 {
                 bool operator()(PThing const p1, PThing const p2) const

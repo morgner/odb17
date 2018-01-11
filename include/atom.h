@@ -104,7 +104,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
                 else if ( std::is_convertible<T, const char*>::value)  { std::cout << "const char*"; }
                 else if ( std::is_class<T>::value)                     { std::cout << "class"; }
 
-                else                                              { std::cout << "UNKNOWN TYPE"; }
+                else                                                   { std::cout << "UNKNOWN TYPE"; }
 
                 std::cout << ": " << *this << " (" << tAtomData << ')' << "\tname: " << m_sName << '\n';
                 }

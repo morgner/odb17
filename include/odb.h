@@ -28,16 +28,16 @@ namespace odb {
 class COdb : public Identifiable<COdb>
     {
     public:
-                COdb() = default;
-       virtual ~COdb() = default;
-                COdb(COdb const & src) = delete;
-                COdb & operator = (COdb const & src) = delete;
+                 COdb() = default;
+        virtual ~COdb() = default;
+                 COdb(COdb const & src) = delete;
+                 COdb & operator = (COdb const & src) = delete;
 
 	    auto MakeThing(std::string const & crsName = ""s)
             {
-            auto p = std::make_shared<odb::CThing>(crsName);
+            auto p = std::make_shared<CThing>(crsName);
             m_oThings.push_back( p );
-            return p;
+            return std::move( p );
             }
 
         template<typename T>
@@ -48,23 +48,23 @@ class COdb : public Identifiable<COdb>
             std::string const & crsSuffix = ""s,
             std::string const & crsFormat = ""s)
             {
-            auto p = std::make_shared<odb::CAtom>(data, crsName, crsPrefix, crsSuffix, crsFormat);
+            auto p = std::make_shared<CAtom>(data, crsName, crsPrefix, crsSuffix, crsFormat);
             m_oAtoms.push_back( p );
-            return p;
+            return std::move( p );
             }
 
         auto MakeReason(std::string const & crsName = ""s)
             {
-            auto p = std::make_shared<odb::CReason>(crsName);
+            auto p = std::make_shared<CReason>(crsName);
             m_oReasons.push_back( p );
-            return p;
+            return std::move( p );
             }
 
         auto MakeStrand(std::string const & crsName = ""s)
             {
-            auto p = std::make_shared<odb::CStrand>(crsName);
+            auto p = std::make_shared<CStrand>(crsName);
             m_oStrands.push_back( p );
-            return p;
+            return std::move( p );
             }
 
 	    void print()
@@ -78,7 +78,10 @@ class COdb : public Identifiable<COdb>
             {
             for (auto && e : crContainer)
                 {
-                std::cout << e->type << '\t' << " id: " << e->id << '\t' << " name: " << e->m_sName << '\t' << " data: " << *e << '\n';
+                std::cout << e->type << '\t' << " id: " << e->id << '\t'
+                          << " name: " << e->m_sName << '\t'
+                          << '(' << e.use_count() << ')' << '\t'
+                          << " data: " << *e << '\n';
                 }
             } // void print(CAtoms const & crContainer)
 
@@ -87,7 +90,9 @@ class COdb : public Identifiable<COdb>
             {
             for (auto const & e:crContainer)
                 {
-                std::cout << e->type << '\t' << " id: " << e->id << '\t' << " name: " << e->m_sName << '\n';
+                std::cout << e->type << '\t' << " id: " << e->id << '\t'
+                          << " name: " << e->m_sName << '\t'
+                          << '(' << e.use_count() << ')' << '\n';
                 }
             } // void print(std::deque<T> const & crContainer)
 

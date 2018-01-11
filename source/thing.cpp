@@ -37,12 +37,8 @@ std::ostream & operator << (std::ostream & ros, CThing const & crThing)
     }
 
 
-CThing::CThing()
-    {
-    }
-
 CThing::CThing(std::string const & crsName)
-: m_sName(crsName.length() ? crsName : g_csNameUnnamedThing)
+    : m_sName(crsName.length() ? crsName : g_csNameUnnamedThing)
     {
     }
 
@@ -50,7 +46,7 @@ PAtom CThing::Append (PAtom poAtom)
     {
     m_qpoAtoms.push_back(poAtom);
     poAtom->RelatingThingAdd( shared_from_this() );
-    return poAtom;
+    return std::move( poAtom );
     }
 
 PThing CThing::Link(PThing po2Thing, PReason po4Reason)
@@ -58,13 +54,13 @@ PThing CThing::Link(PThing po2Thing, PReason po4Reason)
     m_mLink.emplace(po2Thing, po4Reason);
     po2Thing->RelatingThingAdd( shared_from_this() );
     po4Reason->RelationAdd( shared_from_this(), po2Thing );
-    return po2Thing;
+    return std::move( po2Thing );
     }
 
 PThing CThing::RelatingThingAdd(PThing poThing)
     {
     m_spoThingsRelating.insert(poThing);
-    return poThing;
+    return std::move( poThing );
     }
 
 } // namespace odb

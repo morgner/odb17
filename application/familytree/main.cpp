@@ -37,7 +37,7 @@ using namespace std::string_literals;
  */
 int main()
     {
-    odb::CAtom::s_bDebug = true;
+    odb::CAtom::s_bDebug = false;
 
     std::string const   cs("constness"s);
     std::string         ns("non-constness"s);
@@ -46,18 +46,25 @@ int main()
     std::array<char, 7> w{'a','b','c'};
 
 
-    odb::PThing d1 = g_oOdb.MakeThing("Wundertüte"s);
-    odb::PThing d2 = g_oOdb.MakeThing();
-    odb::PThing d3 = g_oOdb.MakeThing("No Product"s);
-    odb::PThing d4 = g_oOdb.MakeThing("Thoughtless bucket"s);
-    odb::PThing d5 = g_oOdb.MakeThing("Terry Pratchett"s);
-    odb::PThing d6 = g_oOdb.MakeThing("'Good Omens'"s);
-    odb::PThing d7 = g_oOdb.MakeThing("Neil Gaiman"s);
+    auto d1 = g_oOdb.MakeThing("Wundertüte"s);
+    auto d2 = g_oOdb.MakeThing();
+    auto d3 = g_oOdb.MakeThing("No Product"s);
+    auto d4 = g_oOdb.MakeThing("Thoughtless bucket"s);
+    auto d5 = g_oOdb.MakeThing("Terry Pratchett"s);
+    auto d6 = g_oOdb.MakeThing("'Good Omens'"s);
+    auto d7 = g_oOdb.MakeThing("Neil Gaiman"s);
 
-    odb::PReason r1 = g_oOdb.MakeReason("made"s);
-    odb::PReason r2 = g_oOdb.MakeReason("delivers"s);
-    odb::PReason r3 = g_oOdb.MakeReason("owns"s);
-    odb::PReason r4 = g_oOdb.MakeReason("wrote"s);
+    auto r1 = g_oOdb.MakeReason("made"s);
+    auto r2 = g_oOdb.MakeReason("delivers"s);
+    auto r3 = g_oOdb.MakeReason("owns"s);
+    auto r4 = g_oOdb.MakeReason("wrote"s);
+
+    auto made     = g_oOdb.MakeReason("made"s);
+    auto delivers = g_oOdb.MakeReason("delivers"s);
+    auto owns     = g_oOdb.MakeReason("owns"s);
+    auto wrote    = g_oOdb.MakeReason("wrote"s);
+
+//  Link(terry, wrote, good_omnes);
 
     d1->Link(d3, r2);
     d1->Link(d3, r3);
@@ -65,30 +72,30 @@ int main()
     d5->Link(d6, r4);
     d7->Link(d6, r4);
 
-    odb::PAtom a1 = d3->Append( g_oOdb.MakeAtom(100.2, "round", "", "%") );
-    odb::PAtom a2 = d3->Append( g_oOdb.MakeAtom(0.9, "size", "V", "dl") );
-    odb::PAtom a3 = d3->Append( g_oOdb.MakeAtom(1.2) );
-    odb::PAtom a4 = d3->Append( g_oOdb.MakeAtom(std::vector<int>{3, 2, 1}, "vector"));
-    odb::PAtom a5 = g_oOdb.MakeAtom(std::array <int, 3>{3, 2, 1}, "array");
-    odb::PAtom a6 = g_oOdb.MakeAtom(cs, "const string"s);
-    odb::PAtom a7 = g_oOdb.MakeAtom(ns, "non-const string");
+    auto a1 = d3->Append( g_oOdb.MakeAtom(100.2, "round", "", "%") );
+    auto a2 = d3->Append( g_oOdb.MakeAtom(0.9, "size", "V", "dl") );
+    auto a3 = d3->Append( g_oOdb.MakeAtom(1.2) );
+    auto a4 = d3->Append( g_oOdb.MakeAtom(std::vector<int>{3, 2, 1}, "vector"));
 
-    odb::PAtom a8 = d4->Append( g_oOdb.MakeAtom(v, "vector of 3 int") );
-    odb::PAtom a9 = d4->Append( g_oOdb.MakeAtom(w, "array of 3 char") );
+    auto a5 = g_oOdb.MakeAtom(std::array <int, 3>{3, 2, 1}, "array");
+    auto a6 = g_oOdb.MakeAtom(cs, "const string"s);
+    auto a7 = g_oOdb.MakeAtom(ns, "non-const string");
+    auto a8 = d4->Append( g_oOdb.MakeAtom(v, "vector of 3 int") );
+    auto a9 = d4->Append( g_oOdb.MakeAtom(w, "array of 3 char") );
 
-    odb::PAtom a10 = g_oOdb.MakeAtom(3, "Three");
-    odb::PAtom a11 = g_oOdb.MakeAtom(2, "Two");
-    odb::PAtom a12 = g_oOdb.MakeAtom(1, "One");
+    auto a10 = g_oOdb.MakeAtom(3, "Three");
+    auto a11 = g_oOdb.MakeAtom(2, "Two");
+    auto a12 = g_oOdb.MakeAtom(1, "One");
 
-    odb::PAtom a13 = g_oOdb.MakeAtom(std::string(8, '-'), "Line"s);
+    auto a13 = g_oOdb.MakeAtom(std::string(8, '-'), "Line"s);
 
-    d1->Append( g_oOdb.MakeAtom('H', "Letter"s) );
-    d1->Append( g_oOdb.MakeAtom('e', "Letter"s) );
-    d1->Append( g_oOdb.MakeAtom('l', "Letter"s) );
-    d1->Append( g_oOdb.MakeAtom('o', "Letter"s) );
+    auto a14 = d1->Append( g_oOdb.MakeAtom('H', "Letter"s) );
+    auto a15 = d1->Append( g_oOdb.MakeAtom('e', "Letter"s) );
+    auto a16 = d1->Append( g_oOdb.MakeAtom('l', "Letter"s) );
+    auto a17 = d1->Append( g_oOdb.MakeAtom('o', "Letter"s) );
 
-    d2->Append( g_oOdb.MakeAtom("Quirks & Quarks", "Radio Cast"s) );
-    d2->Append( g_oOdb.MakeAtom("Thinking allowed"s, "Podcast"s) );
+    auto a18 = d2->Append( g_oOdb.MakeAtom("Quirks & Quarks", "Radio Cast"s) );
+    auto a19 = d2->Append( g_oOdb.MakeAtom("Thinking allowed"s, "Podcast"s) );
 
     g_oOdb.MakeAtom("---------"s, "Line"s);
 
