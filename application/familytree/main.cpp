@@ -54,21 +54,30 @@ int main()
     auto d7 = g_oOdb.MakeThing("Neil Gaiman"s);
     auto d8 = g_oOdb.MakeThing("'The Colour of Magic'"s);
     auto d9 = g_oOdb.MakeThing("'The Ligth Fantastic'"s);
-    auto da = g_oOdb.MakeThing("'The Time Theif'"s);
+    auto da = g_oOdb.MakeThing("'The Thief of Time'"s);
 
     auto r1 = g_oOdb.MakeReason("made"s);
     auto r2 = g_oOdb.MakeReason("delivers"s);
     auto r3 = g_oOdb.MakeReason("owns"s);
     auto r4 = g_oOdb.MakeReason("wrote"s);
+    auto r5 = g_oOdb.MakeReason("read"s);
 
     Link(d1, r2, d3);
     Link(d1, r3, d3);
     d4->Link(d1, r1);
+    d5->Link(d6, r1);
+    d5->Link(d6, r2);
     d5->Link(d6, r4);
+    d5->Link(d6, r5);
     d5->Link(d8, r4);
     d5->Link(d9, r4);
     d5->Link(da, r4);
     d7->Link(d6, r4);
+
+    d5->Unlink( d6, r4);
+    d4->Unlink( d1, r1);
+    d4->Unlink( d1, r1);
+    d5->Unlink( d9, r1);
 
     auto a1 { g_oOdb.MakeAtom(100.2, "round", "", "%") }; d3->Append( a1 );
     auto a2 = g_oOdb.MakeAtom(0.9, "size", "V", "dl");    Append( d3, a2 );
@@ -98,7 +107,6 @@ int main()
 //    auto a19 = d2->Append( g_oOdb.MakeAtom("Thinking allowed"s, "Podcast"s) );
 
     g_oOdb.MakeAtom("--------"s, "Line"s);
-
 
 
     if ( !odb::CAtom::s_bDebug )

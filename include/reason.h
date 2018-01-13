@@ -45,6 +45,8 @@ class CReason : public Identifiable<CReason>
 
         void RelationAdd( PThing & poThingFrom, PThing & poThingTo );
 
+        void RelationDel( PThing & poThingFrom, PThing & poThingTo );
+
         void print();
 
     protected:

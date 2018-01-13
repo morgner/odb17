@@ -45,6 +45,19 @@ void CReason::RelationAdd( PThing & poThingFrom, PThing & poThingTo )
     m_mRelations.insert( std::pair<PThing, PThing>( poThingFrom, poThingTo ) );
     }
 
+void CReason::RelationDel( PThing & poThingFrom, PThing & poThingTo )
+    {
+    for ( auto it = m_mRelations.find(poThingFrom); it != m_mRelations.end(); ++it )
+        {
+        if ( it->first  != poThingFrom ) break;
+        if ( it->second == poThingTo )
+            {
+            m_mRelations.erase( it );
+            break;
+            }
+        }
+    }
+
 void CReason::print()
     {
     for ( auto const & e:m_mRelations )

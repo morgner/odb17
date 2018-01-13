@@ -108,15 +108,37 @@ PThing & Link(PThing & poThing, PReason & po4Reason, PThing & po2Thing)
 PThing & CThing::Unlink(PThing & po2Thing, PReason & po4Reason)
     {
     /// todo: implementation
-//    m_mLink.clear();
-//    po2Thing->RelatingThingAdd( shared_from_this() );
-//    po4Reason->RelationAdd( shared_from_this(), po2Thing );
+//    std::cout << " 1 QUERY -- " << m_mLink.count(po2Thing) << ' ' << this->m_sName << ", " << *po4Reason << ", " << po2Thing->m_sName << '\n';
+    auto me = shared_from_this();
+    for (auto it = m_mLink.find( po2Thing ); it != m_mLink.end(); ++it )
+        {
+//        std::cout << " 2 FOUND -- " << this->m_sName << ", " << *it->second << ", " << it->first->m_sName << '\n';
+        if ( it->first  != po2Thing ) break;
+        if ( it->second == po4Reason )
+            {
+//            std::cout << " 3 MATCH -- " << this->m_sName << ", " << *it->second << ", " << it->first->m_sName << '\n';
+            if ( 1 == m_mLink.count(po2Thing) )
+                {
+//                std::cout << " 4 ERASE -- " << this->m_sName << ", " << *it->second << ", " << it->first->m_sName << '\n';
+                po2Thing->RelatingThingDel( me );
+                }
+            po4Reason->RelationDel( me, po2Thing );
+            m_mLink.erase(it);
+            break;
+            }
+        }
     return po2Thing;
     }
 
 PThing & CThing::RelatingThingAdd(PThing & poThing)
     {
     m_spoThingsRelating.insert(poThing);
+    return poThing;
+    }
+
+PThing & CThing::RelatingThingDel(PThing & poThing)
+    {
+    m_spoThingsRelating.erase(poThing);
     return poThing;
     }
 
