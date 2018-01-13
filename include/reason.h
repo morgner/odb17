@@ -13,7 +13,7 @@
 #include "generic.h"
 
 
-void print(odb::CReasons & container);
+void print(odb::CReasons const & crContainer);
 
 namespace odb {
 
@@ -43,7 +43,7 @@ class CReason : public Identifiable<CReason>
 
         operator std::string const & ();
 
-        void RelationAdd( PThing poThingFrom, PThing poThingTo );
+        void RelationAdd( PThing & poThingFrom, PThing & poThingTo );
 
         void print();
 

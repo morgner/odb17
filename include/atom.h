@@ -125,7 +125,12 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
 
     virtual ~CAtom() = default;
 
-    friend void print(CAtoms & crContainer)
+    void clear()
+        {
+        m_spoThingsRelating.clear();
+        }
+
+    friend void print(CAtoms const & crContainer)
 //void print(odb::CAtoms & crContainer)
     {
     for (auto const & e:crContainer)
@@ -174,8 +179,14 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
 
     auto RelatingThingAdd(PThing poThing)
         {
-        m_qpoThingsRelating.push_back(poThing);
+//        m_qpoThingsRelating.push_back(poThing);
+        m_spoThingsRelating.insert(poThing);
         return poThing;
+        }
+
+    auto RelatingThingRemove(PThing poThing)
+        {
+        return m_spoThingsRelating.erase(poThing);
         }
 
     /// todo: decide which way:
@@ -186,7 +197,11 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
         std::string m_sPrefix{""s};
         std::string m_sSuffix{""s};
 
-    CThings m_qpoThingsRelating;
+        struct lessPThing
+            {
+            bool operator()(PThing const &, PThing const & ) const;
+            };
+        std::set<PThing, lessPThing> m_spoThingsRelating;
 
     /// start of data implementation --------------------------
     struct SAtomDataConcept
@@ -223,4 +238,3 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
 
 // CATOM_H
 #endif
-

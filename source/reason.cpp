@@ -8,7 +8,7 @@
 #include "thing.h"
 
 
-void print(odb::CReasons & crContainer)
+void print(odb::CReasons const & crContainer)
     {
     for (auto const & e:crContainer)
         {
@@ -40,7 +40,7 @@ CReason::operator std::string const & ()
     return m_sName;
     }
 
-void CReason::RelationAdd( PThing poThingFrom, PThing poThingTo )
+void CReason::RelationAdd( PThing & poThingFrom, PThing & poThingTo )
     {
     m_mRelations.insert( std::pair<PThing, PThing>( poThingFrom, poThingTo ) );
     }

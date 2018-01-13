@@ -29,9 +29,14 @@ class COdb : public Identifiable<COdb>
     {
     public:
                  COdb() = default;
-        virtual ~COdb() = default;
                  COdb(COdb const & src) = delete;
                  COdb & operator = (COdb const & src) = delete;
+        virtual ~COdb()
+                    {
+                    clear();
+                    }
+
+        void clear();
 
 	    auto MakeThing(std::string const & crsName = ""s)
             {
@@ -195,11 +200,15 @@ class COdb : public Identifiable<COdb>
             ros << spcr<0> << '}' << '\n';
           }
 
+        CThings  const & Things () const { return m_oThings;  }
+        CAtoms   const & Atoms  () const { return m_oAtoms;   }
+        CReasons const & Reasons() const { return m_oReasons; }
+        CStrands const & Strands() const { return m_oStrands; }
     protected:
-      CThings  m_oThings;
-      CAtoms   m_oAtoms;
-      CReasons m_oReasons;
-      CStrands m_oStrands;
+        CThings  m_oThings;
+        CAtoms   m_oAtoms;
+        CReasons m_oReasons;
+        CStrands m_oStrands;
 
     }; // class COdb
 

@@ -34,7 +34,7 @@ using namespace std::string_literals;
 
 /**
  * Demo main program
- */
+a */
 int main()
     {
     odb::CAtom::s_bDebug = false;
@@ -45,7 +45,6 @@ int main()
     std::vector<int>    v{1, 2, 3};
     std::array<char, 7> w{'a','b','c'};
 
-
     auto d1 = g_oOdb.MakeThing("Wundertüte"s);
     auto d2 = g_oOdb.MakeThing();
     auto d3 = g_oOdb.MakeThing("No Product"s);
@@ -53,35 +52,35 @@ int main()
     auto d5 = g_oOdb.MakeThing("Terry Pratchett"s);
     auto d6 = g_oOdb.MakeThing("'Good Omens'"s);
     auto d7 = g_oOdb.MakeThing("Neil Gaiman"s);
+    auto d8 = g_oOdb.MakeThing("'The Colour of Magic'"s);
+    auto d9 = g_oOdb.MakeThing("'The Ligth Fantastic'"s);
+    auto da = g_oOdb.MakeThing("'The Time Theif'"s);
 
     auto r1 = g_oOdb.MakeReason("made"s);
     auto r2 = g_oOdb.MakeReason("delivers"s);
     auto r3 = g_oOdb.MakeReason("owns"s);
     auto r4 = g_oOdb.MakeReason("wrote"s);
 
-    auto made     = g_oOdb.MakeReason("made"s);
-    auto delivers = g_oOdb.MakeReason("delivers"s);
-    auto owns     = g_oOdb.MakeReason("owns"s);
-    auto wrote    = g_oOdb.MakeReason("wrote"s);
-
-//  Link(terry, wrote, good_omnes);
-
-    d1->Link(d3, r2);
-    d1->Link(d3, r3);
+    Link(d1, r2, d3);
+    Link(d1, r3, d3);
     d4->Link(d1, r1);
     d5->Link(d6, r4);
+    d5->Link(d8, r4);
+    d5->Link(d9, r4);
+    d5->Link(da, r4);
     d7->Link(d6, r4);
 
-    auto a1 = d3->Append( g_oOdb.MakeAtom(100.2, "round", "", "%") );
-    auto a2 = d3->Append( g_oOdb.MakeAtom(0.9, "size", "V", "dl") );
-    auto a3 = d3->Append( g_oOdb.MakeAtom(1.2) );
-    auto a4 = d3->Append( g_oOdb.MakeAtom(std::vector<int>{3, 2, 1}, "vector"));
+    auto a1 { g_oOdb.MakeAtom(100.2, "round", "", "%") }; d3->Append( a1 );
+    auto a2 = g_oOdb.MakeAtom(0.9, "size", "V", "dl");    Append( d3, a2 );
+    auto a3 = g_oOdb.MakeAtom(1.2); d3->Append( a3 );
+    auto a4 = g_oOdb.MakeAtom(std::vector<int>{3, 2, 1}, "vector"); d3->Append( a4 );
 
     auto a5 = g_oOdb.MakeAtom(std::array <int, 3>{3, 2, 1}, "array");
     auto a6 = g_oOdb.MakeAtom(cs, "const string"s);
     auto a7 = g_oOdb.MakeAtom(ns, "non-const string");
-    auto a8 = d4->Append( g_oOdb.MakeAtom(v, "vector of 3 int") );
-    auto a9 = d4->Append( g_oOdb.MakeAtom(w, "array of 3 char") );
+
+    auto a8 = g_oOdb.MakeAtom(v, "vector of 3 int"); d4->Append( a8 );
+    auto a9 = g_oOdb.MakeAtom(w, "array of 3 char"); d4->Append( a9 );
 
     auto a10 = g_oOdb.MakeAtom(3, "Three");
     auto a11 = g_oOdb.MakeAtom(2, "Two");
@@ -89,33 +88,41 @@ int main()
 
     auto a13 = g_oOdb.MakeAtom(std::string(8, '-'), "Line"s);
 
-    auto a14 = d1->Append( g_oOdb.MakeAtom('H', "Letter"s) );
-    auto a15 = d1->Append( g_oOdb.MakeAtom('e', "Letter"s) );
-    auto a16 = d1->Append( g_oOdb.MakeAtom('l', "Letter"s) );
-    auto a17 = d1->Append( g_oOdb.MakeAtom('o', "Letter"s) );
+    auto a14 = g_oOdb.MakeAtom('H', "Letter"s); d1->Append( a14 );
+    auto a15 = g_oOdb.MakeAtom('e', "Letter"s); d1->Append( a15 );
 
-    auto a18 = d2->Append( g_oOdb.MakeAtom("Quirks & Quarks", "Radio Cast"s) );
-    auto a19 = d2->Append( g_oOdb.MakeAtom("Thinking allowed"s, "Podcast"s) );
+    auto a18 = g_oOdb.MakeAtom("Quirks & Quarks", "Radio Cast"s); d2->Append( a18 );
+    auto a19 = g_oOdb.MakeAtom("Thinking allowed"s,  "Podcast"s); d2->Append( a19 );
 
-    g_oOdb.MakeAtom("---------"s, "Line"s);
+//    auto a18 = d2->Append( g_oOdb.MakeAtom("Quirks & Quarks", "Radio Cast"s) );
+//    auto a19 = d2->Append( g_oOdb.MakeAtom("Thinking allowed"s, "Podcast"s) );
 
-/*
-    print(atoms);
-    print(things);
-    print(reasons);
-*/
+    g_oOdb.MakeAtom("--------"s, "Line"s);
+
+
 
     if ( !odb::CAtom::s_bDebug )
         {
-        std::cout << "---------------- atom" << '\n';
-        std::cout << *a1 << '\n';
-        std::cout << "---------------- thing" << '\n';
-        std::cout << *d1 << '\n';
-        std::cout << "----------------reason" << '\n';
-        std::cout << *r1 << '\n';
+        std::cout << "---------------- all atoms" << '\n';
+        for ( auto const & a:g_oOdb.Atoms() )
+            {
+            std::cout << *a << '\n';
+            }
+        std::cout << "---------------- all things" << '\n';
+        for ( auto const & a:g_oOdb.Things() )
+            {
+            std::cout << *a << '\n';
+            }
+        std::cout << "---------------- all reasons" << '\n';
+        for ( auto const & a:g_oOdb.Reasons() )
+            {
+            std::cout << *a << '\n';
+            }
         std::cout << "---------------- odb plain" << '\n';
         g_oOdb.print();
         std::cout << "---------------- odb JSON" << '\n';
         g_oOdb.print_json(std::cout);
-        }
-  }
+        std::cout << "---------------- odb End" << '\n';
+        } // if ( !odb::CAtom::s_bDebug )
+
+    } // int main()

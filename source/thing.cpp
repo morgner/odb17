@@ -13,6 +13,18 @@
 
 namespace odb {
 
+
+void CThing::clear()
+    {
+    for ( auto & a:m_qpoAtoms )
+        {
+        a->clear();
+        }
+    m_qpoAtoms.clear();
+    m_mLink.clear();
+    }
+
+
 std::ostream & operator << (std::ostream & ros, CThing const & crThing)
     {
     ros << crThing.m_sName; // << '\n';
@@ -42,25 +54,70 @@ CThing::CThing(std::string const & crsName)
     {
     }
 
-PAtom CThing::Append (PAtom poAtom)
+PAtom & CThing::Append (PAtom & poAtom)
     {
+//    std::cout << "Append: '" << *poAtom << "' to '" << *this << "', (" << poAtom.use_count();
     m_qpoAtoms.push_back(poAtom);
     poAtom->RelatingThingAdd( shared_from_this() );
-    return std::move( poAtom );
+//    std::cout << ") => (" << poAtom.use_count() << ")\n";
+    return poAtom;
     }
 
-PThing CThing::Link(PThing po2Thing, PReason po4Reason)
+/// friend
+PAtom & Append (PThing & poThing, PAtom & poAtom)
     {
-    m_mLink.emplace(po2Thing, po4Reason);
-    po2Thing->RelatingThingAdd( shared_from_this() );
-    po4Reason->RelationAdd( shared_from_this(), po2Thing );
-    return std::move( po2Thing );
+//    std::cout << "Append: '" << *poAtom << "' to '" << *poThing << "', (" << poAtom.use_count();
+    poThing->m_qpoAtoms.push_back(poAtom);
+    poAtom->RelatingThingAdd( poThing );
+//    std::cout << ") => (" << poAtom.use_count() << ")\n";
+    return poAtom;
     }
 
-PThing CThing::RelatingThingAdd(PThing poThing)
+PThing & CThing::Link(PThing & po2Thing, PReason & po4Reason)
+    {
+    auto me = shared_from_this();
+    if ( me != po2Thing )
+        {
+        m_mLink.emplace(po2Thing, po4Reason);
+        po2Thing->RelatingThingAdd( me );
+        po4Reason->RelationAdd( me, po2Thing );
+        }
+    else
+        {
+        std::cerr << "Thing-LOOP, ignored: " << *this << '\n';
+        }
+    return po2Thing;
+    }
+
+/// friend
+PThing & Link(PThing & poThing, PReason & po4Reason, PThing & po2Thing)
+    {
+    if ( poThing != po2Thing )
+        {
+        poThing->m_mLink.emplace(po2Thing, po4Reason);
+        po2Thing->RelatingThingAdd( poThing );
+        po4Reason->RelationAdd( poThing, po2Thing );
+        }
+    else
+        {
+        std::cerr << "Thing-LOOP, ignored: " << *poThing << '\n';
+        }
+    return po2Thing;
+    }
+
+PThing & CThing::Unlink(PThing & po2Thing, PReason & po4Reason)
+    {
+    /// todo: implementation
+//    m_mLink.clear();
+//    po2Thing->RelatingThingAdd( shared_from_this() );
+//    po4Reason->RelationAdd( shared_from_this(), po2Thing );
+    return po2Thing;
+    }
+
+PThing & CThing::RelatingThingAdd(PThing & poThing)
     {
     m_spoThingsRelating.insert(poThing);
-    return std::move( poThing );
+    return poThing;
     }
 
 } // namespace odb

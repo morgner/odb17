@@ -11,7 +11,7 @@
 #include <ostream>
 #include <string>
 #include <memory>
-#include <unordered_map>
+#include <map>
 #include <set>
 #include <functional>
 
@@ -44,27 +44,35 @@ class CThing : public std::enable_shared_from_this<CThing>,
                  CThing(CThing const &) = default;
         virtual ~CThing() = default;
 
+        void clear();
+
         friend std::ostream & operator << (std::ostream & ros, CThing const & crThing);
 
-        PAtom Append (PAtom poAtom);
 
-        PThing Link(PThing po2Thing, PReason po4Reason);
+        PAtom & Append (PAtom & poAtom);
 
-        PThing RelatingThingAdd(PThing poThing);
+        friend PAtom & Append (PThing & poThing, PAtom & poAtom);
+
+        PThing & Link(PThing & po2Thing, PReason & po4Reason);
+
+        friend PThing & Link(PThing & poThing, PReason & po4Reason, PThing & po2Thing);
+
+        PThing & Unlink(PThing & po2Thing, PReason & po4Reason);
+
+        PThing & RelatingThingAdd(PThing & poThing);
 
         protected:
-            std::string                              m_sName{g_csNameUnnamedThing};
-            CAtoms                                   m_qpoAtoms;
-            std::unordered_multimap<PThing, PReason> m_mLink;
+            std::string m_sName{g_csNameUnnamedThing};
+            CAtoms      m_qpoAtoms;
 
-            /// We need a set to get only one backreference from CThings
-            /// even if there are multiple incoming links from the same thing
+            /// compare operator for two PThings
             struct lessPThing
                 {
                 bool operator()(PThing const p1, PThing const p2) const
                     { return p1->id < p2->id; }
                 };
-            std::set<PThing, lessPThing>             m_spoThingsRelating;
+            std::multimap<PThing, PReason, lessPThing> m_mLink; // link thing with thing for reason
+            std::set<PThing, lessPThing>               m_spoThingsRelating;
 
     }; // class CThing
 
