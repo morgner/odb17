@@ -120,7 +120,7 @@ PThing & CThing::Unlink(PThing & po2Thing, PReason & po4Reason)
             if ( 1 == m_mLink.count(po2Thing) )
                 {
 //                std::cout << " 4 ERASE -- " << this->m_sName << ", " << *it->second << ", " << it->first->m_sName << '\n';
-                po2Thing->RelatingThingDel( me );
+                po2Thing->RelatingThingSub( me );
                 }
             po4Reason->RelationDel( me, po2Thing );
             m_mLink.erase(it);
@@ -136,9 +136,11 @@ PThing & CThing::RelatingThingAdd(PThing & poThing)
     return poThing;
     }
 
-PThing & CThing::RelatingThingDel(PThing & poThing)
+PThing & CThing::RelatingThingSub(PThing & poThing)
     {
+//    std::cout << "==== RelatingThingSub : " << this->m_sName << " -> " << poThing->m_sName << " (" << poThing.use_count() << ")\n";
     m_spoThingsRelating.erase(poThing);
+//    std::cout << "==== RelatingThingSub : " << this->m_sName << " -> " << poThing->m_sName << " (" << poThing.use_count() << ")\n";
     return poThing;
     }
 

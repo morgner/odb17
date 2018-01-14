@@ -61,7 +61,7 @@ class CThing : public std::enable_shared_from_this<CThing>,
 
         PThing & RelatingThingAdd(PThing & poThing);
 
-        PThing & RelatingThingDel(PThing & poThing);
+        PThing & RelatingThingSub(PThing & poThing);
 
         protected:
             std::string m_sName{g_csNameUnnamedThing};
