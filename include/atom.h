@@ -67,7 +67,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
 
     public:
         static constexpr auto g_csNameUnnamedAtom{"unnamedAtom"};
-        static           bool s_bDebug;
+        static constexpr bool s_bDebug{false};
     public:
 
         template <typename T, typename U>

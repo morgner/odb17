@@ -10,8 +10,6 @@
 
 namespace odb {
 
-bool CAtom::s_bDebug;
-
 bool CAtom::lessPThing::operator()(PThing const & poThing1,
                                    PThing const & poThing2) const
     {

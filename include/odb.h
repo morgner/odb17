@@ -120,7 +120,7 @@ class COdb : public Identifiable<COdb>
                 ros << spcr<5> << "\"atoms\": [ ";
                 long lc{0};     // Block counter
                 bool lb{false}; // Start signal
-                for (auto const & a:e->m_qpoAtoms)
+                for (auto const & a:e->m_spoAtoms)
                     {
                     if ( !lb ) { lb=true; ros << ""; } else { ros << ","; }
                     ++lc;

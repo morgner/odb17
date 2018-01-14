@@ -38,10 +38,11 @@ class CThing : public std::enable_shared_from_this<CThing>,
 
     public:
         static constexpr auto g_csNameUnnamedThing{"unnamedThing"};
+        static constexpr bool s_bDebug{false};
     public:
                  CThing() = delete;
                  CThing(std::string const & crsName);
-                 CThing(CThing const &) = default;
+                 CThing(CThing const &) = delete;
         virtual ~CThing() = default;
 
         void clear();
@@ -65,16 +66,18 @@ class CThing : public std::enable_shared_from_this<CThing>,
 
         protected:
             std::string m_sName{g_csNameUnnamedThing};
-            CAtoms      m_qpoAtoms;
 
             /// compare operator for two PThings
-            struct lessPThing
+
+            template<typename T>
+            struct lessIdentifiable
                 {
-                bool operator()(PThing const p1, PThing const p2) const
+                bool operator()(T const p1, T const p2) const
                     { return p1->id < p2->id; }
                 };
-            std::multimap<PThing, PReason, lessPThing> m_mLink; // link thing with thing for reason
-            std::set<PThing, lessPThing>               m_spoThingsRelating;
+            std::multimap<PThing, PReason, lessIdentifiable<PThing>> m_mLink; // link thing with thing for reason
+            std::set<PThing, lessIdentifiable<PThing>>               m_spoThingsRelating;
+            std::set<PAtom,  lessIdentifiable<PAtom>>                m_spoAtoms;
 
     }; // class CThing
 

@@ -13,14 +13,13 @@
 
 namespace odb {
 
-
 void CThing::clear()
     {
-    for ( auto & a:m_qpoAtoms )
+    for ( auto & a:m_spoAtoms )
         {
         a->clear();
         }
-    m_qpoAtoms.clear();
+    m_spoAtoms.clear();
     m_mLink.clear();
     }
 
@@ -29,7 +28,7 @@ std::ostream & operator << (std::ostream & ros, CThing const & crThing)
     {
     ros << crThing.m_sName; // << '\n';
     bool bFirst = false; // true;
-    for (auto const & a:crThing.m_qpoAtoms)
+    for (auto const & a:crThing.m_spoAtoms)
         {
         if (bFirst) { bFirst = false; } else { ros << '\n' << "  " << a->m_sName << ": "; }
         a->print_atom_data_formated(ros);
@@ -56,91 +55,104 @@ CThing::CThing(std::string const & crsName)
 
 PAtom & CThing::Append (PAtom & poAtom)
     {
-//    std::cout << "Append: '" << *poAtom << "' to '" << *this << "', (" << poAtom.use_count();
-    m_qpoAtoms.push_back(poAtom);
-    poAtom->RelatingThingAdd( shared_from_this() );
-//    std::cout << ") => (" << poAtom.use_count() << ")\n";
+    if ( m_spoAtoms.insert(poAtom).second )
+        {
+        poAtom->RelatingThingAdd( shared_from_this() );
+        }
     return poAtom;
     }
 
 /// friend
 PAtom & Append (PThing & poThing, PAtom & poAtom)
     {
-//    std::cout << "Append: '" << *poAtom << "' to '" << *poThing << "', (" << poAtom.use_count();
-    poThing->m_qpoAtoms.push_back(poAtom);
-    poAtom->RelatingThingAdd( poThing );
-//    std::cout << ") => (" << poAtom.use_count() << ")\n";
-    return poAtom;
+    return poThing->Append( poAtom );
     }
 
 PThing & CThing::Link(PThing & po2Thing, PReason & po4Reason)
     {
     auto me = shared_from_this();
-    if ( me != po2Thing )
+    if (s_bDebug) std::cout << ":--LINK- -- -intern ... ---------------------------------" << '\n';
+    if (s_bDebug) std::cout << " 1 QUERY -- " << m_mLink.count(po2Thing) << ' ' << m_sName << " (" << me.use_count()-1 << "), " << *po4Reason << " (" << po4Reason.use_count() << "), " << po2Thing->m_sName << " (" << po2Thing.use_count() << ")\n";
+
+    bool bDoLink = ( 0 == m_mLink.count(po2Thing) );
+    if ( !bDoLink && me != po2Thing )
+        {
+        for (auto it = m_mLink.find( po2Thing ); it != m_mLink.end(); ++it )
+            {
+            if ( it->first != po2Thing )
+                {
+                bDoLink = true;
+                break;
+                }
+            if ( it->second == po4Reason )
+                {
+                if (s_bDebug) std::cerr << "ERROR; double link, ignored: " << *this << '\n';
+                break;
+                }
+            }
+        }
+
+    if ( bDoLink )
         {
         m_mLink.emplace(po2Thing, po4Reason);
         po2Thing->RelatingThingAdd( me );
         po4Reason->RelationAdd( me, po2Thing );
         }
-    else
-        {
-        std::cerr << "Thing-LOOP, ignored: " << *this << '\n';
-        }
+
+    if (s_bDebug) std::cout << " 2 RESLT -- " << m_mLink.count(po2Thing) << ' ' << m_sName << " (" << me.use_count()-1 << "), " << *po4Reason << " (" << po4Reason.use_count() << "), " << po2Thing->m_sName << " (" << po2Thing.use_count() << ")\n";
     return po2Thing;
     }
 
 /// friend
 PThing & Link(PThing & poThing, PReason & po4Reason, PThing & po2Thing)
     {
-    if ( poThing != po2Thing )
-        {
-        poThing->m_mLink.emplace(po2Thing, po4Reason);
-        po2Thing->RelatingThingAdd( poThing );
-        po4Reason->RelationAdd( poThing, po2Thing );
-        }
-    else
-        {
-        std::cerr << "Thing-LOOP, ignored: " << *poThing << '\n';
-        }
-    return po2Thing;
+    return poThing->Link( po2Thing, po4Reason );
     }
 
 PThing & CThing::Unlink(PThing & po2Thing, PReason & po4Reason)
     {
-    /// todo: implementation
-//    std::cout << " 1 QUERY -- " << m_mLink.count(po2Thing) << ' ' << this->m_sName << ", " << *po4Reason << ", " << po2Thing->m_sName << '\n';
     auto me = shared_from_this();
+    if (s_bDebug) std::cout << ":-UNLINK -- ---------------------------------------------" << '\n';
+    if (s_bDebug) std::cout << " 1 QUERY -- " << m_mLink.count(po2Thing) << ' ' << m_sName << " (" << me.use_count()-1 << "), " << *po4Reason << " (" << po4Reason.use_count() << "), " << po2Thing->m_sName << " (" << po2Thing.use_count() << ")\n";
     for (auto it = m_mLink.find( po2Thing ); it != m_mLink.end(); ++it )
         {
-//        std::cout << " 2 FOUND -- " << this->m_sName << ", " << *it->second << ", " << it->first->m_sName << '\n';
-        if ( it->first  != po2Thing ) break;
+        if (s_bDebug) std::cout << " 2 FOUND -- " << this->m_sName << ", " << *it->second << ", " << it->first->m_sName << '\n';
+        if ( it->first  != po2Thing )
+            {
+            if (s_bDebug) std::cout << " X BREAK -- " << "end of search, we leave" << '\n';
+            break;
+            }
         if ( it->second == po4Reason )
             {
-//            std::cout << " 3 MATCH -- " << this->m_sName << ", " << *it->second << ", " << it->first->m_sName << '\n';
+            if (s_bDebug) std::cout << " 3 MATCH -- " << this->m_sName << ", " << *it->second << ", " << it->first->m_sName << '\n';
             if ( 1 == m_mLink.count(po2Thing) )
                 {
-//                std::cout << " 4 ERASE -- " << this->m_sName << ", " << *it->second << ", " << it->first->m_sName << '\n';
+                if (s_bDebug) std::cout << " 4 ERASE -- " << this->m_sName << ", " << *it->second << ", " << it->first->m_sName << '\n';
                 po2Thing->RelatingThingSub( me );
                 }
             po4Reason->RelationDel( me, po2Thing );
             m_mLink.erase(it);
+            if (s_bDebug) std::cout << " 5 BREAK -- " << "job done, we leave" << '\n';
             break;
             }
         }
+    if (s_bDebug) std::cout << " 6 RESLT -- " << m_mLink.count(po2Thing) << ' ' << m_sName << " (" << me.use_count()-1 << "), " << *po4Reason << " (" << po4Reason.use_count() << "), " << po2Thing->m_sName << " (" << po2Thing.use_count() << ")\n";
     return po2Thing;
     }
 
 PThing & CThing::RelatingThingAdd(PThing & poThing)
     {
+    if (s_bDebug) std::cout << " ===> RelatingThingAdd : " << this->m_sName << " (" << poThing.use_count() << ") -> " << poThing->m_sName << " (" << poThing.use_count() << ")\n";
     m_spoThingsRelating.insert(poThing);
+    if (s_bDebug) std::cout << " <=== RelatingThingAdd : " << this->m_sName << " (" << poThing.use_count() << ") -> " << poThing->m_sName << " (" << poThing.use_count() << ")\n";
     return poThing;
     }
 
 PThing & CThing::RelatingThingSub(PThing & poThing)
     {
-//    std::cout << "==== RelatingThingSub : " << this->m_sName << " -> " << poThing->m_sName << " (" << poThing.use_count() << ")\n";
+    if (s_bDebug) std::cout << " ==== RelatingThingSub : " << this->m_sName << " -> " << poThing->m_sName << " (" << poThing.use_count() << ")\n";
     m_spoThingsRelating.erase(poThing);
-//    std::cout << "==== RelatingThingSub : " << this->m_sName << " -> " << poThing->m_sName << " (" << poThing.use_count() << ")\n";
+    if (s_bDebug) std::cout << " ==== RelatingThingSub : " << this->m_sName << " -> " << poThing->m_sName << " (" << poThing.use_count() << ")\n";
     return poThing;
     }
 
