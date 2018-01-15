@@ -77,15 +77,16 @@ PThing & CThing::Link(PThing & po2Thing, PReason & po4Reason)
     bool bDoLink = ( 0 == m_mLink.count(po2Thing) );
     if ( !bDoLink && me != po2Thing )
         {
+        bDoLink = true;
         for (auto it = m_mLink.find( po2Thing ); it != m_mLink.end(); ++it )
             {
             if ( it->first != po2Thing )
                 {
-                bDoLink = true;
                 break;
                 }
             if ( it->second == po4Reason )
                 {
+                bDoLink = false;
                 if (s_bDebug) std::cerr << "ERROR; double link, ignored: " << *this << '\n';
                 break;
                 }

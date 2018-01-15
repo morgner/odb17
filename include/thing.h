@@ -64,8 +64,9 @@ class CThing : public std::enable_shared_from_this<CThing>,
 
         PThing & RelatingThingSub(PThing & poThing);
 
-        protected:
+        public:
             std::string m_sName{g_csNameUnnamedThing};
+        protected:
 
             /// compare operator for two PThings
 

@@ -87,7 +87,6 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
               m_sSuffix(crsSuffix),
               m_sFormat(crsFormat)
             {
-// not bad
             if ( CAtom::s_bDebug )
                 {
                 std::cout << "new atom for ";
@@ -108,19 +107,6 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
 
                 std::cout << ": " << *this << " (" << tAtomData << ')' << "\tname: " << m_sName << '\n';
                 }
-/*
-// research
-            std::cout << "new atom for ";
-            if (std::is_integral<T>::value)                      std::cout << "integral";
-            else if (std::is_floating_point<T>::value)           std::cout << "floating";
-            else if (std::is_array<T>::value)                    std::cout << "array";
-//            else if (std::is_vector<T>::value)                   std::cout << "vector";
-            else if (std::is_convertible<T, const char*>::value) std::cout << "const char*";
-            else if (std::is_convertible<T, std::string>::value) std::cout << "string";
-            else if (std::is_class<T>::value)                    std::cout << "class";
-            else std::cout << "UNKNOWN TYPE";
-            std::cout << ": " << *this << " (" << tAtomData << ')' << "\tname: " << m_sName << '\n';
-*/
             }
 
     virtual ~CAtom() = default;
@@ -130,17 +116,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
         m_spoThingsRelating.clear();
         }
 
-    friend void print(CAtoms const & crContainer)
-//void print(odb::CAtoms & crContainer)
-    {
-    for (auto const & e:crContainer)
-        {
-        std::cout << e->type << '\t' << " id: " << e->id << '\t' << " name: " << e->m_sName << '\t' << " data: " << *e << " odbrep:";
-        e->print_atom_data_formated(std::cout);
-        std::cout  << " (" << e.use_count() << ")\n";
-//        std::cout << e->type << '\t' << " id: " << e->id << '\t' << " name: " << e->NameGet() << '\t' << " data: " << *e << '\n';
-        }
-    }
+    friend void print(CAtoms const & crContainer);
 
     friend std::ostream& operator << (std::ostream & out, CAtom const & croAtom)
         {
