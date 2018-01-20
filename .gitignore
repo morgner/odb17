@@ -9,5 +9,7 @@ build
 
 Makefile
 
+env
+
 docs/xml
 docs/html

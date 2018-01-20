@@ -6,7 +6,7 @@ cd <project_root>
 virtualenv env
 . env/bin/activate
 pip install -r docs/requirements.txt
-mkdir build
+mkdir -p build
 cd build
 cmake ..
 cmake --build .
@@ -17,7 +17,7 @@ Building **WITHOUT** the documentation
 
 ```
 cd <project_root>
-mkdir build
+mkdir -p build
 cd build
 cmake .. -DBUILD_DOCS=Off
 cmake --build .
