@@ -1,10 +1,11 @@
 #ifndef CODB_H
 #define CODB_H
 
-/*  atom.h
+/**
+ * @file odb.h
  *
- *  Created on: 26.12.2017
- *      Author: manfred morgner
+ * @author Manfred Morgner
+ * @date 26.12.2017
  */
 
 #include <string>
@@ -78,20 +79,25 @@ class COdb : public Identifiable<COdb>
             }
 
         /**
-         * @brief Creates a PAtom
-         *
-         * Creates a shared_ptr with a new CAtom named as given in the
-         * call. If no name is given, the name will be the class default
-         *
-         * The data type of the data element in CAtom follows the input
-         * data type. It can be if any primitive type or most of the
-         * simple containers, like string or vector.
-         *
-         * CAtom further on manages the life time of the data element.
-         *
-         * @param crsName The name for the CAtom
-         * @author Manfred Morgner
-         * @since  0.0.1 c++17
+            @brief Creates a PAtom
+
+            Creates a shared_ptr with a new CAtom named as given in the
+            call. If no name is given, the name will be the class default
+
+            The data type of the data element in CAtom follows the input
+            data type. It can be if any primitive type or most of the
+            simple containers, like string or vector.
+
+            CAtom further on manages the life time of the data element.
+
+            @param data The name for the CAtom
+            @param crsName The name for the CAtom
+            @param crsPrefix The name for the CAtom
+            @param crsSuffix The name for the CAtom
+            @param crsFormat The name for the CAtom
+
+            @author Manfred Morgner
+            @since  0.0.1 c++17
          */
         template<typename T>
         auto const MakeAtom(
@@ -318,14 +324,22 @@ class COdb : public Identifiable<COdb>
             ros << spcr<0> << '}' << '\n';
           }
 
+        /// Access function to call then containder of CThing's
         CThings  const & Things () const { return m_oThings;  }
+        /// Access function to call then containder of CAtom's
         CAtoms   const & Atoms  () const { return m_oAtoms;   }
+        /// Access function to call then containder of CReason's
         CReasons const & Reasons() const { return m_oReasons; }
+        /// Access function to call then containder of CStrand's
         CStrands const & Strands() const { return m_oStrands; }
     protected:
+        /// A container instance of CThing's
         CThings  m_oThings;
+        /// A container instance of CAtom's
         CAtoms   m_oAtoms;
+        /// A container instance of CReason's
         CReasons m_oReasons;
+        /// A container instance of CStrand's
         CStrands m_oStrands;
 
     }; // class COdb

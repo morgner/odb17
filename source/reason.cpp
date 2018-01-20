@@ -1,7 +1,8 @@
-/*  reason.cpp
+/**
+ * @file reason.cpp
  *
- *  Created on: 01.01.2018
- *      Author: manfred morgner
+ * @author Manfred Morgner
+ * @date 01.01.2018
  */
 
 #include "reason.h"
@@ -30,9 +31,9 @@ CReason::CReason(std::string const & crsName)
     {
     }
 
-std::string const & CReason::operator = (std::string const & sName)
+std::string const & CReason::operator = (std::string const & crsName)
     {
-    return m_sName = sName;
+    return m_sName = crsName.length() ? crsName : s_csNameUnnamedReason;
     }
 
 CReason::operator std::string const & ()
@@ -45,7 +46,7 @@ void CReason::RelationAdd( PThing & poThingFrom, PThing & poThingTo )
     m_mRelations.insert( std::pair<PThing, PThing>( poThingFrom, poThingTo ) );
     }
 
-void CReason::RelationDel( PThing & poThingFrom, PThing & poThingTo )
+void CReason::RelationSub( PThing & poThingFrom, PThing & poThingTo )
     {
     for ( auto it = m_mRelations.find(poThingFrom); it != m_mRelations.end(); ++it )
         {

@@ -16,7 +16,8 @@ breathe_projects = {
     'ObjectDataBase': os.path.abspath('../xml'),
 }
 breathe_default_project = 'ObjectDataBase'
-breathe_default_members = ('members', 'private-members', 'protected-members')
+#breathe_default_members = ('members', 'private-members', 'protected-members')
+breathe_default_members = ('members', 'protected-members')
 
 highlight_language = 'c++'
 

@@ -1,8 +1,8 @@
-
-/*  thing.cpp
+/**
+ * @file thing.cpp
  *
- *  Created on: 26.12.2017
- *      Author: manfred morgner
+ * @author Manfred Morgner
+ * @date 26.12.2017
  */
 
 #include "thing.h"
@@ -53,6 +53,7 @@ CThing::CThing(std::string const & crsName)
     {
     }
 
+
 PAtom & CThing::Append (PAtom & poAtom)
     {
     if ( m_spoAtoms.insert(poAtom).second )
@@ -62,7 +63,6 @@ PAtom & CThing::Append (PAtom & poAtom)
     return poAtom;
     }
 
-/// friend
 PAtom & Append (PThing & poThing, PAtom & poAtom)
     {
     return poThing->Append( poAtom );
@@ -104,7 +104,6 @@ PThing & CThing::Link(PThing & po2Thing, PReason & po4Reason)
     return po2Thing;
     }
 
-/// friend
 PThing & Link(PThing & poThing, PReason & po4Reason, PThing & po2Thing)
     {
     return poThing->Link( po2Thing, po4Reason );
@@ -131,7 +130,7 @@ PThing & CThing::Unlink(PThing & po2Thing, PReason & po4Reason)
                 if (s_bDebug) std::cout << " 4 ERASE -- " << this->m_sName << ", " << *it->second << ", " << it->first->m_sName << '\n';
                 po2Thing->RelatingThingSub( me );
                 }
-            po4Reason->RelationDel( me, po2Thing );
+            po4Reason->RelationSub( me, po2Thing );
             m_mLink.erase(it);
             if (s_bDebug) std::cout << " 5 BREAK -- " << "job done, we leave" << '\n';
             break;

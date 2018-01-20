@@ -1,7 +1,8 @@
-/*  main.cpp
+/**
+ * @file main.cpp
  *
- *  Created on: 26.12.2017
- *      Author: manfred morgner
+ * @author Manfred Morgner
+ * @date 26.12.2017
  */
 
 #include <iostream> // cout

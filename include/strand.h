@@ -1,12 +1,12 @@
 #ifndef CSTRAND_H
 #define CSTRAND_H
 
-/*  atom.h
+/**
+ * @file atom.h
  *
- *  Created on: 07.01.2018
- *      Author: manfred morgner
+ * @author Manfred Morgner
+ * @date 07.01.2018
  */
-
 
 #include "thing.h"
 #include "generic.h"
@@ -27,13 +27,18 @@ class CStrand : public Identifiable<CStrand>
     friend COdb;
 
     public:
+        /// The name of an unnamed strand
         static constexpr auto s_csNameUnnamedStrand{"unnamedStrand"};
     public:
 
-                 CStrand() = default;
+                 /// forbidden
+                 CStrand() = delete;
+                 /// Normal constructor requesting a name for the strand
                  CStrand(std::string const & crsName);
+                 /// Nothings special
         virtual ~CStrand() = default;
 
+        /// Appending another atom to the strand
         PAtom Append(PAtom poAtom)
             {
             /// todo: implementation
@@ -41,16 +46,22 @@ class CStrand : public Identifiable<CStrand>
             return poAtom;
             }
 
-        std::string const & operator = (std::string const & sName);
+        /// Assign a new name to the strand
+        std::string const & operator = (std::string const & crsName);
 
+        /// friend function to send the atoms of the strand to the given stream
         friend std::ostream & operator << (std::ostream & ros, CStrand const & croStrand);
 
+        /// Function to receive the name of the strand
         operator std::string const & ();
 
+        /// Print the strand in an informational manner
         void print();
 
     protected:
+        /// The name of an unnamed strand
         std::string m_sName{ s_csNameUnnamedStrand };
+        /// The atoms of the strand
         CAtoms      m_poAtoms;
 
     }; // class CStrand

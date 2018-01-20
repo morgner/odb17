@@ -1,10 +1,11 @@
 #ifndef GENERIC_H
 #define GENERIC_H
 
-/*  generic.h
+/**
+ * @file generic.h
  *
- *  Created on: 26.12.2017
- *      Author: felix morgner & manfred morgner
+ * @author Manfred Morgner
+ * @date 26.12.2017
  */
 
 #include <cxxabi.h> // __cxa_demangle
@@ -13,20 +14,32 @@
 
 namespace odb {
 
+/// Forward decleration to befriend with it in other classes
 class CThing;
+/// The shared_ptr of the entity
 using PThing  = std::shared_ptr<CThing>;
+/// A container for the shared_ptr's of the entity
 using CThings = std::deque<PThing>;
 
+/// Forward decleration to befriend with it in other classes
 class CAtom;
+/// The shared_ptr of the entity
 using PAtom  = std::shared_ptr<CAtom>;
+/// A container for the shared_ptr's of the entity
 using CAtoms = std::deque<PAtom>;
 
+/// Forward decleration to befriend with it in other classes
 class CReason;
+/// The shared_ptr of the entity
 using PReason  = std::shared_ptr<CReason>;
+/// A container for the shared_ptr's of the entity
 using CReasons = std::deque<PReason>;
 
+/// Forward decleration to befriend with it in other classes
 class CStrand;
+/// The shared_ptr of the entity
 using PStrand  = std::shared_ptr<CStrand>;
+/// A container for the shared_ptr's of the entity
 using CStrands = std::deque<PStrand>;
 
 }

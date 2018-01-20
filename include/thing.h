@@ -1,10 +1,11 @@
 #ifndef THING_H
 #define THING_H
 
-/*  thing.h
+/**
+ * @file thing.h
  *
- *  Created on: 26.12.2017
- *      Author: manfred morgner
+ * @author Manfred Morgner
+ * @date 26.12.2017
  */
 
 #include <deque>

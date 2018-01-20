@@ -82,15 +82,26 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
     friend COdb;
 
     public:
-        static constexpr auto g_csNameUnnamedAtom{"unnamedAtom"};
+        /// The name of an unnamed atom
+        static constexpr auto s_csNameUnnamedAtom{"unnamedAtom"};
+        /// Switch to enable/disable debug information output, regarding CAtom
         static constexpr bool s_bDebug{false};
     public:
-
+        /// Copmare the type of a vaiable with a chosen type for similarity, e.g:
+        ///  - if ( decay_equiv<T, int>::value ) ...
         template <typename T, typename U>
         struct decay_equiv :
             std::is_same<typename std::decay<T>::type, U>::type {};
 
+        /**
+            @brief Constructor able to receive data of maany types
 
+            @param tAtomData The data unit to encapsulate
+            @param crsName The name for the atom
+            @param crsPrefix The prefix for user output
+            @param crsSuffix The suffix for user output
+            @param crsFormat The format for user output
+         */
         template<typename T>
         CAtom(T tAtomData,
             std::string const & crsName   = ""s,
@@ -98,7 +109,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
             std::string const & crsSuffix = ""s,
             std::string const & crsFormat = ""s)
             : m_pAtomData(new SAtomData<T>(std::move(tAtomData))),
-              m_sName  (crsName.length() ? crsName : g_csNameUnnamedAtom),
+              m_sName  (crsName.length() ? crsName : s_csNameUnnamedAtom),
               m_sPrefix(crsPrefix),
               m_sSuffix(crsSuffix),
               m_sFormat(crsFormat)
@@ -125,30 +136,37 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
                 }
             }
 
+             /// destruction as usual
     virtual ~CAtom() = default;
 
     /**
-     * @brief Remove all links between all objects
+        @brief Remove all links between all objects
+
+        This is necessary to enable freeing of all memory ressources. So we
+        become able to put valgrind to use
      */
     void clear()
         {
         m_spoThingsRelating.clear();
         }
 
+    /// friend function to print the atom instance in an inforamtional manner
     friend void print(CAtoms const & crContainer);
 
-    friend std::ostream& operator << (std::ostream & out, CAtom const & croAtom)
+    /// sends the data of the atom to the given ostream
+    friend std::ostream& operator << (std::ostream & ros, CAtom const & croAtom)
         {
-        croAtom.m_pAtomData->ToStream(out);
+        croAtom.m_pAtomData->ToStream(ros);
 /*
         for ( auto const & e:croAtom.m_qpoThingsRelating )
           {
-          out << '\n' << " used by thing: " << e;
+          ros << '\n' << " used by thing: " << e;
           }
 */
-        return out;
+        return ros;
         } // operator << (...)
 
+    /// todo: output the instance xml formated
     void print_xml(std::ostream& out, size_t const cnDepth, bool bFormated = false) const
         {
         out << std::string(cnDepth, ' ') << "<" << m_sName << ">";
@@ -165,6 +183,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
         out << "</" << m_sName << ">" << std::endl;
         } // void print_xml(...)
 
+    /// Prints the content of the instance for UI use (well formated)
     void print_atom_data_formated(std::ostream& out) const
         {
         if (m_sPrefix.length() > 0) out << m_sPrefix << " ";
@@ -172,6 +191,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
         if (m_sSuffix.length() > 0) out << " " << m_sSuffix;
         }
 
+    /// Adds the backlink from the atom to a thing
     auto RelatingThingAdd(PThing poThing)
         {
 //        m_qpoThingsRelating.push_back(poThing);
@@ -179,35 +199,46 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
         return poThing;
         }
 
-    auto RelatingThingRemove(PThing poThing)
+    /// Removes the backlink from the atom to a thing
+    auto RelatingThingSub(PThing poThing)
         {
         return m_spoThingsRelating.erase(poThing);
         }
 
     /// todo: decide which way:
     public:
-        std::string m_sName  {g_csNameUnnamedAtom};
+        /// The actual name of the atom
+        std::string m_sName  {s_csNameUnnamedAtom};
     protected:
+        /// The UI output format for the atom
         std::string m_sFormat{""s};
+        /// The UI prefix (if any) for the atom
         std::string m_sPrefix{""s};
+        /// The UI suffix (if any) for the atom
         std::string m_sSuffix{""s};
 
+        /// The comperator functor to decide if thing p1 is lesser than thing p2
         struct lessPThing
             {
+            /// The function itself
             bool operator()(PThing const &, PThing const & ) const;
             };
+        /// The list of CThings which relate with 'this' atom
         std::set<PThing, lessPThing> m_spoThingsRelating;
 
     /// start of data implementation
     struct SAtomDataConcept
         {
         virtual ~SAtomDataConcept() = default;
+        /// Will send the data of the atom to the given stream
         virtual void ToStream(std::ostream&) const = 0;
         }; // struct SAtomDataConcept
 
+    /// The templated data structure to hold an arbitrary data element
     template<typename T>
     struct SAtomData : SAtomDataConcept
         {
+        /// The function to deal with the arbitrary data element
         SAtomData(T tData) : m_tData(std::move(tData))
             {
             static_assert
@@ -218,14 +249,22 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
                 );
             }
 
-        void ToStream(std::ostream & roOut) const
+        /**
+            @brief Send the data element to std::ostream
+
+            Helper function to break the boundary between non uniform data
+            content of the atom instance and the uniform output expectation
+         */
+        void ToStream(std::ostream & ros) const
             {
-            roOut << m_tData;
+            ros << m_tData;
             }
 
+        /// The decalartion of the data element of type T
         T m_tData;
         }; // struct SAtomData
 
+    /// The pointer and holder of the data element of type T
     std::unique_ptr<const SAtomDataConcept> m_pAtomData;
     }; // class CAtom
 
