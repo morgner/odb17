@@ -59,7 +59,7 @@ std::ostream& operator<< (std::ostream & out, std::array<T, N> const & crContain
 class COdb;
 
 /**
- * An Atom, from which CThings are built from
+ * @brief An Atom, from which CThings are built from
  *
  * @par Example
  * @rst

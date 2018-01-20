@@ -45,13 +45,14 @@ class COdb;
 
   - 'Trees of Estonia' - wrote - Heinz
 
-  But to ensure thing2 feels the link, it will be informed it a link to it
-  becomes established. The linked thing registers which thing is linking
-  to it ones. In our example 'Trees of Estonia' registers, that Heinz links
+  But to ensure thing2 feels the link, it will be informed that a link to it
+  became established. The linked thing registers which thing is linking
+  to it only ones. In our example 'Trees of Estonia' registers, that Heinz links
   to it.
 
   If some process/entity needs to know how often and for which reasons, it
-  has to go to Heinz and ask
+  has to go to Heinz and ask. The linking thing is resonsible for correct
+  management of links, reasons and backlinks.
 
   CReason registers each link it it used for
 

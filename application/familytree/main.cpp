@@ -177,7 +177,7 @@ void test2()
 a */
 int main()
     {
-    test2();
+    test1();
 
 //    auto a18 = d2->Append( g_oOdb.MakeAtom("Quirks & Quarks", "Radio Cast"s) );
 //    auto a19 = d2->Append( g_oOdb.MakeAtom("Thinking allowed"s, "Podcast"s) );

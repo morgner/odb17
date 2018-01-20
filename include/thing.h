@@ -29,18 +29,26 @@ class COdb;
 class CReason;
 
 /**
- * @brief A Thing as they are many of
- *
- * The Thing, formaly known as Object in the Object Database, renamed for
- * the practicle reason of having a unique starting letter amongst the
- * other code units.
- *
- * It may contain an arbitrary amount of arbitrary Atoms (equivalent to
- * Data Fields), Links to other CThing's for specified CReasons as well
- * as Backlinks to reasoned Link sources.
- *
- * @author Manfred Morgner
- * @since  0.0.1 c++17
+@brief A Thing as they are many of
+
+The Thing, formerly known as Object in the Object Database, renamed for
+the practicle reason of having a unique starting letter amongst the
+other code units.
+
+It may contain an arbitrary amount of arbitrary Atoms (equivalents to
+Data Fields), Links to other CThing's for specified CReason's as well
+as Backlinks to Reason'ed Link sources.
+
+The linkiing CThing is responsible for ressource management. It
+manages connections
+
+ - from thing to thing
+ - the backlink for links from itself to another thing
+ - from thing to atoms
+ - the backlink for links from itself to atoms
+
+@author Manfred Morgner
+@since  0.0.1 c++17
  */
 class CThing : public std::enable_shared_from_this<CThing>,
                public Identifiable<CThing>
