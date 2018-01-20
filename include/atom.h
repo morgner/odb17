@@ -1,10 +1,11 @@
 #ifndef CATOM_H
 #define CATOM_H
 
-/*  atom.h
+/**
+ * @file atom.h
  *
- *  Created on: 26.12.2017
- *      Author: manfred morgner
+ * @author Manfred Morgner
+ * @date 26.12.2017
  */
 
 //#include <deque>
@@ -58,7 +59,22 @@ std::ostream& operator<< (std::ostream & out, std::array<T, N> const & crContain
 class COdb;
 
 /**
- * An Atom, from whitch Things are built from
+ * An Atom, from which CThings are built from
+ *
+ * @par Example
+ * @rst
+ * .. code-block:: cpp
+ *    :linenos:
+ *
+ *    #include <odb/atom.h>
+ *
+ *    int main() {
+ *      // do stuff
+ *    }
+ * @endrst
+ *
+ * @author Manfred Morgner
+ * @since  1.0.1
  */
 class CAtom : public std::enable_shared_from_this<CAtom>,
               public Identifiable<CAtom>
@@ -111,6 +127,9 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
 
     virtual ~CAtom() = default;
 
+    /**
+     * @brief Remove all links between all objects
+     */
     void clear()
         {
         m_spoThingsRelating.clear();
@@ -179,7 +198,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
             };
         std::set<PThing, lessPThing> m_spoThingsRelating;
 
-    /// start of data implementation --------------------------
+    /// start of data implementation
     struct SAtomDataConcept
         {
         virtual ~SAtomDataConcept() = default;

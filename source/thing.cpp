@@ -49,7 +49,7 @@ std::ostream & operator << (std::ostream & ros, CThing const & crThing)
 
 
 CThing::CThing(std::string const & crsName)
-    : m_sName(crsName.length() ? crsName : g_csNameUnnamedThing)
+    : m_sName(crsName.length() ? crsName : s_csNameUnnamedThing)
     {
     }
 

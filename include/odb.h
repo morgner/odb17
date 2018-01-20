@@ -28,16 +28,48 @@ namespace odb {
 class COdb : public Identifiable<COdb>
     {
     public:
+                /**
+                 * @brief Creates a COdb, an database
+                 *
+                 * We only default construct the database, no copy construction
+                 * no copy of the database at all. It is not known, what copying
+                 * the database means.
+                 *
+                 * @author Manfred Morgner
+                 * @since  0.0.1 c++17
+                 */
                  COdb() = default;
+                 /// forbidden
                  COdb(COdb const & src) = delete;
+                 /// forbidden
                  COdb & operator = (COdb const & src) = delete;
         virtual ~COdb()
                     {
                     clear();
                     }
 
+        /**
+         * @brief Frees all objects
+         *
+         * Frees all known objects at last so far that freeing the
+         * object collections releases all memory, bound to them.
+         * So valgrind will find nothing left on the table.
+         *
+         * @author Manfred Morgner
+         * @since  0.0.1 c++17
+         */
         void clear();
 
+        /**
+         * @brief Creates a PThing
+         *
+         * Creates a shared_ptr with a new CThing named as given in the
+         * call. If no name is given, the name will be the class default
+         *
+         * @param crsName The name for the CThing
+         * @author Manfred Morgner
+         * @since  0.0.1 c++17
+         */
 	    auto MakeThing(std::string const & crsName = ""s)
             {
             auto p = std::make_shared<CThing>(crsName);
@@ -45,6 +77,22 @@ class COdb : public Identifiable<COdb>
             return std::move( p );
             }
 
+        /**
+         * @brief Creates a PAtom
+         *
+         * Creates a shared_ptr with a new CAtom named as given in the
+         * call. If no name is given, the name will be the class default
+         *
+         * The data type of the data element in CAtom follows the input
+         * data type. It can be if any primitive type or most of the
+         * simple containers, like string or vector.
+         *
+         * CAtom further on manages the life time of the data element.
+         *
+         * @param crsName The name for the CAtom
+         * @author Manfred Morgner
+         * @since  0.0.1 c++17
+         */
         template<typename T>
         auto const MakeAtom(
             T data,
@@ -58,6 +106,16 @@ class COdb : public Identifiable<COdb>
             return std::move( p );
             }
 
+        /**
+         * @brief Creates a PReason
+         *
+         * Creates a shared_ptr with a new CReason named as given in the
+         * call. If no name is given, the name will be the class default
+         *
+         * @param crsName The name for the CReason
+         * @author Manfred Morgner
+         * @since  0.0.1 c++17
+         */
         auto MakeReason(std::string const & crsName = ""s)
             {
             auto p = std::make_shared<CReason>(crsName);
@@ -65,6 +123,16 @@ class COdb : public Identifiable<COdb>
             return std::move( p );
             }
 
+        /**
+         * @brief Creates a PStrand
+         *
+         * Creates a shared_ptr with a new CStrand named as given in the
+         * call. If no name is given, the name will be the class default
+         *
+         * @param crsName The name for the CStrand
+         * @author Manfred Morgner
+         * @since  0.0.1 c++17
+         */
         auto MakeStrand(std::string const & crsName = ""s)
             {
             auto p = std::make_shared<CStrand>(crsName);
@@ -72,6 +140,12 @@ class COdb : public Identifiable<COdb>
             return std::move( p );
             }
 
+        /**
+         * @brief Print out the database (Informative format)
+         *
+         * @author Manfred Morgner
+         * @since  0.0.1 c++17
+         */
 	    void print()
             {
             print(m_oThings);
@@ -79,6 +153,13 @@ class COdb : public Identifiable<COdb>
             print(m_oReasons);
             } // void print()
 
+        /**
+         * @brief Print out container of CAtom objects
+         *
+         * @param crContainer The forward iterable container, containing all T instances
+         * @author Manfred Morgner
+         * @since  0.0.1 c++17
+         */
         void print(CAtoms const & crContainer)
             {
             for (auto && e : crContainer)
@@ -90,6 +171,14 @@ class COdb : public Identifiable<COdb>
                 }
             } // void print(CAtoms const & crContainer)
 
+        /**
+         * @brief Print out container of identifiable objects
+         *
+         * @tparam T A shared_ptr of an 'Identifiable' type, enriched with a memberm_sName
+         * @param crContainer The forward iterable container, containing all T instances
+         * @author Manfred Morgner
+         * @since  0.0.1 c++17
+         */
         template<typename T>
         void print(std::deque<T> const & crContainer)
             {
@@ -103,8 +192,14 @@ class COdb : public Identifiable<COdb>
 
 
 
-        /// JSON validator+converter: https://jsonformatter.org/
-
+        /**
+         * @brief Dump all CThings in Sub-JSON format
+         *
+         * @param crContainer The forward iterable container, containing all CThing instances
+         * @param ros The output destination
+         * @author Manfred Morgner
+         * @since  0.0.1 c++17
+         */
         void print_json(CThings const & crContainer, std::ostream & ros)
             {
             std::size_t cm{crContainer.size()};
@@ -144,8 +239,14 @@ class COdb : public Identifiable<COdb>
             ros << spcr<3> << "],\n";
             } // void print_json(CThings const & crContainer, long const nRI, std::ostream & ros)
 
-// Atoms
-
+        /**
+         * @brief Dump all CAtoms in Sub-JSON format
+         *
+         * @param crContainer The forward iterable container, containing all CAtom instances
+         * @param ros The output destination
+         * @author Manfred Morgner
+         * @since  0.0.1 c++17
+         */
         void print_json(CAtoms const & crContainer, std::ostream & ros)
             {
             std::size_t cm{crContainer.size()};
@@ -154,20 +255,28 @@ class COdb : public Identifiable<COdb>
             ros << spcr<3> << '[' << '\n';
             for ( auto const & a:crContainer )
                 {
-                ros << spcr<4> << "{ ";
-//              ros            << "\"type\": \""   << a->type      << "\", ";
-                ros            << "\"id\": \""     <<  a->id        << "\", ";
-                ros            << "\"name\": \""   <<  a->m_sName   << "\", ";
-                ros            << "\"prefix\": \"" <<  a->m_sPrefix << "\", ";
-                ros            << "\"suffix\": \"" <<  a->m_sSuffix << "\", ";
-                ros            << "\"format\": \"" <<  a->m_sFormat << "\", ";
-                ros            << "\"data\": \""   << *a            << "\" ";
+                                           ros << spcr<4> << "{ ";
+//                                         ros << "\"type\": \""   << a->type      << "\", ";
+                                           ros << "\"id\": \""     <<  a->id        << "\", ";
+                if ( a->m_sName.size() )   ros << "\"name\": \""   <<  a->m_sName   << "\", ";
+                if ( a->m_sPrefix.size() ) ros << "\"prefix\": \"" <<  a->m_sPrefix << "\", ";
+                if ( a->m_sSuffix.size() ) ros << "\"suffix\": \"" <<  a->m_sSuffix << "\", ";
+                if ( a->m_sFormat.size() ) ros << "\"format\": \"" <<  a->m_sFormat << "\", ";
+                                           ros << "\"data\": \""   << *a            << "\" ";
                 if ( ++cc < cm ) { ros << "},\n"; } else { ros << "}\n"; }
                 }
             ros << spcr<3> << "],\n";
             } // void print_json(CAtoms const & crContainer, long const nRI, std::ostream & ros)
 
-// Reasons
+
+        /**
+         * @brief Dump all CReasons in Sub-JSON format
+         *
+         * @param crContainer The forward iterable container, containing all CReason instances
+         * @param ros The output destination
+         * @author Manfred Morgner
+         * @since  0.0.1 c++17
+         */
         void print_json(CReasons const & crContainer, std::ostream & ros)
             {
             std::size_t cm{crContainer.size()};
@@ -185,6 +294,16 @@ class COdb : public Identifiable<COdb>
             ros << spcr<3> << ']' << '\n';
             }
 
+
+        /**
+         * @brief Dump the hole database in JSON format
+         *
+         * see also: JSON validator+converter: https://jsonformatter.org/
+         *
+         * @param ros The output destination
+         * @author Manfred Morgner
+         * @since  0.0.1 c++17
+         */
         void print_json(std::ostream & ros)
             {
             ros << spcr<0> << '{' << '\n';
@@ -196,7 +315,6 @@ class COdb : public Identifiable<COdb>
             print_json(m_oReasons, ros);
 
             ros << spcr<2> << '}' << '\n';
-            ros << spcr<1> << '}' << '\n';
             ros << spcr<0> << '}' << '\n';
           }
 

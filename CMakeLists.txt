@@ -1,18 +1,30 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.9)
+project(odb
+  LANGUAGES CXX
+  VERSION 0.1.17
+  )
 
-add_definitions(-std=c++1z) 
+set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O -g")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra -Werror -pedantic-errors")
 
-set(SOURCE application/familytree/main.cpp "")
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-project(odb)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+
+option(BUILD_DOCS "Build the documentation" ON)
+
+find_package(Threads)
+
+include_directories(include)
 
 add_subdirectory(source)
 add_subdirectory(include)
-include_directories(include)
+add_subdirectory(application)
 
-add_executable(odb.server ${SOURCE})
-target_link_libraries(odb.server c pthread)
-
+if(${BUILD_DOCS})
+  add_subdirectory(docs)
+endif()

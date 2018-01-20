@@ -6,3 +6,8 @@ build
 *.depend
 *.o
 *.layout
+
+Makefile
+
+docs/xml
+docs/html

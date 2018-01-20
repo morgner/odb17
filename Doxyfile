@@ -1,0 +1,27 @@
+DOXYFILE_ENCODING      = UTF-8
+QUIET                  = YES
+PROJECT_NAME           = "ObjectDataBase"
+PROJECT_NUMBER         = 0.1.17
+PROJECT_BRIEF          =
+OUTPUT_DIRECTORY       = docs
+OUTPUT_LANGUAGE        = English
+FULL_PATH_NAMES        = NO
+TAB_SIZE               = 2
+OPTIMIZE_OUTPUT_FOR_C  = NO
+IDL_PROPERTY_SUPPORT   = NO
+INPUT                  = include/
+FILE_PATTERNS          = *.h
+RECURSIVE              = YES
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+GENERATE_XML           = YES
+XML_OUTPUT             = xml
+XML_PROGRAMLISTING     = YES
+ENABLE_PREPROCESSING   = YES
+MACRO_EXPANSION        = YES
+ALIASES                += "rst=@verbatim embed:rst:leading-asterisk"
+ALIASES                += "endrst=@endverbatim"
+HIDE_SCOPE_NAMES       = YES
+EXTRACT_PRIVATE        = NO
+TAGFILES               = "docs/cppreference.tag.xml=http://en.cppreference.com/w/"
+PREDEFINED             = __DOXYGEN__
