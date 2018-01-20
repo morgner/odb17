@@ -27,6 +27,21 @@ using namespace std::string_literals;
 
 /// outputs a std::vector like this: { 1, 2, 3 }
 template<typename T>
+std::ostream& operator<< (std::ostream & out, std::deque<T> const & crContainer)
+    {
+    bool b{false};
+    out << '{';
+    for (auto const & a:crContainer)
+        {
+        if (b) { out << ","; } else { b = true; }
+        out << a;
+        }
+    out << '}';
+    return out;
+    } // std::ostream& operator<< (std::ostream& out, const std::vector<T>& v)
+
+/// outputs a std::vector like this: { 1, 2, 3 }
+template<typename T>
 std::ostream& operator<< (std::ostream & out, std::vector<T> const & crContainer)
     {
     bool b{false};

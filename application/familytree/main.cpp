@@ -73,10 +73,13 @@ void test1()
     auto a1 { g_oOdb.MakeAtom(100.2, "round", "", "%") };
     auto a2 = g_oOdb.MakeAtom(0.9, "size", "V", "dl");
 
+    std::deque<long> q{33799, 53796, 33179, 34799};
+    auto a3 = g_oOdb.MakeAtom(q, "Deque"s);
+
     std::cout << "d1 " << *d1 << '\n';
     d1->Append( a1 );
     std::cout << "d1 " << *d1 << '\n';
-    d1->Append( a2 );
+    d1->Append( a3 );
     std::cout << "d1 " << *d1 << '\n';
     d1->Append( a1 );
     std::cout << "d1 " << *d1 << '\n';
