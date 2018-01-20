@@ -23,13 +23,6 @@ cmake .. -DBUILD_DOCS=Off
 cmake --build .
 ```
 
-
-
-mkdir build
-cd build
-cmake ../
-make
-
 ------------------- OR (e.g.)
 
 mkdir -p build/CodeBlocks
