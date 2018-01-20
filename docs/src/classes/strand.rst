@@ -1,0 +1,4 @@
+CStrand
+=======
+
+.. doxygenclass:: odb::CStrand

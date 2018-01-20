@@ -1,0 +1,4 @@
+CReason
+=======
+
+.. doxygenclass:: odb::CReason

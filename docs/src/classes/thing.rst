@@ -1,4 +1,4 @@
-Thing Doc
-=========
+CThing
+======
 
 .. doxygenclass:: odb::CThing

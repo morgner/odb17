@@ -1,5 +1,5 @@
-The Atom Class
-==============
+CAtom
+=====
 
 Hier kommt zusätzliches Zeug hin
 

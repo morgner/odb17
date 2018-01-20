@@ -1,0 +1,4 @@
+COdb
+====
+
+.. doxygenclass:: odb::COdb

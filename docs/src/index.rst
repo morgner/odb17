@@ -10,8 +10,11 @@ Welcome to Object DataBase's documentation!
    :maxdepth: 3
    :caption: Contents:
 
-   classes/atom
+   classes/odb
    classes/thing
+   classes/reason
+   classes/atom
+   classes/strand
 
 .. .. doxygenindex::
 .. .. .. doxygenfunction::
