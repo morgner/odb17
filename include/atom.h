@@ -87,31 +87,12 @@ class COdb;
 /**
  @brief An Atom is a data field for a CThing
 
- @par Example
+ @par Sample Code goes here
  @rst
  .. code-block:: cpp
  
-    #include <iostream>
-
-    #include "odb.h"
-    #include "atom.h"
-
-    int main()
-        {
-        auto oOdb = odb::COdb();
-        auto atom = oOdb.MakeAtom(2.5, "gain", "is", "%");
-        std::cout << "atom data: " << *atom << '\n';
-        std::cout << "atom frmt: " << atom->m_sName << ' ';
-        atom->print_atom_data_formated(std::cout);
-        std::cout << '\n';
-        }
- 
-    $ outpput: 
-    atom data: 2.5
-    atom frmt: gain is 2.5 %
+    #include <odb>
  @endrst
-
- @tparam CAtom As it says
  */
 class CAtom : public std::enable_shared_from_this<CAtom>,
               public Identifiable<CAtom>
@@ -133,7 +114,6 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
 
         /**
             @brief Constructor able to receive data of maany types
-
             @param tAtomData The data unit to encapsulate
             @param crsName The name for the atom
             @param crsPrefix The prefix for user output

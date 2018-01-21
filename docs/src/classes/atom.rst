@@ -35,7 +35,10 @@ are elements of the using atom, as long as they are not overwritten.
        std::cout << '\n';
        }
 
-    $ outpput: 
+Output
+
+.. code-block:: plain
+
     atom data: 2.5
     atom frmt: gain is 2.5 %
 
