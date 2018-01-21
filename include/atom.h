@@ -8,13 +8,10 @@
  * @date 26.12.2017
  */
 
-//#include <deque>
-//#include <string>
 #include <memory>
 
 #include <iostream>
 #include <vector>
-//#include <array>
 
 #include "generic.h"
 #include "thing.h"
@@ -24,72 +21,97 @@ namespace odb {
 
 using namespace std::string_literals;
 
-
-/// outputs a std::vector like this: { 1, 2, 3 }
+/**
+    @brief  Template specification: Outputs a std::deque like this: {1,2,3}
+    @tparam T The type of the collected objects
+    @param  ros The output stream so send the objects to
+    @param  crContainer The container holding the objects to output
+ */
 template<typename T>
-std::ostream& operator<< (std::ostream & out, std::deque<T> const & crContainer)
+std::ostream& operator<< (std::ostream & ros, std::deque<T> const & crContainer)
     {
     bool b{false};
-    out << '{';
+    ros << '{';
     for (auto const & a:crContainer)
         {
-        if (b) { out << ","; } else { b = true; }
-        out << a;
+        if (b) { ros << ","; } else { b = true; }
+        ros << a;
         }
-    out << '}';
-    return out;
+    ros << '}';
+    return ros;
     } // std::ostream& operator<< (std::ostream& out, const std::vector<T>& v)
 
-/// outputs a std::vector like this: { 1, 2, 3 }
+/**
+    @brief  Template specification: Outputs a std::vector like this: {1,2,3}
+    @tparam T The type of the collected objects
+    @param  ros The output stream so send the objects to
+    @param  crContainer The container holding the objects to output
+ */
 template<typename T>
-std::ostream& operator<< (std::ostream & out, std::vector<T> const & crContainer)
+std::ostream& operator<< (std::ostream & ros, std::vector<T> const & crContainer)
     {
     bool b{false};
-    out << '{';
+    ros << '{';
     for (auto const & a:crContainer)
         {
-        if (b) { out << ","; } else { b = true; }
-        out << a;
+        if (b) { ros << ","; } else { b = true; }
+        ros << a;
         }
-    out << '}';
-    return out;
+    ros << '}';
+    return ros;
     } // std::ostream& operator<< (std::ostream& out, const std::vector<T>& v)
 
-/// outputs a std::array like this: { 1, 2, 3 }
+/**
+    @brief  Template specification: Outputs a std::array like this: {1,2,3}
+    @tparam T The type of the collected objects
+    @param  ros The output stream so send the objects to
+    @param  crContainer The container holding the objects to output
+ */
 template <typename T, std::size_t N>
-std::ostream& operator<< (std::ostream & out, std::array<T, N> const & crContainer)
+std::ostream& operator<< (std::ostream & ros, std::array<T, N> const & crContainer)
     {
     bool b(false);
-    out << '{';
+    ros << '{';
     for (auto const & a:crContainer)
         {
-        if (b) { out << ','; } else { b = true; }
-        out << a;
+        if (b) { ros << ','; } else { b = true; }
+        ros << a;
         }
-    out << '}';
-    return out;
+    ros << '}';
+    return ros;
     } // std::ostream& operator<< (std::ostream& out, const std::array<T, N>& v)
 
 /// forward declarations to befriend with
 class COdb;
 
 /**
- * @brief An Atom, from which CThings are built from
- *
- * @par Example
- * @rst
- * .. code-block:: cpp
- *    :linenos:
- *
- *    #include <odb/atom.h>
- *
- *    int main() {
- *      // do stuff
- *    }
- * @endrst
- *
- * @author Manfred Morgner
- * @since  1.0.1
+ @brief An Atom is a data field for a CThing
+
+ @par Example
+ @rst
+ .. code-block:: cpp
+ 
+    #include <iostream>
+
+    #include "odb.h"
+    #include "atom.h"
+
+    int main()
+        {
+        auto oOdb = odb::COdb();
+        auto atom = oOdb.MakeAtom(2.5, "gain", "is", "%");
+        std::cout << "atom data: " << *atom << '\n';
+        std::cout << "atom frmt: " << atom->m_sName << ' ';
+        atom->print_atom_data_formated(std::cout);
+        std::cout << '\n';
+        }
+ 
+    $ outpput: 
+    atom data: 2.5
+    atom frmt: gain is 2.5 %
+ @endrst
+
+ @tparam CAtom As it says
  */
 class CAtom : public std::enable_shared_from_this<CAtom>,
               public Identifiable<CAtom>
@@ -102,7 +124,8 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
         /// Switch to enable/disable debug information output, regarding CAtom
         static constexpr bool s_bDebug{false};
     public:
-        /// Copmare the type of a vaiable with a chosen type for similarity, e.g:
+        /// Copmares the type of a variable with a chosen type for similarity,
+        /// e.g:
         ///  - if ( decay_equiv<T, int>::value ) ...
         template <typename T, typename U>
         struct decay_equiv :
@@ -151,7 +174,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
                 }
             }
 
-             /// destruction as usual
+             /// Destruction as usual (=default)
     virtual ~CAtom() = default;
 
     /**
@@ -253,13 +276,18 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
     template<typename T>
     struct SAtomData : SAtomDataConcept
         {
-        /// The function to deal with the arbitrary data element
-        SAtomData(T tData) : m_tData(std::move(tData))
+        /**
+            @brief The function to deal with the arbitrary data element
+            @param tData The data element to hold
+         */
+        SAtomData(T tData)
+            : m_tData(std::move(tData))
             {
             static_assert
                 (
                     (
-                    !std::is_pointer<decltype(tData)>::value || std::is_convertible<T, const char*>::value
+                    !std::is_pointer<decltype(tData)>::value || 
+                     std::is_convertible<T, const char*>::value
                     ), "arrays and pointers not supported"
                 );
             }
@@ -275,11 +303,11 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
             ros << m_tData;
             }
 
-        /// The decalartion of the data element of type T
+        /// @brief The decalartion of the data element of type T
         T m_tData;
         }; // struct SAtomData
 
-    /// The pointer and holder of the data element of type T
+    /// @brief The pointer and holder of the data element of type T
     std::unique_ptr<const SAtomDataConcept> m_pAtomData;
     }; // class CAtom
 
