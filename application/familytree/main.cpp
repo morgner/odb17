@@ -5,7 +5,10 @@
  * @date 26.12.2017
  */
 
-#include <iostream> // cout
+#include <iostream>     // cout
+#include <forward_list> // 
+#include <list>         // 
+#include <set>          // 
 
 #include "thing.h"
 #include "reason.h"
@@ -73,8 +76,16 @@ void test1()
     auto a1 { g_oOdb.MakeAtom(100.2, "round", "", "%") };
     auto a2 = g_oOdb.MakeAtom(0.9, "size", "V", "dl");
 
-    std::deque<long> q{33799, 53796, 33179, 34799};
-    auto a3 = g_oOdb.MakeAtom(q, "Deque"s);
+    std::deque<uint64_t> a{33799, 53796, 33179, 34799};
+    auto a3 = g_oOdb.MakeAtom(a, "Deque"s);
+    std::forward_list<uint16_t> b{77, 55, 66, 44, 33};
+    auto a4 = g_oOdb.MakeAtom(b, "Forward_list"s);
+    std::list<std::string> c{"so", "so", "seltsamer", "sammler"};
+    auto a5 = g_oOdb.MakeAtom(c, "List"s);
+    std::set<char> d{'s','e','t','e','s','t'};
+    auto a6 = g_oOdb.MakeAtom(d, "Set"s);
+    std::multiset<char> e{'s','e','t','e','s','t'};
+    auto a7 = g_oOdb.MakeAtom(e, "Multiset"s);
 
     std::cout << "d1 " << *d1 << '\n';
     d1->Append( a1 );

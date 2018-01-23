@@ -105,7 +105,7 @@ class Identifiable
  */
 
 /// indentation depth factor
-auto const g_cnIndent{4};
+auto constexpr g_cnIndent{4};
 
 /// decollisioner to ensure OUR spaces run through OUR output
 template<typename T, std::size_t N>
@@ -135,7 +135,6 @@ std::ostream & operator<<(std::ostream & out, CIndentWrapper<char, N> const & ar
     {
     return print_array(out, arr, std::make_index_sequence<N>{});
     }
-
 
 // GENERIC_H
 #endif

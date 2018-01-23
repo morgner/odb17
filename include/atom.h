@@ -12,6 +12,9 @@
 
 #include <iostream>
 #include <vector>
+#include <forward_list> // 
+#include <list>         // 
+#include <set>          // 
 
 #include "generic.h"
 #include "thing.h"
@@ -20,6 +23,86 @@
 namespace odb {
 
 using namespace std::string_literals;
+
+/**
+    @brief  Template specification: Outputs a std::forward_list like this: {1,2,3}
+    @tparam T The type of the collected objects
+    @param  ros The output stream so send the objects to
+    @param  crContainer The container holding the objects to output
+ */
+template<typename T>
+std::ostream& operator<< (std::ostream & ros, std::forward_list<T> const & crContainer)
+    {
+    bool b{false};
+    ros << '{';
+    for (auto const & a:crContainer)
+        {
+        if (b) { ros << ","; } else { b = true; }
+        ros << a;
+        }
+    ros << '}';
+    return ros;
+    }
+
+/**
+    @brief  Template specification: Outputs a std::list like this: {1,2,3}
+    @tparam T The type of the collected objects
+    @param  ros The output stream so send the objects to
+    @param  crContainer The container holding the objects to output
+ */
+template<typename T>
+std::ostream& operator<< (std::ostream & ros, std::list<T> const & crContainer)
+    {
+    bool b{false};
+    ros << '{';
+    for (auto const & a:crContainer)
+        {
+        if (b) { ros << ","; } else { b = true; }
+        ros << a;
+        }
+    ros << '}';
+    return ros;
+    }
+
+/**
+    @brief  Template specification: Outputs a std::set like this: {1,2,3}
+    @tparam T The type of the collected objects
+    @param  ros The output stream so send the objects to
+    @param  crContainer The container holding the objects to output
+ */
+template<typename T>
+std::ostream& operator<< (std::ostream & ros, std::set<T> const & crContainer)
+    {
+    bool b{false};
+    ros << '{';
+    for (auto const & a:crContainer)
+        {
+        if (b) { ros << ","; } else { b = true; }
+        ros << a;
+        }
+    ros << '}';
+    return ros;
+    }
+
+/**
+    @brief  Template specification: Outputs a std::set like this: {1,2,3}
+    @tparam T The type of the collected objects
+    @param  ros The output stream so send the objects to
+    @param  crContainer The container holding the objects to output
+ */
+template<typename T>
+std::ostream& operator<< (std::ostream & ros, std::multiset<T> const & crContainer)
+    {
+    bool b{false};
+    ros << '{';
+    for (auto const & a:crContainer)
+        {
+        if (b) { ros << ","; } else { b = true; }
+        ros << a;
+        }
+    ros << '}';
+    return ros;
+    }
 
 /**
     @brief  Template specification: Outputs a std::deque like this: {1,2,3}
@@ -39,7 +122,7 @@ std::ostream& operator<< (std::ostream & ros, std::deque<T> const & crContainer)
         }
     ros << '}';
     return ros;
-    } // std::ostream& operator<< (std::ostream& out, const std::vector<T>& v)
+    } // std::ostream& operator<< (std::ostream& out, const std::deque<T>& v)
 
 /**
     @brief  Template specification: Outputs a std::vector like this: {1,2,3}
