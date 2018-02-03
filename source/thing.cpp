@@ -20,6 +20,7 @@ void CThing::clear()
         a->clear();
         }
     m_spoAtoms.clear();
+    m_spoProperties.clear();
     m_mLink.clear();
     }
 
@@ -28,6 +29,10 @@ std::ostream & operator << (std::ostream & ros, CThing const & crThing)
     {
     ros << crThing.m_sName; // << '\n';
     bool bFirst = false; // true;
+    for (auto const & a:crThing.m_spoProperties)
+        {
+        if (bFirst) { bFirst = false; } else { ros << '\n' << "  Property: " << a->m_sName << " "; }
+        }
     for (auto const & a:crThing.m_spoAtoms)
         {
         if (bFirst) { bFirst = false; } else { ros << '\n' << "  " << a->m_sName << ": "; }
@@ -53,6 +58,15 @@ CThing::CThing(std::string const & crsName)
     {
     }
 
+
+PProperty & CThing::Append (PProperty & poProperty)
+    {
+    if ( m_spoProperties.insert(poProperty).second )
+        {
+        poProperty->RelationAdd( shared_from_this() );
+        }
+    return poProperty;
+    }
 
 PAtom & CThing::Append (PAtom & poAtom)
     {

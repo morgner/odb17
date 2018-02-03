@@ -295,7 +295,6 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
     /// Adds the backlink from the atom to a thing
     auto RelatingThingAdd(PThing poThing)
         {
-//        m_qpoThingsRelating.push_back(poThing);
         m_spoThingsRelating.insert(poThing);
         return poThing;
         }

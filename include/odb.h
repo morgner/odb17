@@ -16,6 +16,7 @@
 
 #include "atom.h"
 #include "thing.h"
+#include "property.h"
 #include "reason.h"
 #include "strand.h"
 
@@ -77,10 +78,26 @@ class COdb : public Identifiable<COdb>
          *
          * @param crsName The name for the CThing
          */
-	    auto MakeThing(std::string const & crsName = ""s)
+        auto MakeThing(std::string const & crsName = ""s)
             {
             auto p = std::make_shared<CThing>(crsName);
             m_oThings.push_back( p );
+            return std::move( p );
+            }
+
+        /**
+         * @brief Creates a PProperty
+         *
+         * Creates a shared_ptr with a new CProperty named as given in
+         * the call. If no name is given, the name will be the class 
+         * default
+         *
+         * @param crsName The name for the CProperty
+         */
+        auto MakeProperty(std::string const & crsName = ""s)
+            {
+            auto p = std::make_shared<CProperty>(crsName);
+            m_oProperties.push_back( p );
             return std::move( p );
             }
 
@@ -148,10 +165,11 @@ class COdb : public Identifiable<COdb>
         /**
          * @brief Print out the database (Informative format)
          */
-	    void print()
+        void print()
             {
             print(m_oThings);
             print(m_oAtoms);
+            print(m_oProperties);
             print(m_oReasons);
             } // void print()
 
@@ -307,23 +325,27 @@ class COdb : public Identifiable<COdb>
             ros << spcr<0> << '}' << '\n';
           }
 
-        /// Access function to call then containder of CThing's
-        CThings  const & Things () const { return m_oThings;  }
-        /// Access function to call then containder of CAtom's
-        CAtoms   const & Atoms  () const { return m_oAtoms;   }
-        /// Access function to call then containder of CReason's
-        CReasons const & Reasons() const { return m_oReasons; }
-        /// Access function to call then containder of CStrand's
-        CStrands const & Strands() const { return m_oStrands; }
+        /// Access function to call then container of CThing's
+        CThings      const & Things () const { return m_oThings;  }
+        /// Access function to call then container of CProperties
+        CProperties  const & Properties () const { return m_oProperties; }
+        /// Access function to call then container of CAtom's
+        CAtoms       const & Atoms  () const { return m_oAtoms;   }
+        /// Access function to call then container of CReason's
+        CReasons     const & Reasons() const { return m_oReasons; }
+        /// Access function to call then container of CStrand's
+        CStrands     const & Strands() const { return m_oStrands; }
     protected:
         /// A container instance of CThing's
-        CThings  m_oThings;
+        CThings      m_oThings;
+        /// A container instance of CProperties
+        CProperties  m_oProperties;
         /// A container instance of CAtom's
-        CAtoms   m_oAtoms;
+        CAtoms       m_oAtoms;
         /// A container instance of CReason's
-        CReasons m_oReasons;
+        CReasons     m_oReasons;
         /// A container instance of CStrand's
-        CStrands m_oStrands;
+        CStrands     m_oStrands;
 
     }; // class COdb
 

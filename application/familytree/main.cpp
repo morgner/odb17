@@ -11,6 +11,7 @@
 #include <set>          // 
 
 #include "thing.h"
+#include "property.h"
 #include "reason.h"
 #include "atom.h"
 #include "odb.h"
@@ -170,6 +171,16 @@ void test2()
     auto a18 = g_oOdb.MakeAtom("Quirks & Quarks", "Radio Cast"s);
     auto a19 = g_oOdb.MakeAtom("Thinking allowed"s,  "Podcast"s);
 
+    auto p1  = g_oOdb.MakeProperty("Person"s);
+    auto p2  = g_oOdb.MakeProperty("Writer"s);
+    d1->Append( p1 );
+    d2->Append( p1 );
+    d3->Append( p1 );
+    d1->Append( p2 );
+    d2->Append( p2 );
+    d3->Append( p2 );
+
+
     d3->Append( a1 );
     d3->Append( a2 );
     d3->Append( a3 );
@@ -191,7 +202,7 @@ void test2()
 a */
 int main()
     {
-    test1();
+    test2();
 
 //    auto a18 = d2->Append( g_oOdb.MakeAtom("Quirks & Quarks", "Radio Cast"s) );
 //    auto a19 = d2->Append( g_oOdb.MakeAtom("Thinking allowed"s, "Podcast"s) );
@@ -204,6 +215,12 @@ int main()
             std::cout << *a << '\n';
             }
         print(g_oOdb.Atoms());
+
+        std::cout << "---------------- all properies" << '\n';
+        for ( auto const & a:g_oOdb.Properties() )
+            {
+            std::cout << *a << '\n';
+            }
 
         std::cout << "---------------- all things" << '\n';
         for ( auto const & a:g_oOdb.Things() )

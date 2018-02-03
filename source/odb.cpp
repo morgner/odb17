@@ -22,6 +22,7 @@ void COdb::clear()
         a->clear();
         }
     m_oAtoms.clear();
+    m_oProperties.clear();
 
     m_oReasons.clear();
     m_oStrands.clear();

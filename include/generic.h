@@ -28,6 +28,14 @@ using PAtom  = std::shared_ptr<CAtom>;
 /// A container for the shared_ptr's of the entity
 using CAtoms = std::deque<PAtom>;
 
+
+/// Forward decleration to befriend with it in other classes
+class CProperty;
+/// The shared_ptr of the entity
+using PProperty  = std::shared_ptr<CProperty>;
+/// A container for the shared_ptr's of the entity
+using CProperties = std::deque<PProperty>;
+
 /// Forward decleration to befriend with it in other classes
 class CReason;
 /// The shared_ptr of the entity

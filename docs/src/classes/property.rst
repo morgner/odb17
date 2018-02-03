@@ -1,0 +1,4 @@
+CProperty
+=========
+
+.. doxygenclass:: odb::CProperty

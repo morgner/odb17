@@ -18,6 +18,7 @@
 
 #include "generic.h"
 #include "atom.h"
+#include "property.h"
 
 
 namespace odb {
@@ -26,6 +27,7 @@ using namespace std::string_literals;
 
 /// forward declarations to befriend with
 class COdb;
+class CProperty;
 class CReason;
 
 /**
@@ -37,6 +39,7 @@ class CThing : public std::enable_shared_from_this<CThing>,
                public Identifiable<CThing>
     {
     friend class COdb;
+    friend class CProperty;
     friend class CReason;
 
     public:
@@ -68,6 +71,17 @@ class CThing : public std::enable_shared_from_this<CThing>,
          * @param crThing The Thing to output
          */
         friend std::ostream & operator << (std::ostream & ros, CThing const & crThing);
+
+        /**
+         * @brief Appends an CProperty to its property list
+         *
+         * Appending an CProperty to this CThing requires the thing to
+         * inform the appended Property about this CThing is linking to
+         * it
+         *
+         * @param poProperty A Property to bind with the Thing
+         */
+        PProperty & Append (PProperty & poProperty);
 
         /**
          * @brief Appends an CAtom to its atom list
@@ -159,7 +173,14 @@ class CThing : public std::enable_shared_from_this<CThing>,
             std::set<PThing, lessIdentifiable<PThing>>               m_spoThingsRelating;
 
             /**
-             * @brief Registers PThings relating to itself
+             * @brief Registers PProperties of this CThing
+             * @param PProperty PProperties we have
+             * @param Compare Function to compare two PAtom's
+             */
+            std::set<PProperty, lessIdentifiable<PProperty>>         m_spoProperties;
+
+            /**
+             * @brief Registers PAtoms of this CThing
              * @param PAtom PAtom's we own
              * @param Compare Function to compare two PAtom's
              */
