@@ -226,9 +226,22 @@ class COdb : public Identifiable<COdb>
 //              ros            << "\"type\": \"" << e->type    << "\", ";
                 ros            << "\"id\": \""   << e->id      << "\", ";
                 ros            << "\"name\": \"" << e->m_sName << "\",\n";
-                ros << spcr<5> << "\"atoms\": [ ";
+
+                ros << spcr<5> << "\"properties\": [ ";
                 long lc{0};     // Block counter
                 bool lb{false}; // Start signal
+                for (auto const & a:e->m_spoProperties)
+                    {
+                    if ( !lb ) { lb=true; ros << ""; } else { ros << ","; }
+                    ++lc;
+                    if ( lc % 5 == 0 & lc > 1 ) { ros << "\n" << spcr<6> ; }
+                    ros << "{\"id\": \"" << a->id << "\"}";
+                    }
+                ros << " ],\n";
+
+                ros << spcr<5> << "\"atoms\": [ ";
+                lc = 0;     // Block counter
+                lb = false; // Start signal
                 for (auto const & a:e->m_spoAtoms)
                     {
                     if ( !lb ) { lb=true; ros << ""; } else { ros << ","; }
@@ -251,8 +264,30 @@ class COdb : public Identifiable<COdb>
                 if ( ++cc < cm ) { ros << " ] },\n"; } else { ros << " ] }\n"; }
                 }
             ros << spcr<3> << "],\n";
-            } // void print_json(CThings const & crContainer, long const nRI, std::ostream & ros)
+            } // void print_json(CThings const & crContainer, std::ostream & ros)
 
+        /**
+         * @brief Dump all CProperty's in Sub-JSON format
+         *
+         * @param crContainer The forward iterable container, containing all CProperty instances
+         * @param ros The output destination
+         */
+        void print_json(CProperties const & crContainer, std::ostream & ros)
+            {
+            std::size_t cm{crContainer.size()};
+            std::size_t cc{0};
+            ros << spcr<2> << "\"Properties\": " << '\n';
+            ros << spcr<3> << '[' << '\n';
+            for ( auto const & a:crContainer )
+                {
+                ros << spcr<4> << "{ ";
+                ros            << "\"id\": \""     <<  a->id        << "\", ";
+                ros            << "\"name\": \""   <<  a->m_sName   << "\" ";
+                if ( ++cc < cm ) { ros << "},\n"; } else { ros << "}\n"; }
+                }
+            ros << spcr<3> << "],\n";
+            } // void print_json(CProperties const & crContainer, std::ostream & ros)
+            
         /**
          * @brief Dump all CAtoms in Sub-JSON format
          *
@@ -280,7 +315,6 @@ class COdb : public Identifiable<COdb>
             ros << spcr<3> << "],\n";
             } // void print_json(CAtoms const & crContainer, long const nRI, std::ostream & ros)
 
-
         /**
          * @brief Dump all CReasons in Sub-JSON format
          * @param crContainer The forward iterable container, containing all CReason instances
@@ -295,7 +329,6 @@ class COdb : public Identifiable<COdb>
             for ( auto const & a:crContainer )
                 {
                 ros << spcr<4> << "{ ";
-//              ros            << "\"type\": \"" << a->type      << "\", ";
                 ros            << "\"id\": \""     << a->id        << "\", ";
                 ros            << "\"name\": \""   << a->m_sName   << "\" ";
                 if ( ++cc < cm ) { ros << "},\n"; } else { ros << "}\n"; }
@@ -317,9 +350,10 @@ class COdb : public Identifiable<COdb>
             ros << spcr<1> << "\"Object Database Dump\": " << '\n';
             ros << spcr<2> << '{' << '\n';
 
-            print_json(m_oThings,  ros);
-            print_json(m_oAtoms,   ros);
-            print_json(m_oReasons, ros);
+            print_json(m_oThings,     ros);
+            print_json(m_oProperties, ros);
+            print_json(m_oAtoms,      ros);
+            print_json(m_oReasons,    ros);
 
             ros << spcr<2> << '}' << '\n';
             ros << spcr<0> << '}' << '\n';

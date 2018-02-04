@@ -173,12 +173,10 @@ void test2()
 
     auto p1  = g_oOdb.MakeProperty("Person"s);
     auto p2  = g_oOdb.MakeProperty("Writer"s);
-    d1->Append( p1 );
-    d2->Append( p1 );
-    d3->Append( p1 );
-    d1->Append( p2 );
-    d2->Append( p2 );
-    d3->Append( p2 );
+    d5->Append( p1 );
+    d6->Append( p1 );
+    d5->Append( p2 );
+    d6->Append( p2 );
 
 
     d3->Append( a1 );
