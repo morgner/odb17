@@ -263,7 +263,7 @@ class COdb : public Identifiable<COdb>
                     }
                 if ( ++cc < cm ) { ros << " ] },\n"; } else { ros << " ] }\n"; }
                 }
-            ros << spcr<3> << "],\n";
+            ros << spcr<3> << "]\n";
             } // void print_json(CThings const & crContainer, std::ostream & ros)
 
         /**
@@ -333,7 +333,7 @@ class COdb : public Identifiable<COdb>
                 ros            << "\"name\": \""   << a->m_sName   << "\" ";
                 if ( ++cc < cm ) { ros << "},\n"; } else { ros << "}\n"; }
                 }
-            ros << spcr<3> << ']' << '\n';
+            ros << spcr<3> << "],\n";
             }
 
 
@@ -350,10 +350,10 @@ class COdb : public Identifiable<COdb>
             ros << spcr<1> << "\"Object Database Dump\": " << '\n';
             ros << spcr<2> << '{' << '\n';
 
-            print_json(m_oThings,     ros);
             print_json(m_oProperties, ros);
             print_json(m_oAtoms,      ros);
             print_json(m_oReasons,    ros);
+            print_json(m_oThings,     ros);
 
             ros << spcr<2> << '}' << '\n';
             ros << spcr<0> << '}' << '\n';

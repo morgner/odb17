@@ -170,14 +170,7 @@ void test2()
     auto a15 = g_oOdb.MakeAtom('e', "Letter"s);
     auto a18 = g_oOdb.MakeAtom("Quirks & Quarks", "Radio Cast"s);
     auto a19 = g_oOdb.MakeAtom("Thinking allowed"s,  "Podcast"s);
-
-    auto p1  = g_oOdb.MakeProperty("Person"s);
-    auto p2  = g_oOdb.MakeProperty("Writer"s);
-    d5->Append( p1 );
-    d6->Append( p1 );
-    d5->Append( p2 );
-    d6->Append( p2 );
-
+    auto a20 = g_oOdb.MakeAtom(std::vector<std::string>{"a3i"s, "b2j"s, "c1k"s}, "vos");
 
     d3->Append( a1 );
     d3->Append( a2 );
@@ -191,6 +184,21 @@ void test2()
     d1->Append( a15 );
     d2->Append( a18 );
     d2->Append( a19 );
+
+    auto p1  = g_oOdb.MakeProperty("Person"s);
+    auto p2  = g_oOdb.MakeProperty("Writer"s);
+    auto p3  = g_oOdb.MakeProperty("Book"s);
+    d5->Append( p1 );
+    d6->Append( p1 );
+    d5->Append( p2 );
+    d6->Append( p2 );
+    d7->Append( p3 );
+    d8->Append( p3 );
+    d9->Append( p3 );
+    da->Append( p3 );
+    auto p4  = g_oOdb.MakeProperty("Podcast"s);
+    auto p5  = g_oOdb.MakeProperty("Letter"s);
+    auto p6  = g_oOdb.MakeProperty("Product"s);
 
     g_oOdb.MakeAtom("--------"s, "Line"s);
     }
