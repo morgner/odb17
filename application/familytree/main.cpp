@@ -222,10 +222,12 @@ int main()
             }
         print(g_oOdb.Atoms());
 
-        std::cout << "---------------- all properies" << '\n';
+        std::cout << "---------------- all properties" << '\n';
         for ( auto const & a:g_oOdb.Properties() )
             {
             std::cout << *a << '\n';
+            for ( auto b:a->m_oRelations )
+                std::cout << "  " << b->m_sName << '\n';
             }
 
         std::cout << "---------------- all things" << '\n';

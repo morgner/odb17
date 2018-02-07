@@ -72,7 +72,7 @@ class CProperty : public Identifiable<CProperty>
     public:
         /// The name of the property
         std::string m_sName{ s_csNameUnnamedProperty };
-    protected:
+//    protected:
         /// A set containing backlinks from things
         std::set<PThing> m_oRelations;
 
