@@ -14,6 +14,52 @@
 
 namespace odb {
 
+/**
+ * @brief compare operator for two Identifiable's
+ *
+ * Universal compare operator comparing class instances derived
+ * from class Identifiable by instance member 'id'
+ *
+ * @tparam T The type of the elements to compare
+ */
+template<typename T>
+struct lessIdentifiable
+    {
+    /**
+     * @brief Compares two objects derived from Identifiable
+     * @param p1 The element to compare
+     * @param p2 The element to compare with
+     */
+    bool operator()(T const & p1, T const & p2) const
+        {
+        return p1->id < p2->id;
+        }
+    };
+
+/* 2
+    auto compare = [](PThing const p1, PThing const p2){return p1->id < p2->id;};
+    std::set<PThing, decltype(compare)> m_spoThingsRelating{std::move(compare)};
+*/
+
+/* 3
+template<typename Type, typename ... Comparator>
+auto make_set(Comparator && ... comparator)
+  {
+  struct Compare : std::decay_t<Comparator>...
+    {
+    using std::decay_t<Comparator>::operator()...;
+    using is_transparent = int;
+    };
+  return std::set<Type, Compare>{Compare{std::forward<Comparator>(comparator)...}};
+  }
+auto m_spoThingsRelating = make_set<PThing>(
+  [](PThing const p1, PThing const p2){return p1->id < p2->id;}
+  [](long   const c , PThing const p2){return c      < p2->id;},
+  [](PThing const p1, long   const c ){return p1->id < c;     }
+  );
+*/
+
+
 /// Forward decleration to befriend with it in other classes
 class CThing;
 /// The shared_ptr of the entity

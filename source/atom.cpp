@@ -11,12 +11,6 @@
 
 namespace odb {
 
-bool CAtom::lessPThing::operator()(PThing const & poThing1,
-                                   PThing const & poThing2) const
-    {
-    return poThing1->id < poThing2->id;
-    }
-
 void print(CAtoms const & crContainer)
     {
     for (auto const & e:crContainer)

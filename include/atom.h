@@ -316,15 +316,8 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
         std::string m_sPrefix{""s};
         /// The UI suffix (if any) for the atom
         std::string m_sSuffix{""s};
-
-        /// The comperator functor to decide if thing p1 is lesser than thing p2
-        struct lessPThing
-            {
-            /// The function itself
-            bool operator()(PThing const &, PThing const & ) const;
-            };
-        /// The list of CThings which relate with 'this' atom
-        std::set<PThing, lessPThing> m_spoThingsRelating;
+        /// CThing's Relating to this CAtom
+        std::set<PThing, lessIdentifiable<PThing>>  m_spoThingsRelating;
 
     /// start of data implementation
     struct SAtomDataConcept

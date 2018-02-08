@@ -146,17 +146,7 @@ class CThing : public std::enable_shared_from_this<CThing>,
              *
              * @tparam T The type of the elements to compare
              */
-            template<typename T>
-            struct lessIdentifiable
-                {
-                /**
-                 * @brief Compares two objects derived from Identifiable
-                 * @param p1 The element to compare
-                 * @param p2 The element to compare with
-                 */
-                bool operator()(T const & p1, T const & p2) const
-                    { return p1->id < p2->id; }
-                };
+
             /**
              * @brief Holds the links to another CThing for CReason
              * @param PThing The PThing we link to
