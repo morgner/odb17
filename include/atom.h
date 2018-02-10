@@ -188,7 +188,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
         /// Switch to enable/disable debug information output, regarding CAtom
         static constexpr bool s_bDebug{false};
     public:
-        /// Copmares the type of a variable with a chosen type for similarity,
+        /// Compares the type of a variable with a chosen type for similarity,
         /// e.g:
         ///  - if ( decay_equiv<T, int>::value ) ...
         template <typename T, typename U>
@@ -205,10 +205,17 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
          */
         template<typename T>
         CAtom(T tAtomData,
+#ifdef __DOXYGEN__
+            std::string const & crsName   = "",
+            std::string const & crsPrefix = "",
+            std::string const & crsSuffix = "",
+            std::string const & crsFormat = "")
+#else
             std::string const & crsName   = ""s,
             std::string const & crsPrefix = ""s,
             std::string const & crsSuffix = ""s,
             std::string const & crsFormat = ""s)
+#endif
             : m_pAtomData(new SAtomData<T>(std::move(tAtomData))),
               m_sName  (crsName.length() ? crsName : s_csNameUnnamedAtom),
               m_sPrefix(crsPrefix),

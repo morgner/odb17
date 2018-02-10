@@ -35,14 +35,14 @@ class CProperty : public Identifiable<CProperty>
         /// The name of an unnamed property
         static constexpr auto s_csNameUnnamedProperty{"unnamedProperty"};
     public:
-                 /// Forbidden
+                 /// @brief deleted: default constructor
                  CProperty() = delete;
 
-                 /// There is no reason to copy a CProperty
+                 /// @brief deleted: copy constructor
+		 /// There is no reason to copy a CProperty
                  CProperty(CProperty const & src) = delete;
 
                  /// Normal constructor, receiving the name of the property
-                 /// and a values if any
                  CProperty(std::string const & crsName);
 
         virtual ~CProperty() = default;
@@ -59,11 +59,8 @@ class CProperty : public Identifiable<CProperty>
         /// Add the information about a link from a CThing
         void RelationAdd( PThing poThing );
 
-        /**
-           @brief Removes a link to a CThing
-
-           @param poThing The thing the link is pointing to
-         */
+        /// @brief Removes a link to a CThing
+        /// @param poThing The thing the link is pointing to
         void RelationSub( PThing poThing );
 
         /// Prints an informational output to std::cout
@@ -72,7 +69,7 @@ class CProperty : public Identifiable<CProperty>
     public:
         /// The name of the property
         std::string m_sName{ s_csNameUnnamedProperty };
-//    protected:
+//  ? protected:
         /// A set containing backlinks from things
         std::set<PThing> m_oRelations;
 

@@ -13,8 +13,18 @@ add_executable(2-atom2thing.test
   $<TARGET_OBJECTS:${PROJECT_NAME}>
   )
 
-add_executable(3-link2things.test
+add_executable(3-property.test
+  tests/property2thing-test.cpp
+  $<TARGET_OBJECTS:${PROJECT_NAME}>
+  )
+
+add_executable(4-link2things.test
   tests/link2things-test.cpp
+  $<TARGET_OBJECTS:${PROJECT_NAME}>
+  )
+
+add_executable(5-things.test
+  tests/things-test.cpp
   $<TARGET_OBJECTS:${PROJECT_NAME}>
   )
 

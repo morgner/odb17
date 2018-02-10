@@ -25,36 +25,44 @@ namespace odb {
 
 
 /**
-    @brief The database
-
-    A Object Database itself is an Identifiable object. Enabeling multiple
-    database instances in onw application.
-
-    @author Manfred Morgner
-    @since  0.0.1 c++17
+ *  @brief The database
+ *
+ *  A Object Database itself is an Identifiable object. Enabeling multiple
+ *  database instances in one application.
+ *
+ *  @author Manfred Morgner
+ *  @since  0.1.17
  */
 class COdb : public Identifiable<COdb>
     {
     public:
                 /**
-                 * @brief Creates a COdb, an database
+                 * @brief Creates a COdb, a database
                  *
                  * We only default construct the database, no copy construction
                  * no copy of the database at all. It is not known, what copying
                  * the database means.
                  */
                  COdb() = default;
-                 /// Copying a databse is not supported yet. We will support it
-                 /// as soon as we find out what it means.
+                 /**
+		  * @brief deleted: copy constructor
+		  *  
+		  * Copying a databse is not supported yet. We will support it
+                  * as soon as we find out what it means.
+		  */ 
                  COdb(COdb const & src) = delete;
-                 /// Here we are in the same situation as with copy construction
+                 /**
+		  * @brief deleted: Assignment operator
+		  *
+		  * Here we are in the same situation as with copy construction
+		  */
                  COdb & operator = (COdb const & src) = delete;
                  /**
-                     @brief Some cleanup
-                     
-                     If we wish to convience valgrind we are doiiing it right,
-                     we have to free all links to other objects before leaving
-                     the show.
+                  * @brief Some cleanup
+                  *  
+                  * If we wish to convience valgrind we are doing it right,
+                  * we have to free all links to other objects before leaving
+                  * the show.
                   */
         virtual ~COdb()
                     {
@@ -78,7 +86,11 @@ class COdb : public Identifiable<COdb>
          *
          * @param crsName The name for the CThing
          */
+#ifdef __DOXYGEN__
+        PThing MakeThing(std::string const & crsName = "")
+#else
         auto MakeThing(std::string const & crsName = ""s)
+#endif
             {
             auto p = std::make_shared<CThing>(crsName);
             m_oThings.push_back( p );
@@ -94,7 +106,11 @@ class COdb : public Identifiable<COdb>
          *
          * @param crsName The name for the CProperty
          */
+#ifdef __DOXYGEN__
+        PProperty MakeProperty(std::string const & crsName = "")
+#else
         auto MakeProperty(std::string const & crsName = ""s)
+#endif
             {
             auto p = std::make_shared<CProperty>(crsName);
             m_oProperties.push_back( p );
@@ -112,13 +128,22 @@ class COdb : public Identifiable<COdb>
             simple containers, like string or vector.
 
             CAtom further on manages the life time of the data element.
+	    It's a unique_ptr
 
-            @param data The name for the CAtom
+            @param data The data for the CAtom
             @param crsName The name for the CAtom
-            @param crsPrefix The name for the CAtom
-            @param crsSuffix The name for the CAtom
-            @param crsFormat The name for the CAtom
+            @param crsPrefix The prefix for the CAtom in a GUI
+            @param crsSuffix The suffix for the CAtom in a GUI
+            @param crsFormat The format for the CAtom in a GUI
          */
+#ifdef __DOXYGEN__
+        PAtom const MakeAtom(
+            int data,
+            std::string const & crsName   = "",
+            std::string const & crsPrefix = "",
+            std::string const & crsSuffix = "",
+            std::string const & crsFormat = "")
+#else
         template<typename T>
         auto const MakeAtom(
             T data,
@@ -126,6 +151,7 @@ class COdb : public Identifiable<COdb>
             std::string const & crsPrefix = ""s,
             std::string const & crsSuffix = ""s,
             std::string const & crsFormat = ""s)
+#endif
             {
             auto p = std::make_shared<CAtom>(data, crsName, crsPrefix, crsSuffix, crsFormat);
             m_oAtoms.push_back( p );
@@ -140,7 +166,11 @@ class COdb : public Identifiable<COdb>
          *
          * @param crsName The name for the CReason
          */
+#ifdef __DOXYGEN__
+        PReason MakeReason(std::string const & crsName = "")
+#else
         auto MakeReason(std::string const & crsName = ""s)
+#endif
             {
             auto p = std::make_shared<CReason>(crsName);
             m_oReasons.push_back( p );
@@ -155,7 +185,11 @@ class COdb : public Identifiable<COdb>
          *
          * @param crsName The name for the CStrand
          */
-        auto MakeStrand(std::string const & crsName = ""s)
+#ifdef __DOXYGEN__
+	PStrand MakeStrand(std::string const & crsName = "")
+#else
+	auto MakeStrand(std::string const & crsName = ""s)
+#endif
             {
             auto p = std::make_shared<CStrand>(crsName);
             m_oStrands.push_back( p );
@@ -176,7 +210,8 @@ class COdb : public Identifiable<COdb>
         /**
          * @brief Print out container of CAtom objects
          *
-         * @param crContainer The forward iterable container, containing all T instances
+         * @param crContainer The forward iterable container, containing
+	 *        PAtom's
          */
         void print(CAtoms const & crContainer)
             {
@@ -192,8 +227,10 @@ class COdb : public Identifiable<COdb>
         /**
          * @brief Print out container of identifiable objects
          *
-         * @tparam T A shared_ptr of an 'Identifiable' type, enriched with a memberm_sName
-         * @param crContainer The forward iterable container, containing all T instances
+         * @tparam T A shared_ptr of an 'Identifiable' type, enriched with
+	 *         a memberm_sName
+         * @param  crContainer The forward iterable container, containing
+	 *         all T instances
          */
         template<typename T>
         void print(std::deque<T> const & crContainer)
@@ -207,11 +244,11 @@ class COdb : public Identifiable<COdb>
             } // void print(std::deque<T> const & crContainer)
 
 
-
         /**
          * @brief Dump all CThings in Sub-JSON format
          *
-         * @param crContainer The forward iterable container, containing all CThing instances
+         * @param crContainer The forward iterable container, containing
+	 *        all CThing instances
          * @param ros The output destination
          */
         void print_json(CThings const & crContainer, std::ostream & ros)
@@ -269,7 +306,8 @@ class COdb : public Identifiable<COdb>
         /**
          * @brief Dump all CProperty's in Sub-JSON format
          *
-         * @param crContainer The forward iterable container, containing all CProperty instances
+         * @param crContainer The forward iterable container, containing
+	 *        all CProperty instances
          * @param ros The output destination
          */
         void print_json(CProperties const & crContainer, std::ostream & ros)
@@ -291,7 +329,8 @@ class COdb : public Identifiable<COdb>
         /**
          * @brief Dump all CAtoms in Sub-JSON format
          *
-         * @param crContainer The forward iterable container, containing all CAtom instances
+         * @param crContainer The forward iterable container, containing
+	 *        all CAtom instances
          * @param ros The output destination
          */
         void print_json(CAtoms const & crContainer, std::ostream & ros)
@@ -317,7 +356,8 @@ class COdb : public Identifiable<COdb>
 
         /**
          * @brief Dump all CReasons in Sub-JSON format
-         * @param crContainer The forward iterable container, containing all CReason instances
+         * @param crContainer The forward iterable container, containing
+	 *        all CReason instances
          * @param ros The output destination
          */
         void print_json(CReasons const & crContainer, std::ostream & ros)

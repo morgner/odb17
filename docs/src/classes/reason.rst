@@ -54,11 +54,11 @@ Demostration
 
 Output:
 
-.. code-block:: plain
+.. code-block:: none
 
-    thing: Ulrich
-       => linked to: "Fred" for reason: "pays" = Ulrich pays Fred
-    thing: Fred
-       <= linked from: Ulrich
+   thing: Ulrich
+      => linked to: "Fred" for reason: "pays" = Ulrich pays Fred
+   thing: Fred
+      <= linked from: Ulrich
 
 .. doxygenclass:: odb::CReason
