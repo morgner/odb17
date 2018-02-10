@@ -21,6 +21,8 @@ template<typename... Args> void mkproperties(Args&&... args) { (oOdb.MakePropert
 template<typename... Args> void mkreasons   (Args&&... args) { (oOdb.MakeReason  (args), ...); }
 template<typename... Args> void mkatoms     (Args&&... args) { (oOdb.MakeAtom    (args, "fold" ), ...); }
 
+template<typename... Args> void ap2ts(std::string const & sProperty, Args&&... args) { (oOdb.AppendProperty2Thing(sProperty, args), ...); }
+
 /// @brief Demo main program
 int main()
     {
@@ -29,5 +31,13 @@ int main()
     mkreasons   ("wrote", "read", "bought", "left", "foundet", "loves", "sells", "works at");
     mkatoms     ( 2.5, "done", 7, std::array{2,1,3}, "go", 89, "sold", "percent");
 
+    for ( size_t n = 0; n < oOdb.Things().size(); ++n )
+        {
+        oOdb.AppendProperty2Thing( n, 0 );
+	}
+    ap2ts( "male",   "Ulli", "Peter", "Rudi",  "Arnold" );
+    ap2ts( "female", "Nora", "Paula", "Marta", "Bertha", "Elise");
+
+    oOdb.print();
     oOdb.print_json(std::cout);
     }

@@ -55,6 +55,12 @@ class CProperty : public Identifiable<CProperty>
 
         /// Conversion operator will return the name of the instance
         operator std::string const & ();
+        
+	/// Compares the name with an input string
+	friend bool operator == (PProperty const & croProperty, std::string const & crsInput)
+	    {
+            return croProperty->m_sName == crsInput;
+	    }
 
         /// Add the information about a link from a CThing
         void RelationAdd( PThing poThing );

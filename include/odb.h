@@ -399,6 +399,37 @@ class COdb : public Identifiable<COdb>
             ros << spcr<0> << '}' << '\n';
           }
 
+	/// Appends a Property to a Thing by given index value
+        bool AppendProperty2Thing( size_t nThing, size_t nProperty )
+            {
+            if ( (nThing < m_oThings.size()) & (nProperty < m_oProperties.size()) )
+		{
+                m_oThings[nThing]->Append( m_oProperties[nProperty] );
+		}
+	    else
+	        {
+		return false;
+		}
+	    return true;
+            }
+
+	/// Appends a Property to a Thing by given names
+	bool AppendProperty2Thing( std::string const & crsProperty, std::string const & crsThing )
+            {
+            auto itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), crsProperty);
+            if ( itProperty == m_oProperties.end() )
+	        {
+		return false;
+		}
+
+	    for ( auto & a:m_oThings )
+	        {
+		if ( a->m_sName == crsThing ) a->Append( *itProperty );
+	        }
+
+	    return false;
+            }
+
         /// Access function to call then container of CThing's
         CThings      const & Things () const { return m_oThings;  }
         /// Access function to call then container of CProperties
