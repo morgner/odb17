@@ -399,7 +399,7 @@ class COdb : public Identifiable<COdb>
             ros << spcr<0> << '}' << '\n';
           }
 
-	/// Appends a Property to a Thing by given index value
+	/// todo: optimize / Appends a Property to a Thing by given index value
         bool AppendProperty2Thing( size_t nThing, size_t nProperty )
             {
             if ( (nThing < m_oThings.size()) & (nProperty < m_oProperties.size()) )
@@ -413,13 +413,15 @@ class COdb : public Identifiable<COdb>
 	    return true;
             }
 
-	/// Appends a Property to a Thing by given names
-	bool AppendProperty2Thing( std::string const & crsProperty, std::string const & crsThing )
+	/// todo: optimize / Appends a Property to a Thing by given names
+	bool AppendProperty2Thing( std::string const & crsProperty, bool bForce, std::string const & crsThing )
             {
             auto itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), crsProperty);
             if ( itProperty == m_oProperties.end() )
 	        {
-		return false;
+		if ( !bForce ) return false;
+		MakeProperty(crsProperty);
+                itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), crsProperty);
 		}
 
 	    for ( auto & a:m_oThings )
@@ -427,8 +429,28 @@ class COdb : public Identifiable<COdb>
 		if ( a->m_sName == crsThing ) a->Append( *itProperty );
 	        }
 
-	    return false;
+	    return true;
             }
+
+	/// Result container of collecting operations, collecting IDs
+	using CAggregate = std::set<size_t>;
+
+        /// todo: optimize / Selects Thing-IDs by a Property 
+	CAggregate SelectThingsByProperty( std::string const & crsProperty )
+	    {
+	    CAggregate result{};
+
+            auto itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), crsProperty);
+            if ( itProperty != m_oProperties.end() )
+	        {
+	        for ( auto const & a:(*itProperty)->m_oRelations )
+	            {
+                    result.insert(a->id);
+                    }
+		}
+
+	    return std::move(result);
+	    }
 
         /// Access function to call then container of CThing's
         CThings      const & Things () const { return m_oThings;  }

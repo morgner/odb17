@@ -74,7 +74,6 @@ using PAtom  = std::shared_ptr<CAtom>;
 /// A container for the shared_ptr's of the entity
 using CAtoms = std::deque<PAtom>;
 
-
 /// Forward decleration to befriend with it in other classes
 class CProperty;
 /// The shared_ptr of the entity
@@ -117,7 +116,7 @@ inline auto demangle(std::type_info const & type)
  * @tparam T The type with which to associate the ID counter
  * @tparam S The starting ID
  */
-template<typename T, unsigned long long S = 0>
+template<typename T, size_t S = 0>
 static auto idForObjectOf()
     {
     static auto id = S;
