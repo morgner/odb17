@@ -261,7 +261,7 @@ class COdb : public Identifiable<COdb>
                 {
                 ros << spcr<4> << "{ ";
 //              ros            << "\"type\": \"" << e->type    << "\", ";
-                ros            << "\"id\": \""   << e->id      << "\", ";
+                ros            << "\"id\": "     << e->id      << ", ";
                 ros            << "\"name\": \"" << e->m_sName << "\",\n";
 
                 ros << spcr<5> << "\"properties\": [ ";
@@ -272,7 +272,7 @@ class COdb : public Identifiable<COdb>
                     if ( !lb ) { lb=true; ros << ""; } else { ros << ","; }
                     ++lc;
                     if ( lc % 5 == 0 & lc > 1 ) { ros << "\n" << spcr<6> ; }
-                    ros << "{\"id\": \"" << a->id << "\"}";
+                    ros << "{\"id\": " << a->id << "}";
                     }
                 ros << " ],\n";
 
@@ -284,7 +284,7 @@ class COdb : public Identifiable<COdb>
                     if ( !lb ) { lb=true; ros << ""; } else { ros << ","; }
                     ++lc;
                     if ( lc % 5 == 0 & lc > 1 ) { ros << "\n" << spcr<6> ; }
-                    ros << "{\"id\": \"" << a->id << "\"}";
+                    ros << "{\"id\": " << a->id << "}";
                     }
                 ros << " ],\n";
 
@@ -296,7 +296,7 @@ class COdb : public Identifiable<COdb>
                     if ( !lb ) { lb=true; ros << ""; } else { ros << ","; }
                     ++lc;
                     if ( lc % 3 == 0 & lc > 1 ) { ros << "\n" << spcr<6>; }
-                    ros << "{\"thing-id\": \"" << b.first->id << "\", \"reason-id\": \"" << b.second->id << "\"}";
+                    ros << "{\"thing-id\": " << b.first->id << ", \"reason-id\": " << b.second->id << "}";
                     }
                 if ( ++cc < cm ) { ros << " ] },\n"; } else { ros << " ] }\n"; }
                 }
@@ -319,7 +319,7 @@ class COdb : public Identifiable<COdb>
             for ( auto const & a:crContainer )
                 {
                 ros << spcr<4> << "{ ";
-                ros            << "\"id\": \""     <<  a->id        << "\", ";
+                ros            << "\"id\": "       <<  a->id        << ", ";
                 ros            << "\"name\": \""   <<  a->m_sName   << "\" ";
                 if ( ++cc < cm ) { ros << "},\n"; } else { ros << "}\n"; }
                 }
@@ -342,8 +342,8 @@ class COdb : public Identifiable<COdb>
             for ( auto const & a:crContainer )
                 {
                                            ros << spcr<4> << "{ ";
-//                                         ros << "\"type\": \""   << a->type      << "\", ";
-                                           ros << "\"id\": \""     <<  a->id        << "\", ";
+//                                         ros << "\"type\": \""   <<  a->type      << "\", ";
+                                           ros << "\"id\": "       <<  a->id        << ", ";
                 if ( a->m_sName.size() )   ros << "\"name\": \""   <<  a->m_sName   << "\", ";
                 if ( a->m_sPrefix.size() ) ros << "\"prefix\": \"" <<  a->m_sPrefix << "\", ";
                 if ( a->m_sSuffix.size() ) ros << "\"suffix\": \"" <<  a->m_sSuffix << "\", ";
@@ -369,7 +369,7 @@ class COdb : public Identifiable<COdb>
             for ( auto const & a:crContainer )
                 {
                 ros << spcr<4> << "{ ";
-                ros            << "\"id\": \""     << a->id        << "\", ";
+                ros            << "\"id\": "       << a->id        << ", ";
                 ros            << "\"name\": \""   << a->m_sName   << "\" ";
                 if ( ++cc < cm ) { ros << "},\n"; } else { ros << "}\n"; }
                 }
@@ -431,6 +431,36 @@ class COdb : public Identifiable<COdb>
 
 	    return true;
             }
+
+	/// todo: optimize / Appends an Atom to a Thing by given index value
+        bool AppendAtom2Thing( size_t nThing, size_t nAtom )
+            {
+            if ( (nThing < m_oThings.size()) & (nAtom < m_oAtoms.size()) )
+		{
+                m_oThings[nThing]->Append( m_oAtoms[nAtom] );
+		}
+	    else
+	        {
+		return false;
+		}
+	    return true;
+            }
+
+	/// todo: optimize / Links a Thing to a Thing for a Reason by given index value
+        bool LinkThing2Thing( size_t nThingFrom, size_t nThingTo, size_t nReason )
+            {
+            if ( (nThingFrom < m_oThings.size()) & (nThingTo < m_oThings.size()) & (nReason < m_oReasons.size()) )
+		{
+                m_oThings[nThingFrom]->Link( m_oThings[nThingTo], m_oReasons[nReason] );
+		}
+	    else
+	        {
+		return false;
+		}
+	    return true;
+            }
+
+	// Search operations
 
 	/// Result container of collecting operations, collecting IDs
 	using CAggregate = std::set<size_t>;

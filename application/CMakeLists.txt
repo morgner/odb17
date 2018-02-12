@@ -28,6 +28,15 @@ add_executable(5-things.test
   $<TARGET_OBJECTS:${PROJECT_NAME}>
   )
 
+add_executable(6-json-read.test
+  tests/json-read-test.cpp
+  $<TARGET_OBJECTS:${PROJECT_NAME}>
+  )
+
+target_link_libraries(6-json-read.test
+  jsoncpp
+  )
+
 target_link_libraries(odb.server
   ${CMAKE_THREAD_LIBS_INIT}
   )
