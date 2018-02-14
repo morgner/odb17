@@ -19,19 +19,29 @@ int main()
     db_dump >> json;
 
     const Json::Value & properties = json["Object Database Dump"]["Properties"];
-    std::cout << "odb read in " << properties.size() << " properties.\n";
+//    std::cout << "odb read in " << properties.size() << " properties.\n";
     for ( size_t index = 0; index < properties.size(); ++index )
         {
         auto nId   = properties[(int)index].get("id",    0).asUInt();
+        if (nId != index )
+            {
+            std::cerr << "ERROR: Sequence missmatch Property " << index << " has id " << nId << '\n';
+            exit(1);
+            }
         auto sName = properties[(int)index].get("name", "").asString();
-        oOdb.MakeProperty(/*nId, */sName);
+	oOdb.MakeProperty(/*nId, */sName);
         }
 
     const Json::Value & atoms = json["Object Database Dump"]["Atoms"];
-    std::cout << "odb read in " << atoms.size() << " atoms.\n";
+//    std::cout << "odb read in " << atoms.size() << " atoms.\n";
     for ( size_t index = 0; index < atoms.size(); ++index )
         {
         auto nId     = atoms[(int)index].get("id",      0).asUInt();
+        if (nId != index )
+            {
+            std::cerr << "ERROR: Sequence missmatch Atom " << index << " has id " << nId << '\n';
+            exit(1);
+            }
         auto sName   = atoms[(int)index].get("name",   "").asString();
         auto sPrefix = atoms[(int)index].get("prefix", "").asString();
         auto sSuffix = atoms[(int)index].get("suffix", "").asString();
@@ -41,19 +51,29 @@ int main()
         }
 
     const Json::Value & reasons = json["Object Database Dump"]["Reasons"];
-    std::cout << "odb read in " << reasons.size() << " reasons.\n";
+//    std::cout << "odb read in " << reasons.size() << " reasons.\n";
     for ( size_t index = 0; index < reasons.size(); ++index )
         {
         auto nId   = reasons[(int)index].get("id",    0).asUInt();
+        if (nId != index )
+            {
+            std::cerr << "ERROR: Sequence missmatch Reason " << index << " has id " << nId << '\n';
+            exit(1);
+            }
         auto sName = reasons[(int)index].get("name", "").asString();
         oOdb.MakeReason(/*nId, */sName);
         }
 
     const Json::Value & things = json["Object Database Dump"]["Things"];
-    std::cout << "odb read in " << things.size() << " things.\n";
+//    std::cout << "odb read in " << things.size() << " things.\n";
     for ( size_t index = 0; index < things.size(); ++index )
         {
         auto nId   = things[(int)index].get("id",    0).asUInt();
+        if (nId != index )
+            {
+            std::cerr << "ERROR: Sequence missmatch Thing " << index << " has id " << nId << '\n';
+            exit(1);
+            }
         auto sName = things[(int)index].get("name", "").asString();
         oOdb.MakeThing(/*nId, */sName);
         }

@@ -64,6 +64,11 @@ int main()
     ap2ts( "builder",    true,                  "Peter", "Paula",                  "Arnold"                   );
     // ========================================================================================================
 
+    auto px = oOdb.MakeThing("Ulli");
+    oOdb.AppendProperty2Thing( px->id, 0 );
+    oOdb.AppendProperty2Thing( px->id, 6 );
+    oOdb.AppendProperty2Thing( px->id, 7 );
+
     // INTERSECTION
     // collect all drivers
     auto drivers = oOdb.SelectThingsByProperty( "driver" );

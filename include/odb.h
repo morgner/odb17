@@ -460,7 +460,9 @@ class COdb : public Identifiable<COdb>
 	    return true;
             }
 
-	// Search operations
+	//
+	// =================== Search operations =======================
+        //
 
 	/// Result container of collecting operations, collecting IDs
 	using CAggregate = std::set<size_t>;
@@ -470,15 +472,19 @@ class COdb : public Identifiable<COdb>
 	    {
 	    CAggregate result{};
 
-            auto itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), crsProperty);
-            if ( itProperty != m_oProperties.end() )
-	        {
-	        for ( auto const & a:(*itProperty)->m_oRelations )
+            CProperties oSelection(m_oProperties.size());
+            auto itSelection = std::copy_if(m_oProperties.begin(),
+			                    m_oProperties.end(),
+			                       oSelection.begin(), [&](PProperty const & e) {return e->m_sName == crsProperty;});
+            oSelection.resize(std::distance(oSelection.begin(), itSelection));
+
+	    for ( auto const & s:oSelection )
+		{
+	        for ( auto const & a:s->m_oRelations )
 	            {
                     result.insert(a->id);
                     }
 		}
-
 	    return std::move(result);
 	    }
 
