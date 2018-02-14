@@ -58,7 +58,7 @@ int main()
     ap2ts( "male",       false, "Ulli",         "Peter",          "Rudi",          "Arnold"                   );
     ap2ts( "female",     false,         "Nora",          "Paula",         "Marta",           "Bertha", "Elise");
     ap2ts( "driver",     false, "Ulli",                  "Paula", "Rudi", "Marta",           "Bertha"         );
-    ap2ts( "consumer",   false, "Ulli", "Nora", "Peter",                  "Marta", "Arnold",           "Elise");
+    ap2ts( "consumer",   false, "Ulli", "Nora", "Peter",                                               "Elise");
     ap2ts( "contractor", false,                 "Peter", "Paula", "Rudi",                              "Elise");
     ap2ts( "artist",     true,  "Ulli",                                            "Arnold", "Bertha", "Elise");
     ap2ts( "builder",    true,                  "Peter", "Paula",                  "Arnold"                   );
@@ -90,6 +90,10 @@ int main()
     for ( auto const & a:artists ) vArtistOrBuilder.insert(a);
     for ( auto const & a:builder ) vArtistOrBuilder.insert(a);
 
+    // REGEX
+    // collect all having properties with names begining with 'con'
+    auto vSelection = oOdb.SelectThingsByProperty( "^con.*" );
+
     std::cout << "---------------- selected 'things' having properties 'driver' and 'female'" << '\n';
     for ( auto const & a:vFemaleDrivers )
         {
@@ -98,6 +102,12 @@ int main()
 
     std::cout << "---------------- selected 'things' having properties 'artist' or 'builder'" << '\n';
     for ( auto const & a:vArtistOrBuilder )
+        {
+        std::cout << *(oOdb.Things()[a]) << '\n';
+        }
+
+    std::cout << "---------------- selected 'things' having properties with '^con'" << '\n';
+    for ( auto const & a:vSelection )
         {
         std::cout << *(oOdb.Things()[a]) << '\n';
         }

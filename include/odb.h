@@ -11,6 +11,7 @@
 #include <string>
 #include <memory>    // shared_ptr
 #include <iostream>  // cout
+#include <regex> 
 
 #include "generic.h"
 
@@ -399,94 +400,95 @@ class COdb : public Identifiable<COdb>
             ros << spcr<0> << '}' << '\n';
           }
 
-	/// todo: optimize / Appends a Property to a Thing by given index value
+        /// todo: optimize / Appends a Property to a Thing by given index value
         bool AppendProperty2Thing( size_t nThing, size_t nProperty )
             {
             if ( (nThing < m_oThings.size()) & (nProperty < m_oProperties.size()) )
-		{
+                {
                 m_oThings[nThing]->Append( m_oProperties[nProperty] );
-		}
-	    else
-	        {
-		return false;
-		}
-	    return true;
+                }
+            else
+                {
+                return false;
+                }
+            return true;
             }
 
-	/// todo: optimize / Appends a Property to a Thing by given names
-	bool AppendProperty2Thing( std::string const & crsProperty, bool bForce, std::string const & crsThing )
+        /// todo: optimize / Appends a Property to a Thing by given names
+        bool AppendProperty2Thing( std::string const & crsProperty, bool bForce, std::string const & crsThing )
             {
             auto itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), crsProperty);
             if ( itProperty == m_oProperties.end() )
-	        {
-		if ( !bForce ) return false;
-		MakeProperty(crsProperty);
+                {
+                if ( !bForce ) return false;
+                MakeProperty(crsProperty);
                 itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), crsProperty);
-		}
+                }
 
-	    for ( auto & a:m_oThings )
-	        {
-		if ( a->m_sName == crsThing ) a->Append( *itProperty );
-	        }
-
-	    return true;
+            for ( auto & a:m_oThings )
+                {
+                if ( a->m_sName == crsThing ) a->Append( *itProperty );
+                }
+            return true;
             }
 
-	/// todo: optimize / Appends an Atom to a Thing by given index value
+        /// todo: optimize / Appends an Atom to a Thing by given index value
         bool AppendAtom2Thing( size_t nThing, size_t nAtom )
             {
             if ( (nThing < m_oThings.size()) & (nAtom < m_oAtoms.size()) )
-		{
+                {
                 m_oThings[nThing]->Append( m_oAtoms[nAtom] );
-		}
-	    else
-	        {
-		return false;
-		}
-	    return true;
+                }
+            else
+                {
+                return false;
+                }
+            return true;
             }
 
-	/// todo: optimize / Links a Thing to a Thing for a Reason by given index value
+        /// todo: optimize / Links a Thing to a Thing for a Reason by given index value
         bool LinkThing2Thing( size_t nThingFrom, size_t nThingTo, size_t nReason )
             {
             if ( (nThingFrom < m_oThings.size()) & (nThingTo < m_oThings.size()) & (nReason < m_oReasons.size()) )
-		{
+                {
                 m_oThings[nThingFrom]->Link( m_oThings[nThingTo], m_oReasons[nReason] );
-		}
-	    else
-	        {
-		return false;
-		}
-	    return true;
+                }
+            else
+                {
+                return false;
+                }
+            return true;
             }
 
-	//
-	// =================== Search operations =======================
+        //
+        // =================== Search operations =======================
         //
 
-	/// Result container of collecting operations, collecting IDs
-	using CAggregate = std::set<size_t>;
+        /// Result container of collecting operations, collecting IDs
+        using CAggregate = std::set<size_t>;
 
         /// todo: optimize / Selects Thing-IDs by a Property 
-	CAggregate SelectThingsByProperty( std::string const & crsProperty )
-	    {
-	    CAggregate result{};
+        CAggregate SelectThingsByProperty( std::string const & crsProperty )
+            {
+            CAggregate result{};
 
+            std::regex crsRegex(crsProperty);
             CProperties oSelection(m_oProperties.size());
             auto itSelection = std::copy_if(m_oProperties.begin(),
-			                    m_oProperties.end(),
-			                       oSelection.begin(), [&](PProperty const & e) {return e->m_sName == crsProperty;});
+                                            m_oProperties.end(),
+//                                             oSelection.begin(), [&](PProperty const & e) {return e->m_sName == crsProperty;});
+                                               oSelection.begin(), [&](PProperty const & e) {return std::regex_match(e->m_sName, crsRegex);});
             oSelection.resize(std::distance(oSelection.begin(), itSelection));
 
-	    for ( auto const & s:oSelection )
-		{
-	        for ( auto const & a:s->m_oRelations )
-	            {
+            for ( auto const & s:oSelection )
+                {
+                for ( auto const & a:s->m_oRelations )
+                    {
                     result.insert(a->id);
                     }
-		}
-	    return std::move(result);
-	    }
+                }
+            return std::move(result);
+            }
 
         /// Access function to call then container of CThing's
         CThings      const & Things () const { return m_oThings;  }
