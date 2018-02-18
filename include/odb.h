@@ -400,8 +400,19 @@ class COdb : public Identifiable<COdb>
             ros << spcr<0> << '}' << '\n';
           }
 
+        PProperty & FindOrAddProperty( std::string const & crsProperty )
+	    {
+            auto itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), crsProperty);
+            if ( itProperty == m_oProperties.end() )
+                {
+                MakeProperty(crsProperty);
+                itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), crsProperty);
+                }
+	    return *itProperty;
+	    }
+
         /// todo: optimize / Appends a Property to a Thing by given index value
-        bool AppendProperty2Thing( size_t nThing, size_t nProperty )
+        bool AppendProperty2Thing( size_t nProperty, size_t nThing)
             {
             if ( (nThing < m_oThings.size()) & (nProperty < m_oProperties.size()) )
                 {

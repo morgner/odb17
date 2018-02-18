@@ -13,3 +13,5 @@ env
 
 docs/xml
 docs/html
+
+*.tsv

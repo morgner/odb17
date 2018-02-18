@@ -37,6 +37,11 @@ target_link_libraries(6-json-read.test
   jsoncpp
   )
 
+add_executable(7-read-imdb.test
+  tests/read-file-test.cpp
+  $<TARGET_OBJECTS:${PROJECT_NAME}>
+  )
+
 target_link_libraries(odb.server
   ${CMAKE_THREAD_LIBS_INIT}
   )
