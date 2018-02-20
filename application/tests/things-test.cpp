@@ -116,7 +116,7 @@ int main()
     for ( auto const & a:oOdb.Properties() )
         {
         std::cout << *a << '\n';
-        for ( auto b:a->m_oRelations )
+        for ( auto const & b:a->m_oRelations )
             std::cout << "  " << b->m_sName << '\n';
         }
 

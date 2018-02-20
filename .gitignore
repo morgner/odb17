@@ -15,3 +15,5 @@ docs/xml
 docs/html
 
 *.tsv
+*.gz
+*.json

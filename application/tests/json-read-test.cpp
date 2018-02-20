@@ -103,7 +103,7 @@ int main()
             oOdb.LinkThing2Thing( nId, nTId, nRId );
             }
         }
-    oOdb.print_json(std::cout);
+//  oOdb.print_json(std::cout);
     }
 /*
 {

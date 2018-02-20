@@ -45,20 +45,12 @@ void ap2ts(std::string const & crsProperty, // name of the property
 tconst		titleType	primaryTitle		originalTitle		isAdult	startYear	endYear	runtimeMinutes	genres
 tt0000001	short		Carmencita		Carmencita		0	1894		\N	1		Documentary,Short
 tt0000002	short		Le clown et ses chiens	Le clown et ses chiens	0	1892		\N	5		Animation,Short
-0=id		1=/		2=/			3=name			4=/	5=p		6=/	7=(a)		8=p
+0=id		1=/		2=/			3=name			4=/	5=p		6=/	7=(a)		8=p+
 */
 
 // Demo main program
 int main()
     {
-/*
-    string s = "readline";
-    regex e("\\t");
-    regex_token_iterator<string::iterator> it(s.begin(), s.end(), e, -1);
-    regex_token_iterator<string::iterator> end;
-    while (it != end)
-        cout << " [" << *it++ << "]";	
-*/
     int e = 0;
     static std::string sLine;
     std::fstream imdb_tb("../raw-data/title.basics.tsv", std::ifstream::in);
@@ -68,8 +60,9 @@ int main()
 
     std::getline(imdb_tb, sLine );
 
-    while ( std::getline(imdb_tb, sLine ))
+    while ( std::getline(imdb_tb, sLine ) && (nId++ < 50000 /*DEBUG*/) )
         {
+        std::string sId;
         std::string sName;
         std::string sType;
         std::string sYearF;
@@ -83,26 +76,21 @@ int main()
 //      0=id	1=/	2=/	3=name	4=/	5=p	6=/	7=(a)	8=p+
 	while ( ptr != nullptr )
 	    {
-
 	    sItem = ptr;
             switch ( e )
 	        {
-	        case 0: nId = std::stoull( sItem.substr(2) ); break;
+	        case 0: sId     = sItem; break; // nId = std::stoull( sItem.substr(2) ); break;
 	        case 1: sType   = sItem; break;
 	        case 3: sName   = sItem; break;
 	        case 5: sYearF  = sItem; break;
 	        case 7: sAtom   = sItem; break; // runtime
                 case 8: sGenres = sItem; // gengre1...n = split(sItem, ",")
-		        while ( i < nId )
-		            {
-			    ++i;
-			    oOdb.MakeThing("filler"); // std::cout << 'f';
-		       	    }
-                        m = oOdb.MakeThing(sName);
+//                      std::cout << sId << '\n';
+                        m = oOdb.FindOrMakeThingByProperty( sName, sId );
+//-                     m = oOdb.MakeThing(sName);
 //		        std::cout << nId << " - " << m->id << '\n';
-		        ++i;
-		        m->Append( oOdb.FindOrAddProperty( sType ) );
-		        m->Append( oOdb.FindOrAddProperty( sYearF ) );
+		        if ( "\\N" != sType  ) m->Append( oOdb.FindOrMakeProperty( sType ) );
+		        if ( "\\N" != sYearF ) m->Append( oOdb.FindOrMakeProperty( sYearF ) );
 		        break;
 	        } //switch()
 	    ptr = strtok(nullptr, "\t");
@@ -113,11 +101,11 @@ int main()
 	while ( ptr != nullptr )
 	    {
 	    sGenre = ptr;
-	    m->Append( oOdb.FindOrAddProperty( sGenre ) );
+	    if ( "\\N" != sGenre ) m->Append( oOdb.FindOrMakeProperty( sGenre ) );
 	    ptr = strtok(nullptr, ",");
 	    }
+//	std::cout << *m << '\n';
         }
-
     imdb_tb.close();
 
 /*
@@ -125,20 +113,19 @@ int main()
 nconst		primaryName	birthYear	deathYear	primaryProfession		knownForTitles
 nm0000001	Fred Astaire	1899		1987		soundtrack,actor,miscellaneous	tt0050419,tt0072308,tt0043044,tt0053137
 nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt0040506,tt0038355
-0=id		1=name		2=Ybirth	3=Ydeath	4=profession			4=movies	
+0=id		1=name		2=Ybirth	3=Ydeath	4=profession+			4=movies+
 */
 
-    std::cout << "START" << '\n';
     std::fstream imdb_nb("../raw-data/name.basics.tsv", std::ifstream::in);
     std::getline(imdb_nb, sLine);
-    std::cout << sLine << '\n';
     std::regex r("\\t");
     std::regex k(",");
     std::regex_token_iterator<std::string::iterator> end;
     auto ReasonAI = oOdb.MakeReason( "acts-in" );
-
-    while ( std::getline(imdb_nb, sLine))
+    nId = 0;
+    while ( std::getline(imdb_nb, sLine) && (nId++ < 10000 /*DEBUG*/) )
         {
+        std::string sId;
         std::string sName;
         std::string sYearB;
         std::string sYearD;
@@ -150,41 +137,42 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
 	odb::PThing m;
 	std::regex_token_iterator<std::string::iterator> it(sLine.begin(), sLine.end(), r, -1);
 //	0=id	1=name	2=Ybirth	3=Ydeath	4=profession	5=movies	
-        while (it != end)
+        while ( it != end )
 	    {
 	    sItem = *it++;
             switch ( e )
 	        {
-	        case 0: nId          = std::stoull( sItem.substr(2) ); break;
+	        case 0: sId          = sItem; break; // nId          = std::stoull( sItem.substr(2) ); break;
 	        case 1: sName        = sItem; break;
 	        case 2: sYearB       = sItem; break;
 	        case 3: sYearD       = sItem; break;
 	        case 4: sProfessions = sItem; break; // runtime
                 case 5: sMovies      = sItem; // gangre1...n = split(sItem, ",")
-			if ( sName == "" ) sName = "empty";
-                        m = oOdb.MakeThing(sName);
-			std::cout << "Thing(" << m->id << ") name: " << sName << "\n";
+//			std::cout << sId << '\n';
+			m = oOdb.FindOrMakeThingByProperty( sName, sId );
+//                      m = oOdb.MakeThing(sName);
+//			std::cout << "Thing(" << m->id << ") name: " << sName << "\n";
 
 	                std::regex_token_iterator<std::string::iterator> itP(sProfessions.begin(), sProfessions.end(), k, -1);
                         while (itP != end)
 			    {
-//			    std::cout << "m(" << m->id << ")->Append( oOdb.FindOrAddProperty( " << *itP << " ) );\n";
-			    if ( *itP == "" ) break;
-			    m->Append( oOdb.FindOrAddProperty( *itP++ ) );
+//			    std::cout << "m(" << m->id << ")->Append( oOdb.FindOrMakeProperty( " << *itP << " ) );\n";
+			    sItem = *itP++;
+			    if ( ""    == sItem ) continue;
+			    if ( "\\N" == sItem ) continue;
+			    m->Append( oOdb.FindOrMakeProperty( sItem ) );
 			    }
 
 	                std::regex_token_iterator<std::string::iterator> itM(sMovies.begin(), sMovies.end(), k, -1);
                         while (itM != end)
 			    {
-			    if ( *itM == "" ) break;
 			    sItem = *itM++;
-			    try
-			    {
-	                    size_t nToId = std::stoull( sItem.substr(2) );
-			    oOdb.LinkThing2Thing( m->id, nToId, ReasonAI->id );
-//			    std::cout << "oOdb.LinkThing2Thing( " << m->id << ", " << nToId << ", " << ReasonAI->id << " );\n";
-			    }
-			    catch(...) { std::cerr << "ERROR: not a XYnumber - " << sItem << '\n'; }
+			    try { if ( std::stoull( sItem.substr(2) ) > 50000 ) continue; } catch(...) { continue; }
+			    if ( ""    == sItem ) continue;
+			    if ( "\\N" == sItem ) continue;
+			    odb::PThing movie = oOdb.FindOrMakeThingByProperty( "", sItem );
+		            m->Link( movie, ReasonAI );
+//		            std::cout << sItem << ": oOdb.LinkThing2Thing( " << m->m_sName << ", " << movie->m_sName << ", " << ReasonAI->id << " );\n";
 			    }
 //			std::cout << *(oOdb.Things()[m->id]) << '\n';
 
@@ -195,86 +183,17 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
         }
     imdb_nb.close();
 
+    /* 
+    std::fstream imdb("imdb.json", std::ifstream::out);
+    oOdb.print_json(imdb);
+    imdb.close();
+    */
 
+    std::cout << "---------------- " <<  oOdb.Things().size()     << " things" << '\n';
+    std::cout << "---------------- " <<  oOdb.Properties().size() << " properties" << '\n';
+    std::cout << "---------------- " <<  oOdb.Reasons().size()    << " reasons" << '\n';
+    std::cout << "---------------- " <<  oOdb.Atoms().size()      << " atoms" << '\n';
 
-//    mkthing (name, id);
-//    aps2t(prop1...propn, name);
-
-/*	
-    // filling in some data
-    // ==========================================================================================
-    mkthings    ("Ulli", "Nora", "Peter", "Paula", "Rudi", "Marta", "Arnold", "Bertha", "Elise");
-    mkproperties("person", "male", "female", "driver", "consumer", "contractor");
-    mkreasons   ("wrote", "read", "bought", "left", "foundet", "loves", "sells", "works at");
-    mkatoms     ( 2.5, "done", 7, std::array{2,1,3}, "go", 89, "sold", "percent");
-    // ==========================================================================================
-
-    // give all 'things' the property 'person'
-    for ( size_t n = 0; n < oOdb.Things().size(); ++n )
-        {
-        oOdb.AppendProperty2Thing( 0, n );
-	}
-
-    // assign 'properties' to groups of 'things' (supported by fold expressions)
-    // ========================================================================================================
-    ap2ts( "person",     false, "Ulli", "Nora", "Peter", "Paula", "Rudi", "Marta", "Arnold", "Bertha", "Elise");
-    ap2ts( "male",       false, "Ulli",         "Peter",          "Rudi",          "Arnold"                   );
-    ap2ts( "female",     false,         "Nora",          "Paula",         "Marta",           "Bertha", "Elise");
-    ap2ts( "driver",     false, "Ulli",                  "Paula", "Rudi", "Marta",           "Bertha"         );
-    ap2ts( "consumer",   false, "Ulli", "Nora", "Peter",                                               "Elise");
-    ap2ts( "contractor", false,                 "Peter", "Paula", "Rudi",                              "Elise");
-    ap2ts( "artist",     true,  "Ulli",                                            "Arnold", "Bertha", "Elise");
-    ap2ts( "builder",    true,                  "Peter", "Paula",                  "Arnold"                   );
-    // ========================================================================================================
-
-    auto px = oOdb.MakeThing("Ulli");
-    oOdb.AppendProperty2Thing( 0, px->id );
-    oOdb.AppendProperty2Thing( 6, px->id );
-    oOdb.AppendProperty2Thing( 7, px->id );
-
-    // INTERSECTION
-    // collect all drivers
-    auto drivers = oOdb.SelectThingsByProperty( "driver" );
-    // collect all females
-    auto females = oOdb.SelectThingsByProperty( "female" );
-    // intersect 'drivers' with 'females', resulting in an aggregate of 'female drivers'
-    std::vector<size_t> vFemaleDrivers;
-    std::set_intersection(drivers.begin(), drivers.end(),
-                          females.begin(), females.end(),
-                          std::back_inserter(vFemaleDrivers));
-
-    // UNION
-    // collect all artists
-    auto artists = oOdb.SelectThingsByProperty( "artist" );
-    // collect all builder
-    auto builder = oOdb.SelectThingsByProperty( "builder" );
-    // sum 'artists' and 'builder', resulting in an aggregate of 'artist or builder'
-    std::set<size_t> vArtistOrBuilder;
-    for ( auto const & a:artists ) vArtistOrBuilder.insert(a);
-    for ( auto const & a:builder ) vArtistOrBuilder.insert(a);
-
-    // REGEX
-    // collect all having properties with names begining with 'con'
-    auto vSelection = oOdb.SelectThingsByProperty( "^con.*" );
-
-    std::cout << "---------------- selected 'things' having properties 'driver' and 'female'" << '\n';
-    for ( auto const & a:vFemaleDrivers )
-        {
-        std::cout << *(oOdb.Things()[a]) << "\tid: " << (oOdb.Things()[a])->id << '\n';
-        }
-
-    std::cout << "---------------- selected 'things' having properties 'artist' or 'builder'" << '\n';
-    for ( auto const & a:vArtistOrBuilder )
-        {
-        std::cout << *(oOdb.Things()[a]) << '\n';
-        }
-
-    std::cout << "---------------- selected 'things' having properties with '^con'" << '\n';
-    for ( auto const & a:vSelection )
-        {
-        std::cout << *(oOdb.Things()[a]) << '\n';
-        }
-*/
 /*
     std::cout << "---------------- all properties" << '\n';
     for ( auto const & a:oOdb.Properties() )
@@ -283,10 +202,11 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
         for ( auto b:a->m_oRelations )
             std::cout << "  " << b->m_sName << '\n';
         }
-*/
+
     std::cout << "---------------- all things" << '\n';
     for ( auto const & a:oOdb.Things() )
         {
         std::cout << *a << '\n';
         }
+*/
     }

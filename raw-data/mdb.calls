@@ -1,2 +1,0 @@
-curl 'https://www.themoviedb.org/discover/movie?sort_by=popularity.desc' | egrep '(view_more)' | sed 's/^.*id="\([^"]*\)".*title="\([^"]*\)".*$/\1;\2/'
-curl 'https://www.themoviedb.org/discover/movie/?certification_country=US&certification=R&sort_by=vote_average.desc' | egrep '(view_more)' | sed 's/^.*id="\([^"]*\)".*title="\([^"]*\)".*$/\1;\2/'

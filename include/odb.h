@@ -398,15 +398,48 @@ class COdb : public Identifiable<COdb>
 
             ros << spcr<2> << '}' << '\n';
             ros << spcr<0> << '}' << '\n';
-          }
+            }
 
-        PProperty & FindOrAddProperty( std::string const & crsProperty )
+        /**
+         * @brief Finds or creates a PThing with a named Property, which also may be created and appended
+         *
+         * @param crsThing The name for the CThing
+         * @param crsProperty The name for the CProperty
+         */
+        PThing FindOrMakeThingByProperty( std::string const & crsThing, std::string const & crsProperty )
+            {
+	    PThing    poResult;
+	    PProperty poProperty;
+
+            auto itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), crsProperty);
+	    if ( itProperty == m_oProperties.end() )
+	        {
+                poProperty = MakeProperty(crsProperty);
+		}
+            else
+	        {
+                poProperty = *itProperty;
+		}
+
+	    if ( poProperty->m_oRelations.size() > 0 )
+	        {
+		poResult = *poProperty->m_oRelations.begin();
+		}
+	    else
+	        {
+                poResult = MakeThing(crsThing);
+	        poResult->Append(poProperty);
+		}
+
+	    return poResult;
+            }
+
+        PProperty & FindOrMakeProperty( std::string const & crsProperty )
 	    {
             auto itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), crsProperty);
             if ( itProperty == m_oProperties.end() )
                 {
-                MakeProperty(crsProperty);
-                itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), crsProperty);
+                itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), MakeProperty(crsProperty));
                 }
 	    return *itProperty;
 	    }
@@ -414,14 +447,16 @@ class COdb : public Identifiable<COdb>
         /// todo: optimize / Appends a Property to a Thing by given index value
         bool AppendProperty2Thing( size_t nProperty, size_t nThing)
             {
-            if ( (nThing < m_oThings.size()) & (nProperty < m_oProperties.size()) )
+            auto itProperty = std::find_if(m_oProperties.begin(), m_oProperties.end(), [&](PProperty const & e){return e->id == nProperty;});
+	    auto itThing    = std::find_if(m_oThings.begin(),     m_oThings.end(),     [&](PThing    const & e){return e->id == nThing;});
+
+            if ( (itThing == m_oThings.end()) || (itProperty == m_oProperties.end()) )
                 {
-                m_oThings[nThing]->Append( m_oProperties[nProperty] );
-                }
-            else
-                {
+//	        std::cout << "FALSE AppendProperty2Thing( size_t "<< nProperty <<", size_t " << nThing << " )" << '\n';
                 return false;
                 }
+//	    std::cout << "true AppendProperty2Thing( size_t "<< nProperty <<", size_t " << nThing << " )" << '\n';
+            (*itThing)->Append( *itProperty );
             return true;
             }
 
@@ -460,14 +495,17 @@ class COdb : public Identifiable<COdb>
         /// todo: optimize / Links a Thing to a Thing for a Reason by given index value
         bool LinkThing2Thing( size_t nThingFrom, size_t nThingTo, size_t nReason )
             {
-            if ( (nThingFrom < m_oThings.size()) & (nThingTo < m_oThings.size()) & (nReason < m_oReasons.size()) )
+	    auto itThingFrom = std::find_if(m_oThings.begin(),  m_oThings.end(),  [&](PThing  const & e){return e->id == nThingFrom;});
+	    auto itThingTo   = std::find_if(m_oThings.begin(),  m_oThings.end(),  [&](PThing  const & e){return e->id == nThingTo;});
+	    auto itReason    = std::find_if(m_oReasons.begin(), m_oReasons.end(), [&](PReason const & e){return e->id == nReason;});
+            if ( (itThingFrom == m_oThings.end()) || (itThingTo == m_oThings.end()) || (itReason == m_oReasons.end()) )
                 {
-                m_oThings[nThingFrom]->Link( m_oThings[nThingTo], m_oReasons[nReason] );
-                }
-            else
-                {
+	        std::cout << "0 " << (*itThingFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itThingTo)->m_sName << '\n';
                 return false;
                 }
+//          std::cout << "true LinkThing2Thing( size_t " << nThingFrom << ", size_t " << nThingTo << ", size_t " << nReason << " )\n";
+//	    std::cout << "+ " << (*itThingFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itThingTo)->m_sName << '\n';
+	    (*itThingFrom)->Link( *itThingTo, *itReason );
             return true;
             }
 

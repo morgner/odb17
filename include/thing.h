@@ -57,6 +57,13 @@ class CThing : public std::enable_shared_from_this<CThing>,
                  * @param crsName A name for the Thing
                  */
                  CThing(std::string const & crsName);
+
+	         /// Compares the name with an input string
+	         friend bool operator == (PThing const & croThing, std::string const & crsInput)
+	             {
+                     return croThing->m_sName == crsInput;
+	             }
+
                 /// Nothings special here
         virtual ~CThing() = default;
 
