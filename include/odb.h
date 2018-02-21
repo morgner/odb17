@@ -437,8 +437,8 @@ class COdb : public Identifiable<COdb>
         PProperty & FindOrMakeProperty( std::string const & crsProperty )
 	    {
 	    PProperty poProperty;
-//          auto itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), crsProperty);
-            auto itProperty = m_oProperties.find(crsProperty);
+            auto itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), crsProperty);
+//          auto itProperty = m_oProperties.find(crsProperty);
             if ( itProperty == m_oProperties.end() )
                 {
                 poProperty = std::move(MakeProperty(crsProperty));

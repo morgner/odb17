@@ -80,8 +80,7 @@ class CProperty;
 /// The shared_ptr of the entity
 using PProperty  = std::shared_ptr<CProperty>;
 /// A container for the shared_ptr's of the entity
-//using CProperties = std::deque<PProperty>;
-using CProperties = std::set<PProperty>;
+using CProperties = std::deque<PProperty>;
 
 /// Forward decleration to befriend with it in other classes
 class CReason;
