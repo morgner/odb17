@@ -123,7 +123,7 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
     std::regex_token_iterator<std::string::iterator> end;
     auto ReasonAI = oOdb.MakeReason( "acts-in" );
     nId = 0;
-    while ( std::getline(imdb_nb, sLine) && (nId++ < 10000 /*DEBUG*/) )
+    while ( std::getline(imdb_nb, sLine) && (nId++ < 8000 /*DEBUG*/) )
         {
         std::string sId;
         std::string sName;
@@ -183,11 +183,9 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
         }
     imdb_nb.close();
 
-    /* 
-    std::fstream imdb("imdb.json", std::ifstream::out);
+    std::fstream imdb("db.json", std::ifstream::out);
     oOdb.print_json(imdb);
     imdb.close();
-    */
 
     std::cout << "---------------- " <<  oOdb.Things().size()     << " things" << '\n';
     std::cout << "---------------- " <<  oOdb.Properties().size() << " properties" << '\n';
@@ -202,11 +200,11 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
         for ( auto b:a->m_oRelations )
             std::cout << "  " << b->m_sName << '\n';
         }
-
+*/
     std::cout << "---------------- all things" << '\n';
     for ( auto const & a:oOdb.Things() )
         {
         std::cout << *a << '\n';
         }
-*/
+
     }

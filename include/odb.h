@@ -411,7 +411,7 @@ class COdb : public Identifiable<COdb>
 	    PThing    poResult;
 	    PProperty poProperty;
 
-            auto itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), crsProperty);
+            auto itProperty = std::find_if(m_oProperties.begin(), m_oProperties.end(), [&](PProperty const & e){return e->m_sName == crsProperty;});
 	    if ( itProperty == m_oProperties.end() )
 	        {
                 poProperty = MakeProperty(crsProperty);
@@ -436,10 +436,12 @@ class COdb : public Identifiable<COdb>
 
         PProperty & FindOrMakeProperty( std::string const & crsProperty )
 	    {
-            auto itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), crsProperty);
+	    PProperty poProperty;
+//          auto itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), crsProperty);
+            auto itProperty = m_oProperties.find(crsProperty);
             if ( itProperty == m_oProperties.end() )
                 {
-                itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), MakeProperty(crsProperty));
+                poProperty = std::move(MakeProperty(crsProperty));
                 }
 	    return *itProperty;
 	    }
@@ -463,13 +465,17 @@ class COdb : public Identifiable<COdb>
         /// todo: optimize / Appends a Property to a Thing by given names
         bool AppendProperty2Thing( std::string const & crsProperty, bool bForce, std::string const & crsThing )
             {
-            auto itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), crsProperty);
+	    PProperty poProperty;
+            auto itProperty = std::find_if(m_oProperties.begin(), m_oProperties.end(), [&](PProperty const & e){return e->m_sName == crsProperty;});
             if ( itProperty == m_oProperties.end() )
                 {
                 if ( !bForce ) return false;
-                MakeProperty(crsProperty);
-                itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), crsProperty);
+                poProperty = MakeProperty(crsProperty);
                 }
+	    else
+	        {
+		poProperty = *itProperty;
+		}
 
             for ( auto & a:m_oThings )
                 {
@@ -481,14 +487,13 @@ class COdb : public Identifiable<COdb>
         /// todo: optimize / Appends an Atom to a Thing by given index value
         bool AppendAtom2Thing( size_t nThing, size_t nAtom )
             {
-            if ( (nThing < m_oThings.size()) & (nAtom < m_oAtoms.size()) )
-                {
-                m_oThings[nThing]->Append( m_oAtoms[nAtom] );
-                }
-            else
-                {
-                return false;
-                }
+            if ( (nThing > m_oThings.size()) || (nAtom > m_oAtoms.size()) ) return false;
+	    auto itThing = std::find_if(m_oThings.begin(), m_oThings.end(), [&](PThing const & e){return e->id == nThing;});
+            if ( itThing == m_oThings.end() ) return false;
+	    auto itAtom  = std::find_if(m_oAtoms.begin(),  m_oAtoms.end(),  [&](PAtom  const & e){return e->id == nAtom;});
+            if ( itAtom  == m_oAtoms.end() ) return false;
+
+            (*itThing)->Append( *itAtom );
             return true;
             }
 
