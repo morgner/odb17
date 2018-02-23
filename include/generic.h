@@ -26,14 +26,39 @@ namespace odb {
 template<typename T>
 struct lessIdentifiable
     {
+    using is_transparent = void;
+
     /**
      * @brief Compares two objects derived from Identifiable
      * @param p1 The element to compare
      * @param p2 The element to compare with
      */
+/*
     bool operator()(T const & p1, T const & p2) const
         {
         return p1->id < p2->id;
+        }
+    bool operator()(size_t const & id, T const & p) const
+        {
+        return id < p->id;
+        }
+    bool operator()(T const & p, size_t const & id) const
+        {
+        return p->id < id;
+        }
+*/
+
+    bool operator()(T const & p1, T const & p2) const
+        {
+        return p1->m_sName < p2->m_sName;
+        }
+    bool operator()(std::string const & crsName, T const & p) const
+        {
+        return crsName < p->m_sName;
+        }
+    bool operator()(T const & p, std::string const & crsName) const
+        {
+        return p->m_sName < crsName;
         }
     };
 
@@ -80,7 +105,8 @@ class CProperty;
 /// The shared_ptr of the entity
 using PProperty  = std::shared_ptr<CProperty>;
 /// A container for the shared_ptr's of the entity
-using CProperties = std::deque<PProperty>;
+// using CProperties = std::deque<PProperty>;
+using CProperties = std::set<PProperty, lessIdentifiable<PProperty>>;
 
 /// Forward decleration to befriend with it in other classes
 class CReason;
@@ -136,7 +162,7 @@ class Identifiable
         /**
          * The 'per-type' object ID
          */
-        unsigned long long const id
+        size_t const id
             {
             idForObjectOf<T>()
             };

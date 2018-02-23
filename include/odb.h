@@ -12,6 +12,8 @@
 #include <memory>    // shared_ptr
 #include <iostream>  // cout
 #include <regex> 
+#include <set> 
+#include <vector> 
 
 #include "generic.h"
 
@@ -114,7 +116,7 @@ class COdb : public Identifiable<COdb>
 #endif
             {
             auto p = std::make_shared<CProperty>(crsName);
-            m_oProperties.push_back( p );
+            m_oProperties.insert( p );
             return std::move( p );
             }
 
@@ -243,6 +245,18 @@ class COdb : public Identifiable<COdb>
                           << '(' << e.use_count() << ')' << '\n';
                 }
             } // void print(std::deque<T> const & crContainer)
+
+
+        template<typename T>
+        void print(std::set<T, lessIdentifiable<T>> const & crContainer)
+            {
+            for (auto const & e:crContainer)
+                {
+                std::cout << e->type << '\t' << " id: " << e->id << '\t'
+                          << " name: " << e->m_sName << '\t'
+                          << '(' << e.use_count() << ')' << '\n';
+                }
+            } // void print(std::set<T> const & crContainer)
 
 
         /**
@@ -411,7 +425,8 @@ class COdb : public Identifiable<COdb>
 	    PThing    poResult;
 	    PProperty poProperty;
 
-            auto itProperty = std::find_if(m_oProperties.begin(), m_oProperties.end(), [&](PProperty const & e){return e->m_sName == crsProperty;});
+            auto itProperty = m_oProperties.find( crsProperty );
+//          auto itProperty = std::find_if(m_oProperties.begin(), m_oProperties.end(), [&](PProperty const & e){return e->m_sName == crsProperty;});
 	    if ( itProperty == m_oProperties.end() )
 	        {
                 poProperty = MakeProperty(crsProperty);
@@ -436,19 +451,24 @@ class COdb : public Identifiable<COdb>
 
         PProperty & FindOrMakeProperty( std::string const & crsProperty )
 	    {
-	    PProperty poProperty;
-            auto itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), crsProperty);
-//          auto itProperty = m_oProperties.find(crsProperty);
+	    static PProperty poProperty;
+//          auto itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), crsProperty);
+            auto itProperty = m_oProperties.find(crsProperty);
             if ( itProperty == m_oProperties.end() )
                 {
                 poProperty = std::move(MakeProperty(crsProperty));
                 }
-	    return *itProperty;
+	    else
+	        {
+		poProperty = *itProperty;
+		}
+	    return poProperty;
 	    }
 
         /// todo: optimize / Appends a Property to a Thing by given index value
         bool AppendProperty2Thing( size_t nProperty, size_t nThing)
             {
+//          auto itProperty = m_oProperties.find( nProperty );
             auto itProperty = std::find_if(m_oProperties.begin(), m_oProperties.end(), [&](PProperty const & e){return e->id == nProperty;});
 	    auto itThing    = std::find_if(m_oThings.begin(),     m_oThings.end(),     [&](PThing    const & e){return e->id == nThing;});
 
@@ -458,7 +478,8 @@ class COdb : public Identifiable<COdb>
                 return false;
                 }
 //	    std::cout << "true AppendProperty2Thing( size_t "<< nProperty <<", size_t " << nThing << " )" << '\n';
-            (*itThing)->Append( *itProperty );
+            PProperty poProperty = *itProperty;
+	    (*itThing)->Append( poProperty );
             return true;
             }
 
@@ -466,7 +487,8 @@ class COdb : public Identifiable<COdb>
         bool AppendProperty2Thing( std::string const & crsProperty, bool bForce, std::string const & crsThing )
             {
 	    PProperty poProperty;
-            auto itProperty = std::find_if(m_oProperties.begin(), m_oProperties.end(), [&](PProperty const & e){return e->m_sName == crsProperty;});
+            auto itProperty = m_oProperties.find( crsProperty );
+//          auto itProperty = std::find_if(m_oProperties.begin(), m_oProperties.end(), [&](PProperty const & e){return e->m_sName == crsProperty;});
             if ( itProperty == m_oProperties.end() )
                 {
                 if ( !bForce ) return false;
@@ -479,7 +501,7 @@ class COdb : public Identifiable<COdb>
 
             for ( auto & a:m_oThings )
                 {
-                if ( a->m_sName == crsThing ) a->Append( *itProperty );
+                if ( a->m_sName == crsThing ) a->Append( poProperty );
                 }
             return true;
             }
@@ -527,7 +549,7 @@ class COdb : public Identifiable<COdb>
             CAggregate result{};
 
             std::regex crsRegex(crsProperty);
-            CProperties oSelection(m_oProperties.size());
+	    std::vector<PProperty> oSelection(m_oProperties.size());
             auto itSelection = std::copy_if(m_oProperties.begin(),
                                             m_oProperties.end(),
 //                                             oSelection.begin(), [&](PProperty const & e) {return e->m_sName == crsProperty;});
