@@ -23,6 +23,8 @@
 #include "atom.h"
 #include "thing.h"
 
+using namespace std::string_literals;
+
 auto oOdb = odb::COdb();
 
 template<typename ...Args> void mkthings    (Args&&... args) { (oOdb.MakeThing   (args), ...); } 
@@ -60,7 +62,7 @@ int main()
 
     std::getline(imdb_tb, sLine );
 
-    while ( std::getline(imdb_tb, sLine ) && (nId++ < 9995000000 /*DEBUG*/) )
+    while ( std::getline(imdb_tb, sLine ) && (nId++ < 99950000 /*DEBUG*/) )
         {
         std::string sId;
         std::string sName;
@@ -86,11 +88,13 @@ int main()
 	        case 7: sAtom   = sItem; break; // runtime
                 case 8: sGenres = sItem; // gengre1...n = split(sItem, ",")
 //                      std::cout << sId << '\n';
+                        if ( ""s    == sName ) sName = "Empty title";
+                        if ( "\\N"s == sName ) sName = "No title";
                         m = oOdb.FindOrMakeThingByProperty( sName, sId );
-//-                     m = oOdb.MakeThing(sName);
 //		        std::cout << nId << " - " << m->id << '\n';
-		        if ( "\\N" != sType  ) m->Append( oOdb.FindOrMakeProperty( sType ) );
-		        if ( "\\N" != sYearF ) m->Append( oOdb.FindOrMakeProperty( sYearF ) );
+		        m->Append( oOdb.FindOrMakeProperty( "Movie"s ) );
+		        if ( (""s != sType ) && ("\\N"s != sType ) ) m->Append( oOdb.FindOrMakeProperty( sType ) );
+		        if ( (""s != sYearF) && ("\\N"s != sYearF) ) m->Append( oOdb.FindOrMakeProperty( sYearF ) );
 		        break;
 	        } //switch()
 	    ptr = strtok(nullptr, "\t");
@@ -101,7 +105,7 @@ int main()
 	while ( ptr != nullptr )
 	    {
 	    sGenre = ptr;
-	    if ( "\\N" != sGenre ) m->Append( oOdb.FindOrMakeProperty( sGenre ) );
+	    if ( (""s != sGenre) && ("\\N"s != sGenre) ) m->Append( oOdb.FindOrMakeProperty( sGenre ) );
 	    ptr = strtok(nullptr, ",");
 	    }
 //	std::cout << *m << '\n';
@@ -123,7 +127,7 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
     std::regex_token_iterator<std::string::iterator> end;
     auto ReasonAI = oOdb.MakeReason( "acts-in" );
     nId = 0;
-    while ( std::getline(imdb_nb, sLine) && (nId++ < 999800000 /*DEBUG*/) )
+    while ( std::getline(imdb_nb, sLine) && (nId++ < 99970000 /*DEBUG*/) )
         {
         std::string sId;
         std::string sName;
@@ -140,26 +144,26 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
         while ( it != end )
 	    {
 	    sItem = *it++;
-            switch ( e )
+            switch ( e++ )
 	        {
-	        case 0: sId          = sItem; break; // nId          = std::stoull( sItem.substr(2) ); break;
-	        case 1: sName        = sItem; break;
-	        case 2: sYearB       = sItem; break;
-	        case 3: sYearD       = sItem; break;
-	        case 4: sProfessions = sItem; break; // runtime
-                case 5: sMovies      = sItem; // gangre1...n = split(sItem, ",")
+	        case 0: sId          = sItem; break;
+	        case 1: sName        = sItem;
 //			std::cout << sId << '\n';
 			m = oOdb.FindOrMakeThingByProperty( sName, sId );
-//                      m = oOdb.MakeThing(sName);
-//			std::cout << "Thing(" << m->id << ") name: " << sName << "\n";
+			std::cout << "Thing(" << m->id << ") name: " << sName << "\n";
+		        break;
 
+	        case 2: sYearB       = sItem; break;
+	        case 3: sYearD       = sItem; break;
+	        case 4: sProfessions = sItem; break;
+                case 5: sMovies      = sItem;
 	                std::regex_token_iterator<std::string::iterator> itP(sProfessions.begin(), sProfessions.end(), k, -1);
                         while (itP != end)
 			    {
-//			    std::cout << "m(" << m->id << ")->Append( oOdb.FindOrMakeProperty( " << *itP << " ) );\n";
+			    std::cout << "m(" << m->id << ")->Append( oOdb.FindOrMakeProperty( " << *itP << " ) );\n";
 			    sItem = *itP++;
-			    if ( ""    == sItem ) continue;
-			    if ( "\\N" == sItem ) continue;
+			    if ( ""s    == sItem ) continue;
+			    if ( "\\N"s == sItem ) continue;
 			    m->Append( oOdb.FindOrMakeProperty( sItem ) );
 			    }
 
@@ -168,19 +172,16 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
 			    {
 			    sItem = *itM++;
 			    try { if ( std::stoull( sItem.substr(2) ) > 50000 ) continue; } catch(...) { continue; }
-			    if ( ""    == sItem ) continue;
-			    if ( "\\N" == sItem ) continue;
-			    odb::PThing movie = oOdb.FindOrMakeThingByProperty( "", sItem );
+			    if ( ""s    == sItem ) continue;
+			    if ( "\\N"s == sItem ) continue;
+			    odb::PThing movie = oOdb.FindOrMakeThingByProperty( "Linked Movie w/o title"s, sItem );
 		            m->Link( movie, ReasonAI );
-//		            std::cout << sItem << ": oOdb.LinkThing2Thing( " << m->m_sName << ", " << movie->m_sName << ", " << ReasonAI->id << " );\n";
+		            std::cout << sItem << ": oOdb.LinkThing2Thing( " << m->m_sName << ", " << movie->m_sName << ", " << ReasonAI->id << " );\n";
 			    }
-//			std::cout << *(oOdb.Things()[m->id]) << '\n';
-
 		        break;
-	        } //switch()
-	    ++e;
-	    }
-        }
+	        } // switch(e)
+	    } // while ( it != end )
+        } // while ( std::getline(imdb_nb, sLine) ...)
     imdb_nb.close();
 
     std::fstream imdb("db.json", std::ifstream::out);

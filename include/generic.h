@@ -24,7 +24,7 @@ namespace odb {
  * @tparam T The type of the elements to compare
  */
 template<typename T>
-struct lessIdentifiable
+struct lessIdentifiableId
     {
     using is_transparent = void;
 
@@ -33,7 +33,6 @@ struct lessIdentifiable
      * @param p1 The element to compare
      * @param p2 The element to compare with
      */
-/*
     bool operator()(T const & p1, T const & p2) const
         {
         return p1->id < p2->id;
@@ -46,8 +45,18 @@ struct lessIdentifiable
         {
         return p->id < id;
         }
-*/
+    };
 
+template<typename T>
+struct lessIdentifiableName
+    {
+    using is_transparent = void;
+
+    /**
+     * @brief Compares two objects derived from Identifiable
+     * @param p1 The element to compare
+     * @param p2 The element to compare with
+     */
     bool operator()(T const & p1, T const & p2) const
         {
         return p1->m_sName < p2->m_sName;
@@ -106,7 +115,7 @@ class CProperty;
 using PProperty  = std::shared_ptr<CProperty>;
 /// A container for the shared_ptr's of the entity
 // using CProperties = std::deque<PProperty>;
-using CProperties = std::set<PProperty, lessIdentifiable<PProperty>>;
+using CProperties = std::set<PProperty, lessIdentifiableName<PProperty>>;
 
 /// Forward decleration to befriend with it in other classes
 class CReason;

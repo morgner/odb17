@@ -160,28 +160,28 @@ class CThing : public std::enable_shared_from_this<CThing>,
              * @param PReason The PReason we link for
              * @param Compare Function to compare two CThings
              */
-            std::multimap<PThing, PReason, lessIdentifiable<PThing>> m_mLink;
+            std::multimap<PThing, PReason, lessIdentifiableId<PThing>> m_mLink;
 
             /**
              * @brief Registers PThings relating to itself
              * @param PThing The PThing we are linked from
              * @param Compare Function to compare two CThing's
              */
-            std::set<PThing, lessIdentifiable<PThing>>               m_spoThingsRelating;
+            std::set<PThing, lessIdentifiableId<PThing>>               m_spoThingsRelating;
 
             /**
              * @brief Registers PProperties of this CThing
              * @param PProperty PProperties we have
              * @param Compare Function to compare two PAtom's
              */
-            std::set<PProperty, lessIdentifiable<PProperty>>         m_spoProperties;
+            std::set<PProperty, lessIdentifiableName<PProperty>>       m_spoProperties;
 
             /**
              * @brief Registers PAtoms of this CThing
              * @param PAtom PAtom's we own
              * @param Compare Function to compare two PAtom's
              */
-            std::set<PAtom, lessIdentifiable<PAtom>>                 m_spoAtoms;
+            std::set<PAtom, lessIdentifiableId<PAtom>>                 m_spoAtoms;
 
     }; // class CThing
 

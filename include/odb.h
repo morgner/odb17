@@ -248,7 +248,7 @@ class COdb : public Identifiable<COdb>
 
 
         template<typename T>
-        void print(std::set<T, lessIdentifiable<T>> const & crContainer)
+        void print(std::set<T, lessIdentifiableName<T>> const & crContainer)
             {
             for (auto const & e:crContainer)
                 {
@@ -258,6 +258,8 @@ class COdb : public Identifiable<COdb>
                 }
             } // void print(std::set<T> const & crContainer)
 
+
+        std::regex m_oRegexDQ{"\""};
 
         /**
          * @brief Dump all CThings in Sub-JSON format
@@ -277,7 +279,7 @@ class COdb : public Identifiable<COdb>
                 ros << spcr<4> << "{ ";
 //              ros            << "\"type\": \"" << e->type    << "\", ";
                 ros            << "\"id\": "     << e->id      << ", ";
-                ros            << "\"name\": \"" << e->m_sName << "\",\n";
+                ros            << "\"name\": \"" << std::regex_replace(e->m_sName, m_oRegexDQ, "\\\"") << "\",\n";
 
                 ros << spcr<5> << "\"properties\": [ ";
                 long lc{0};     // Block counter
@@ -335,7 +337,7 @@ class COdb : public Identifiable<COdb>
                 {
                 ros << spcr<4> << "{ ";
                 ros            << "\"id\": "       <<  a->id        << ", ";
-                ros            << "\"name\": \""   <<  a->m_sName   << "\" ";
+                ros            << "\"name\": \""   <<  std::regex_replace(a->m_sName, m_oRegexDQ, "\\\"") << "\" ";
                 if ( ++cc < cm ) { ros << "},\n"; } else { ros << "}\n"; }
                 }
             ros << spcr<3> << "],\n";
@@ -359,10 +361,10 @@ class COdb : public Identifiable<COdb>
                                            ros << spcr<4> << "{ ";
 //                                         ros << "\"type\": \""   <<  a->type      << "\", ";
                                            ros << "\"id\": "       <<  a->id        << ", ";
-                if ( a->m_sName.size() )   ros << "\"name\": \""   <<  a->m_sName   << "\", ";
-                if ( a->m_sPrefix.size() ) ros << "\"prefix\": \"" <<  a->m_sPrefix << "\", ";
-                if ( a->m_sSuffix.size() ) ros << "\"suffix\": \"" <<  a->m_sSuffix << "\", ";
-                if ( a->m_sFormat.size() ) ros << "\"format\": \"" <<  a->m_sFormat << "\", ";
+                if ( a->m_sName.size() )   ros << "\"name\": \""   <<  std::regex_replace(a->m_sName,   m_oRegexDQ, "\\\"") << "\", ";
+                if ( a->m_sPrefix.size() ) ros << "\"prefix\": \"" <<  std::regex_replace(a->m_sPrefix, m_oRegexDQ, "\\\"") << "\", ";
+                if ( a->m_sSuffix.size() ) ros << "\"suffix\": \"" <<  std::regex_replace(a->m_sSuffix, m_oRegexDQ, "\\\"") << "\", ";
+                if ( a->m_sFormat.size() ) ros << "\"format\": \"" <<  std::regex_replace(a->m_sFormat, m_oRegexDQ, "\\\"") << "\", ";
                                            ros << "\"data\": \""   << *a            << "\" ";
                 if ( ++cc < cm ) { ros << "},\n"; } else { ros << "}\n"; }
                 }
@@ -385,7 +387,7 @@ class COdb : public Identifiable<COdb>
                 {
                 ros << spcr<4> << "{ ";
                 ros            << "\"id\": "       << a->id        << ", ";
-                ros            << "\"name\": \""   << a->m_sName   << "\" ";
+                ros            << "\"name\": \""   << std::regex_replace(a->m_sName, m_oRegexDQ, "\\\"") << "\" ";
                 if ( ++cc < cm ) { ros << "},\n"; } else { ros << "}\n"; }
                 }
             ros << spcr<3> << "],\n";
@@ -425,8 +427,7 @@ class COdb : public Identifiable<COdb>
 	    PThing    poResult;
 	    PProperty poProperty;
 
-            auto itProperty = m_oProperties.find( crsProperty );
-//          auto itProperty = std::find_if(m_oProperties.begin(), m_oProperties.end(), [&](PProperty const & e){return e->m_sName == crsProperty;});
+            auto itProperty =  m_oProperties.find( crsProperty );
 	    if ( itProperty == m_oProperties.end() )
 	        {
                 poProperty = MakeProperty(crsProperty);
@@ -452,7 +453,6 @@ class COdb : public Identifiable<COdb>
         PProperty & FindOrMakeProperty( std::string const & crsProperty )
 	    {
 	    static PProperty poProperty;
-//          auto itProperty = std::find(m_oProperties.begin(), m_oProperties.end(), crsProperty);
             auto itProperty = m_oProperties.find(crsProperty);
             if ( itProperty == m_oProperties.end() )
                 {
@@ -487,8 +487,7 @@ class COdb : public Identifiable<COdb>
         bool AppendProperty2Thing( std::string const & crsProperty, bool bForce, std::string const & crsThing )
             {
 	    PProperty poProperty;
-            auto itProperty = m_oProperties.find( crsProperty );
-//          auto itProperty = std::find_if(m_oProperties.begin(), m_oProperties.end(), [&](PProperty const & e){return e->m_sName == crsProperty;});
+            auto itProperty =  m_oProperties.find( crsProperty );
             if ( itProperty == m_oProperties.end() )
                 {
                 if ( !bForce ) return false;

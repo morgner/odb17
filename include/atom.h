@@ -324,7 +324,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
         /// The UI suffix (if any) for the atom
         std::string m_sSuffix{""s};
         /// CThing's Relating to this CAtom
-        std::set<PThing, lessIdentifiable<PThing>>  m_spoThingsRelating;
+        std::set<PThing, lessIdentifiableId<PThing>>  m_spoThingsRelating;
 
     /// start of data implementation
     struct SAtomDataConcept
