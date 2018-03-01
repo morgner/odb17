@@ -29,7 +29,7 @@ int main()
             exit(1);
             }
         auto sName = properties[(int)index].get("name", "").asString();
-	oOdb.MakeProperty(/*nId, */sName);
+	oOdb.LoadProperty(nId, sName);
         }
 
     const Json::Value & atoms = json["Object Database Dump"]["Atoms"];
@@ -61,7 +61,7 @@ int main()
             exit(1);
             }
         auto sName = reasons[(int)index].get("name", "").asString();
-        oOdb.MakeReason(/*nId, */sName);
+        oOdb.LoadReason(nId, sName);
         }
 
     const Json::Value & things = json["Object Database Dump"]["Things"];
@@ -75,7 +75,7 @@ int main()
             exit(1);
             }
         auto sName = things[(int)index].get("name", "").asString();
-        oOdb.MakeThing(/*nId, */sName);
+        oOdb.LoadThing(nId, sName);
         }
     for ( size_t index = 0; index < things.size(); ++index )
         {

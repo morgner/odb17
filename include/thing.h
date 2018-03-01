@@ -30,6 +30,8 @@ class COdb;
 class CProperty;
 class CReason;
 
+using TIThing = Identifiable<CThing>;
+
 /**
     @brief A Thing as there are many
     @author Manfred Morgner
@@ -57,6 +59,8 @@ class CThing : public std::enable_shared_from_this<CThing>,
                  * @param crsName A name for the Thing
                  */
                  CThing(std::string const & crsName);
+                 
+		 CThing(size_t nId, std::string const & crsName);
 
 	         /// Compares the name with an input string
 	         friend bool operator == (PThing const & croThing, std::string const & crsInput)

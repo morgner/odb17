@@ -58,6 +58,11 @@ CThing::CThing(std::string const & crsName)
     {
     }
 
+CThing::CThing(size_t nId, std::string const & crsName)
+    : TIThing(nId, crsName.length() ? crsName : s_csNameUnnamedThing)
+    {
+    }
+
 
 PProperty & CThing::Append (PProperty & poProperty)
     {

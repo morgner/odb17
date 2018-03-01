@@ -13,7 +13,7 @@ void print(odb::CReasons const & crContainer)
     {
     for (auto const & e:crContainer)
         {
-        std::cout << e->type << " id: " << e->id << ' ' << '"' << *e << '"' << " (" << e.use_count() << ')' << '\n';
+        std::cout << e->type << " id: " << e->m_nId << ' ' << '"' << *e << '"' << " (" << e.use_count() << ')' << '\n';
         e->print();
         }
     }
@@ -28,6 +28,11 @@ std::ostream & operator << (std::ostream & ros, CReason const & croReason)
 
 CReason::CReason(std::string const & crsName)
 : m_sName(crsName.length() ? crsName : s_csNameUnnamedReason )
+    {
+    }
+
+CReason::CReason(size_t nId, std::string const & crsName)
+: TIReason(nId, crsName.length() ? crsName : s_csNameUnnamedReason )
     {
     }
 

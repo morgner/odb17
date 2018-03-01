@@ -13,7 +13,7 @@ void print(odb::CProperties const & crContainer)
     {
     for (auto const & e:crContainer)
         {
-        std::cout << e->type << " id: " << e->id << ' ' << '"' << *e << '"' << " (" << e.use_count() << ')' << '\n';
+        std::cout << e->type << " id: " << e->m_nId << ' ' << '"' << *e << '"' << " (" << e.use_count() << ')' << '\n';
         e->print();
         }
     }
@@ -27,7 +27,12 @@ std::ostream & operator << (std::ostream & ros, CProperty const & croProperty)
     }
 
 CProperty::CProperty(std::string const & crsName)
-    : m_sName(crsName.length() ? crsName : s_csNameUnnamedProperty )
+    : TIProperty(crsName.length() ? crsName : s_csNameUnnamedProperty )
+    {
+    }
+
+CProperty::CProperty(size_t nId, std::string const & crsName)
+    : TIProperty(nId, crsName.length() ? crsName : s_csNameUnnamedProperty )
     {
     }
 

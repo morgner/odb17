@@ -24,6 +24,8 @@ namespace odb {
 /// forward declarations to befriend with
 class COdb;
 
+using TIReason = Identifiable<CReason>;
+
 /**
     @brief A Reason to link two Things (Unidirectional)
  */
@@ -43,6 +45,8 @@ class CReason : public Identifiable<CReason>
 
                  /// Normal constructor, receiving the name of the reason
                  CReason(std::string const & crsName);
+
+                 CReason(size_t nId, std::string const & crsName);
 
         virtual ~CReason() = default;
 

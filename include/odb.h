@@ -96,7 +96,18 @@ class COdb : public Identifiable<COdb>
 #endif
             {
             auto p = std::make_shared<CThing>(crsName);
-            m_oThings.push_back( p );
+            m_oThings.insert( p );
+            return std::move( p );
+            }
+
+#ifdef __DOXYGEN__
+        PThing LoadThing(size_t nId, std::string const & crsName = "")
+#else
+        auto LoadThing(size_t nId, std::string const & crsName = ""s)
+#endif
+            {
+            auto p = std::make_shared<CThing>(nId, crsName);
+            m_oThings.insert( p );
             return std::move( p );
             }
 
@@ -116,6 +127,17 @@ class COdb : public Identifiable<COdb>
 #endif
             {
             auto p = std::make_shared<CProperty>(crsName);
+            m_oProperties.insert( p );
+            return std::move( p );
+            }
+
+#ifdef __DOXYGEN__
+        PProperty LoadProperty(size_t nId, std::string const & crsName = "")
+#else
+        auto LoadProperty(size_t nId, std::string const & crsName = ""s)
+#endif
+            {
+            auto p = std::make_shared<CProperty>(nId, crsName);
             m_oProperties.insert( p );
             return std::move( p );
             }
@@ -176,7 +198,18 @@ class COdb : public Identifiable<COdb>
 #endif
             {
             auto p = std::make_shared<CReason>(crsName);
-            m_oReasons.push_back( p );
+            m_oReasons.insert( p );
+            return std::move( p );
+            }
+
+#ifdef __DOXYGEN__
+        PReason LoadReason(size_t nId, std::string const & crsName = "")
+#else
+        auto LoadReason(size_t nId, std::string const & crsName = ""s)
+#endif
+            {
+            auto p = std::make_shared<CReason>(nId, crsName);
+            m_oReasons.insert( p );
             return std::move( p );
             }
 
@@ -220,7 +253,7 @@ class COdb : public Identifiable<COdb>
             {
             for (auto && e : crContainer)
                 {
-                std::cout << e->type << '\t' << " id: " << e->id << '\t'
+                std::cout << e->type << '\t' << " id: " << e->m_nId << '\t'
                           << " name: " << e->m_sName << '\t'
                           << '(' << e.use_count() << ')' << '\t'
                           << " data: " << *e << '\n';
@@ -240,11 +273,42 @@ class COdb : public Identifiable<COdb>
             {
             for (auto const & e:crContainer)
                 {
-                std::cout << e->type << '\t' << " id: " << e->id << '\t'
+                std::cout << e->type << '\t' << " id: " << e->m_nId << '\t'
                           << " name: " << e->m_sName << '\t'
                           << '(' << e.use_count() << ')' << '\n';
                 }
             } // void print(std::deque<T> const & crContainer)
+
+
+        void print(CThings const & crContainer)
+            {
+            for (auto const & e:crContainer)
+                {
+                std::cout << e->type << '\t' << " id: " << e->m_nId << '\t'
+                          << " name: " << e->m_sName << '\t'
+                          << '(' << e.use_count() << ')' << '\n';
+                }
+            } // void print(CThings const & crContainer)
+
+        void print(CProperties const & crContainer)
+            {
+            for (auto const & e:crContainer)
+                {
+                std::cout << e->type << '\t' << " id: " << e->m_nId << '\t'
+                          << " name: " << e->m_sName << '\t'
+                          << '(' << e.use_count() << ')' << '\n';
+                }
+            } // void print(CProperties const & crContainer)
+
+        void print(CReasons const & crContainer)
+            {
+            for (auto const & e:crContainer)
+                {
+                std::cout << e->type << '\t' << " id: " << e->m_nId << '\t'
+                          << " name: " << e->m_sName << '\t'
+                          << '(' << e.use_count() << ')' << '\n';
+                }
+            } // void print(CReasons const & crContainer)
 
 
         template<typename T>
@@ -252,7 +316,7 @@ class COdb : public Identifiable<COdb>
             {
             for (auto const & e:crContainer)
                 {
-                std::cout << e->type << '\t' << " id: " << e->id << '\t'
+                std::cout << e->type << '\t' << " id: " << e->m_nId << '\t'
                           << " name: " << e->m_sName << '\t'
                           << '(' << e.use_count() << ')' << '\n';
                 }
@@ -278,7 +342,7 @@ class COdb : public Identifiable<COdb>
                 {
                 ros << spcr<4> << "{ ";
 //              ros            << "\"type\": \"" << e->type    << "\", ";
-                ros            << "\"id\": "     << e->id      << ", ";
+                ros            << "\"id\": "     << e->m_nId      << ", ";
                 ros            << "\"name\": \"" << std::regex_replace(e->m_sName, m_oRegexDQ, "\\\"") << "\",\n";
 
                 ros << spcr<5> << "\"properties\": [ ";
@@ -289,7 +353,7 @@ class COdb : public Identifiable<COdb>
                     if ( !lb ) { lb=true; ros << ""; } else { ros << ","; }
                     ++lc;
                     if ( lc % 5 == 0 & lc > 1 ) { ros << "\n" << spcr<6> ; }
-                    ros << "{\"id\": " << a->id << "}";
+                    ros << "{\"id\": " << a->m_nId << "}";
                     }
                 ros << " ],\n";
 
@@ -301,7 +365,7 @@ class COdb : public Identifiable<COdb>
                     if ( !lb ) { lb=true; ros << ""; } else { ros << ","; }
                     ++lc;
                     if ( lc % 5 == 0 & lc > 1 ) { ros << "\n" << spcr<6> ; }
-                    ros << "{\"id\": " << a->id << "}";
+                    ros << "{\"id\": " << a->m_nId << "}";
                     }
                 ros << " ],\n";
 
@@ -313,7 +377,7 @@ class COdb : public Identifiable<COdb>
                     if ( !lb ) { lb=true; ros << ""; } else { ros << ","; }
                     ++lc;
                     if ( lc % 3 == 0 & lc > 1 ) { ros << "\n" << spcr<6>; }
-                    ros << "{\"thing-id\": " << b.first->id << ", \"reason-id\": " << b.second->id << "}";
+                    ros << "{\"thing-id\": " << b.first->m_nId << ", \"reason-id\": " << b.second->m_nId << "}";
                     }
                 if ( ++cc < cm ) { ros << " ] },\n"; } else { ros << " ] }\n"; }
                 }
@@ -336,7 +400,7 @@ class COdb : public Identifiable<COdb>
             for ( auto const & a:crContainer )
                 {
                 ros << spcr<4> << "{ ";
-                ros            << "\"id\": "       <<  a->id        << ", ";
+                ros            << "\"id\": "       <<  a->m_nId        << ", ";
                 ros            << "\"name\": \""   <<  std::regex_replace(a->m_sName, m_oRegexDQ, "\\\"") << "\" ";
                 if ( ++cc < cm ) { ros << "},\n"; } else { ros << "}\n"; }
                 }
@@ -360,7 +424,7 @@ class COdb : public Identifiable<COdb>
                 {
                                            ros << spcr<4> << "{ ";
 //                                         ros << "\"type\": \""   <<  a->type      << "\", ";
-                                           ros << "\"id\": "       <<  a->id        << ", ";
+                                           ros << "\"id\": "       <<  a->m_nId        << ", ";
                 if ( a->m_sName.size() )   ros << "\"name\": \""   <<  std::regex_replace(a->m_sName,   m_oRegexDQ, "\\\"") << "\", ";
                 if ( a->m_sPrefix.size() ) ros << "\"prefix\": \"" <<  std::regex_replace(a->m_sPrefix, m_oRegexDQ, "\\\"") << "\", ";
                 if ( a->m_sSuffix.size() ) ros << "\"suffix\": \"" <<  std::regex_replace(a->m_sSuffix, m_oRegexDQ, "\\\"") << "\", ";
@@ -386,7 +450,7 @@ class COdb : public Identifiable<COdb>
             for ( auto const & a:crContainer )
                 {
                 ros << spcr<4> << "{ ";
-                ros            << "\"id\": "       << a->id        << ", ";
+                ros            << "\"id\": "       << a->m_nId        << ", ";
                 ros            << "\"name\": \""   << std::regex_replace(a->m_sName, m_oRegexDQ, "\\\"") << "\" ";
                 if ( ++cc < cm ) { ros << "},\n"; } else { ros << "}\n"; }
                 }
@@ -427,8 +491,8 @@ class COdb : public Identifiable<COdb>
 	    PThing    poResult;
 	    PProperty poProperty;
 
-            auto itProperty =  m_oProperties.find( crsProperty );
-	    if ( itProperty == m_oProperties.end() )
+            auto itProperty =  m_oProperties.get<name>().find( crsProperty );
+	    if ( itProperty == m_oProperties.get<name>().end() )
 	        {
                 poProperty = MakeProperty(crsProperty);
 		}
@@ -453,8 +517,8 @@ class COdb : public Identifiable<COdb>
         PProperty & FindOrMakeProperty( std::string const & crsProperty )
 	    {
 	    static PProperty poProperty;
-            auto itProperty = m_oProperties.find(crsProperty);
-            if ( itProperty == m_oProperties.end() )
+            auto itProperty =  m_oProperties.get<name>().find(crsProperty);
+            if ( itProperty == m_oProperties.get<name>().end() )
                 {
                 poProperty = std::move(MakeProperty(crsProperty));
                 }
@@ -468,9 +532,10 @@ class COdb : public Identifiable<COdb>
         /// todo: optimize / Appends a Property to a Thing by given index value
         bool AppendProperty2Thing( size_t nProperty, size_t nThing)
             {
-//          auto itProperty = m_oProperties.find( nProperty );
-            auto itProperty = std::find_if(m_oProperties.begin(), m_oProperties.end(), [&](PProperty const & e){return e->id == nProperty;});
-	    auto itThing    = std::find_if(m_oThings.begin(),     m_oThings.end(),     [&](PThing    const & e){return e->id == nThing;});
+            auto itProperty = m_oProperties.get<id>().find( nProperty );
+	    auto itThing    = m_oThings.get<id>().find( nThing );
+//          auto itProperty = std::find_if(m_oProperties.begin(), m_oProperties.end(), [&](PProperty const & e){return e->m_nId == nProperty;});
+//	    auto itThing    = std::find_if(m_oThings.begin(),     m_oThings.end(),     [&](PThing    const & e){return e->m_nId == nThing;});
 
             if ( (itThing == m_oThings.end()) || (itProperty == m_oProperties.end()) )
                 {
@@ -487,8 +552,8 @@ class COdb : public Identifiable<COdb>
         bool AppendProperty2Thing( std::string const & crsProperty, bool bForce, std::string const & crsThing )
             {
 	    PProperty poProperty;
-            auto itProperty =  m_oProperties.find( crsProperty );
-            if ( itProperty == m_oProperties.end() )
+            auto itProperty =  m_oProperties.get<name>().find( crsProperty );
+            if ( itProperty == m_oProperties.get<name>().end() )
                 {
                 if ( !bForce ) return false;
                 poProperty = MakeProperty(crsProperty);
@@ -509,9 +574,9 @@ class COdb : public Identifiable<COdb>
         bool AppendAtom2Thing( size_t nThing, size_t nAtom )
             {
             if ( (nThing > m_oThings.size()) || (nAtom > m_oAtoms.size()) ) return false;
-	    auto itThing = std::find_if(m_oThings.begin(), m_oThings.end(), [&](PThing const & e){return e->id == nThing;});
+	    auto itThing = std::find_if(m_oThings.begin(), m_oThings.end(), [&](PThing const & e){return e->m_nId == nThing;});
             if ( itThing == m_oThings.end() ) return false;
-	    auto itAtom  = std::find_if(m_oAtoms.begin(),  m_oAtoms.end(),  [&](PAtom  const & e){return e->id == nAtom;});
+	    auto itAtom  = std::find_if(m_oAtoms.begin(),  m_oAtoms.end(),  [&](PAtom  const & e){return e->m_nId == nAtom;});
             if ( itAtom  == m_oAtoms.end() ) return false;
 
             (*itThing)->Append( *itAtom );
@@ -521,9 +586,11 @@ class COdb : public Identifiable<COdb>
         /// todo: optimize / Links a Thing to a Thing for a Reason by given index value
         bool LinkThing2Thing( size_t nThingFrom, size_t nThingTo, size_t nReason )
             {
-	    auto itThingFrom = std::find_if(m_oThings.begin(),  m_oThings.end(),  [&](PThing  const & e){return e->id == nThingFrom;});
-	    auto itThingTo   = std::find_if(m_oThings.begin(),  m_oThings.end(),  [&](PThing  const & e){return e->id == nThingTo;});
-	    auto itReason    = std::find_if(m_oReasons.begin(), m_oReasons.end(), [&](PReason const & e){return e->id == nReason;});
+	    auto itThingFrom  =  m_oThings.get<id>().find( nThingFrom );
+	    auto itThingTo    =  m_oThings.get<id>().find( nThingTo );
+//	    auto itThingTo    =  std::find_if(m_oThings.begin(),  m_oThings.end(),  [&](PThing  const & e){return e->m_nId == nThingTo;});
+//	    auto itReason     =  std::find_if(m_oReasons.begin(), m_oReasons.end(), [&](PReason const & e){return e->m_nId == nReason;});
+	    auto itReason     =  m_oReasons.get<id>().find( nReason );
             if ( (itThingFrom == m_oThings.end()) || (itThingTo == m_oThings.end()) || (itReason == m_oReasons.end()) )
                 {
 	        std::cout << "0 " << (*itThingFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itThingTo)->m_sName << '\n';
@@ -531,7 +598,8 @@ class COdb : public Identifiable<COdb>
                 }
 //          std::cout << "true LinkThing2Thing( size_t " << nThingFrom << ", size_t " << nThingTo << ", size_t " << nReason << " )\n";
 //	    std::cout << "+ " << (*itThingFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itThingTo)->m_sName << '\n';
-	    (*itThingFrom)->Link( *itThingTo, *itReason );
+	    (*itThingFrom)->Link( const_cast<PThing&>(*itThingTo), const_cast<PReason&>(*itReason) );
+//	     Link( *itThingFrom, *itReason, *itThingTo );
             return true;
             }
 
@@ -559,7 +627,7 @@ class COdb : public Identifiable<COdb>
                 {
                 for ( auto const & a:s->m_oRelations )
                     {
-                    result.insert(a->id);
+                    result.insert(a->m_nId);
                     }
                 }
             return std::move(result);

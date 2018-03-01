@@ -1,6 +1,8 @@
 Building with the documentation
 ===============================
 
+required: boost-containers
+
 ```
 cd <project_root>
 virtualenv env
@@ -14,6 +16,8 @@ cmake --build .
 
 Building **WITHOUT** the documentation
 ======================================
+
+required: boost-containers
 
 ```
 cd <project_root>

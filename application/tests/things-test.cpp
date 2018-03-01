@@ -65,9 +65,9 @@ int main()
     // ========================================================================================================
 
     auto px = oOdb.MakeThing("Ulli");
-    oOdb.AppendProperty2Thing( 0, px->id );
-    oOdb.AppendProperty2Thing( 6, px->id );
-    oOdb.AppendProperty2Thing( 7, px->id );
+    oOdb.AppendProperty2Thing( 0, px->m_nId );
+    oOdb.AppendProperty2Thing( 6, px->m_nId );
+    oOdb.AppendProperty2Thing( 7, px->m_nId );
 
     // INTERSECTION
     // collect all drivers
@@ -97,19 +97,19 @@ int main()
     std::cout << "---------------- selected 'things' having properties 'driver' and 'female'" << '\n';
     for ( auto const & a:vFemaleDrivers )
         {
-        std::cout << *(oOdb.Things()[a]) << "\tid: " << (oOdb.Things()[a])->id << '\n';
+        std::cout << **(oOdb.Things().find(a)) << "\tid: " << (*oOdb.Things().find(a))->m_nId << '\n';
         }
 
     std::cout << "---------------- selected 'things' having properties 'artist' or 'builder'" << '\n';
     for ( auto const & a:vArtistOrBuilder )
         {
-        std::cout << *(oOdb.Things()[a]) << '\n';
+        std::cout << **(oOdb.Things().find(a)) << '\n';
         }
 
     std::cout << "---------------- selected 'things' having properties with '^con'" << '\n';
     for ( auto const & a:vSelection )
         {
-        std::cout << *(oOdb.Things()[a]) << '\n';
+        std::cout << **(oOdb.Things().find(a)) << '\n';
         }
 
     std::cout << "---------------- all properties" << '\n';

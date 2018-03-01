@@ -24,10 +24,12 @@ using namespace std::string_literals;
 /// forward declarations to befriend with
 class COdb;
 
+using TIProperty = Identifiable<CProperty>;
+
 /**
     @brief A Property for a CThing
  */
-class CProperty : public Identifiable<CProperty>
+class CProperty : public TIProperty
     {
     friend COdb;
 
@@ -44,6 +46,9 @@ class CProperty : public Identifiable<CProperty>
 
                  /// Normal constructor, receiving the name of the property
                  CProperty(std::string const & crsName);
+
+                 /// Load constructor, receiving the id and the name of the property
+                 CProperty(size_t nId, std::string const & crsName);
 
         virtual ~CProperty() = default;
 
@@ -74,7 +79,7 @@ class CProperty : public Identifiable<CProperty>
 
     public:
         /// The name of the property
-        std::string m_sName{ s_csNameUnnamedProperty };
+//        std::string m_sName{ s_csNameUnnamedProperty };
 //  ? protected:
         /// A set containing backlinks from things
         std::set<PThing> m_oRelations;

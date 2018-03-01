@@ -15,7 +15,7 @@ void print(CAtoms const & crContainer)
     {
     for (auto const & e:crContainer)
         {
-        std::cout << e->type << '\t' << " id: " << e->id << '\t' << " name: " << e->m_sName << '\t' << " data: " << *e << " odbrep:";
+        std::cout << e->type << '\t' << " id: " << e->m_nId << '\t' << " name: " << e->m_sName << '\t' << " data: " << *e << " odbrep:";
         e->print_atom_data_formated(std::cout);
         std::cout  << " (" << e.use_count() << ")\n";
 
