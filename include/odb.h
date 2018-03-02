@@ -480,6 +480,23 @@ class COdb : public Identifiable<COdb>
             ros << spcr<0> << '}' << '\n';
             }
 
+        PThing FindOrLoadThingById( size_t nId, std::string const & crsName = ""s )
+            {
+	    PThing poThing;
+
+            auto itThing =  m_oThings.get<id>().find( nId );
+	    if ( itThing == m_oThings.get<id>().end() )
+	        {
+		if ( ""s == crsName ) poThing = LoadThing(nId); else poThing = LoadThing(nId, crsName);
+		}
+            else
+	        {
+                poThing = *itThing;
+		}
+
+	    return poThing;
+            }
+
         /**
          * @brief Finds or creates a PThing with a named Property, which also may be created and appended
          *
@@ -534,8 +551,6 @@ class COdb : public Identifiable<COdb>
             {
             auto itProperty = m_oProperties.get<id>().find( nProperty );
 	    auto itThing    = m_oThings.get<id>().find( nThing );
-//          auto itProperty = std::find_if(m_oProperties.begin(), m_oProperties.end(), [&](PProperty const & e){return e->m_nId == nProperty;});
-//	    auto itThing    = std::find_if(m_oThings.begin(),     m_oThings.end(),     [&](PThing    const & e){return e->m_nId == nThing;});
 
             if ( (itThing == m_oThings.end()) || (itProperty == m_oProperties.end()) )
                 {
@@ -588,8 +603,6 @@ class COdb : public Identifiable<COdb>
             {
 	    auto itThingFrom  =  m_oThings.get<id>().find( nThingFrom );
 	    auto itThingTo    =  m_oThings.get<id>().find( nThingTo );
-//	    auto itThingTo    =  std::find_if(m_oThings.begin(),  m_oThings.end(),  [&](PThing  const & e){return e->m_nId == nThingTo;});
-//	    auto itReason     =  std::find_if(m_oReasons.begin(), m_oReasons.end(), [&](PReason const & e){return e->m_nId == nReason;});
 	    auto itReason     =  m_oReasons.get<id>().find( nReason );
             if ( (itThingFrom == m_oThings.end()) || (itThingTo == m_oThings.end()) || (itReason == m_oReasons.end()) )
                 {
