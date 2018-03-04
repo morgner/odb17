@@ -153,7 +153,7 @@ class COdb : public Identifiable<COdb>
             simple containers, like string or vector.
 
             CAtom further on manages the life time of the data element.
-	    It's a unique_ptr
+            It's a unique_ptr
 
             @param data The data for the CAtom
             @param crsName The name for the CAtom
@@ -179,6 +179,30 @@ class COdb : public Identifiable<COdb>
 #endif
             {
             auto p = std::make_shared<CAtom>(data, crsName, crsPrefix, crsSuffix, crsFormat);
+            m_oAtoms.push_back( p );
+            return std::move( p );
+            }
+
+#ifdef __DOXYGEN__
+        PAtom const LoadAtom(
+            size_t nId,
+            int data,
+            std::string const & crsName   = "",
+            std::string const & crsPrefix = "",
+            std::string const & crsSuffix = "",
+            std::string const & crsFormat = "")
+#else
+        template<typename T>
+        auto const LoadAtom(
+            size_t nId,
+            T data,
+            std::string const & crsName   = ""s,
+            std::string const & crsPrefix = ""s,
+            std::string const & crsSuffix = ""s,
+            std::string const & crsFormat = ""s)
+#endif
+            {
+            auto p = std::make_shared<CAtom>(nId, data, crsName, crsPrefix, crsSuffix, crsFormat);
             m_oAtoms.push_back( p );
             return std::move( p );
             }
@@ -222,9 +246,9 @@ class COdb : public Identifiable<COdb>
          * @param crsName The name for the CStrand
          */
 #ifdef __DOXYGEN__
-	PStrand MakeStrand(std::string const & crsName = "")
+         PStrand MakeStrand(std::string const & crsName = "")
 #else
-	auto MakeStrand(std::string const & crsName = ""s)
+         auto MakeStrand(std::string const & crsName = ""s)
 #endif
             {
             auto p = std::make_shared<CStrand>(crsName);
@@ -247,7 +271,7 @@ class COdb : public Identifiable<COdb>
          * @brief Print out container of CAtom objects
          *
          * @param crContainer The forward iterable container, containing
-	 *        PAtom's
+         *        PAtom's
          */
         void print(CAtoms const & crContainer)
             {
@@ -329,7 +353,7 @@ class COdb : public Identifiable<COdb>
          * @brief Dump all CThings in Sub-JSON format
          *
          * @param crContainer The forward iterable container, containing
-	 *        all CThing instances
+         *        all CThing instances
          * @param ros The output destination
          */
         void print_json(CThings const & crContainer, std::ostream & ros)
@@ -388,7 +412,7 @@ class COdb : public Identifiable<COdb>
          * @brief Dump all CProperty's in Sub-JSON format
          *
          * @param crContainer The forward iterable container, containing
-	 *        all CProperty instances
+         *        all CProperty instances
          * @param ros The output destination
          */
         void print_json(CProperties const & crContainer, std::ostream & ros)
@@ -411,7 +435,7 @@ class COdb : public Identifiable<COdb>
          * @brief Dump all CAtoms in Sub-JSON format
          *
          * @param crContainer The forward iterable container, containing
-	 *        all CAtom instances
+         *        all CAtom instances
          * @param ros The output destination
          */
         void print_json(CAtoms const & crContainer, std::ostream & ros)
@@ -438,7 +462,7 @@ class COdb : public Identifiable<COdb>
         /**
          * @brief Dump all CReasons in Sub-JSON format
          * @param crContainer The forward iterable container, containing
-	 *        all CReason instances
+         *        all CReason instances
          * @param ros The output destination
          */
         void print_json(CReasons const & crContainer, std::ostream & ros)
@@ -470,6 +494,12 @@ class COdb : public Identifiable<COdb>
             ros << spcr<0> << '{' << '\n';
             ros << spcr<1> << "\"Object Database Dump\": " << '\n';
             ros << spcr<2> << '{' << '\n';
+            
+            ros << spcr<2> << "\"Sizes\": [ {\"P\": " << 
+		    m_oProperties.size() << "},{\"A\": " << 
+		    m_oAtoms.size() << "},{\"R\": " << 
+		    m_oReasons.size() << "},{\"T\": " << 
+		    m_oThings.size() << "} ]" << '\n';
 
             print_json(m_oProperties, ros);
             print_json(m_oAtoms,      ros);
@@ -479,22 +509,40 @@ class COdb : public Identifiable<COdb>
             ros << spcr<2> << '}' << '\n';
             ros << spcr<0> << '}' << '\n';
             }
+/*
+{
+    "Object Database Dump": 
+        {
+        "Sizes": [ {"P": 1089},{"A": 3000},{"R": 10},{"T": 1000} ]
+        "Properties": [ { "id": 0, "name": "Person" } ]
+        "Atoms": [ { "id": 0, "name": "round", "suffix": "%", "data": "100.2" } ]
+        "Reasons": [ { "id": 0, "name": "made" } ]
+        "Things": 
+            [
+                { "id": 0, "name": "Wundertüte",
+                    "properties": [ {"id": 0},{"id": 1} ],
+                    "atoms": [ {"id": 13},{"id": 14} ],
+                    "links": [ {"thing-id": 6, "reason-id": 3} ] }
+            ]
+        }
+}
+*/
+
 
         PThing FindOrLoadThingById( size_t nId, std::string const & crsName = ""s )
             {
-	    PThing poThing;
+            PThing poThing;
 
             auto itThing =  m_oThings.get<id>().find( nId );
-	    if ( itThing == m_oThings.get<id>().end() )
-	        {
-		if ( ""s == crsName ) poThing = LoadThing(nId); else poThing = LoadThing(nId, crsName);
-		}
+            if ( itThing == m_oThings.get<id>().end() )
+                {
+                if ( ""s == crsName ) poThing = LoadThing(nId); else poThing = LoadThing(nId, crsName);
+                }
             else
-	        {
+                {
                 poThing = *itThing;
-		}
-
-	    return poThing;
+                }
+            return poThing;
             }
 
         /**
@@ -505,28 +553,28 @@ class COdb : public Identifiable<COdb>
          */
         PThing FindOrMakeThingByProperty( std::string const & crsThing, std::string const & crsProperty )
             {
-	    PThing    poResult;
-	    PProperty poProperty;
+            PThing    poResult;
+            PProperty poProperty;
 
             auto itProperty =  m_oProperties.get<name>().find( crsProperty );
-	    if ( itProperty == m_oProperties.get<name>().end() )
-	        {
+            if ( itProperty == m_oProperties.get<name>().end() )
+                {
                 poProperty = MakeProperty(crsProperty);
-		}
+                }
             else
-	        {
+                {
                 poProperty = *itProperty;
-		}
+                }
 
-	    if ( poProperty->m_oRelations.size() > 0 )
-	        {
-		poResult = *poProperty->m_oRelations.begin();
-		}
-	    else
-	        {
-                poResult = MakeThing(crsThing);
-	        poResult->Append(poProperty);
-		}
+            if ( poProperty->m_oRelations.size() > 0 )
+                {
+                poResult = *poProperty->m_oRelations.begin();
+                }
+            else
+                {
+            poResult = MakeThing(crsThing);
+            poResult->Append(poProperty);
+            }
 
 	    return poResult;
             }

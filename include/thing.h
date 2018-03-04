@@ -50,25 +50,28 @@ class CThing : public std::enable_shared_from_this<CThing>,
         /// Do we generate debug output?
         static constexpr bool s_bDebug{false};
     public:
-                /// We never construct without a name for the thing
+                 /// We never construct without a name for the thing
                  CThing() = delete;
-                /// and we don't make copies
+
+                 /// and we don't make copies
                  CThing(CThing const &) = delete;
-                /**
-                 * @brief The constructor taking a name for the CThing
-                 * @param crsName A name for the Thing
-                 */
+
+                 /// make_shared<T> moveconstructs
+                 CThing(CThing &&) = default;
+
+                 /// Normal constructor, receiving the name of the reason
                  CThing(std::string const & crsName);
                  
-		 CThing(size_t nId, std::string const & crsName);
+                 /// Load constructor, receiving the ID and name of the reason
+                 CThing(size_t nId, std::string const & crsName);
 
-	         /// Compares the name with an input string
-	         friend bool operator == (PThing const & croThing, std::string const & crsInput)
-	             {
-                     return croThing->m_sName == crsInput;
-	             }
+        /// Compares the name with an input string
+        friend bool operator == (PThing const & croThing, std::string const & crsInput)
+            {
+            return croThing->m_sName == crsInput;
+            }
 
-                /// Nothings special here
+        /// Nothings special here
         virtual ~CThing() = default;
 
         /**
@@ -149,15 +152,6 @@ class CThing : public std::enable_shared_from_this<CThing>,
             /// The name of the CThing
             std::string m_sName{s_csNameUnnamedThing};
         protected:
-            /**
-             * @brief compare operator for two Identifiable's
-             *
-             * Universal compare operator comparing class instances derived
-             * from class Identifiable by instance member 'id'
-             *
-             * @tparam T The type of the elements to compare
-             */
-
             /**
              * @brief Holds the links to another CThing for CReason
              * @param PThing The PThing we link to

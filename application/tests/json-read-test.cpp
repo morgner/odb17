@@ -23,11 +23,6 @@ int main()
     for ( size_t index = 0; index < properties.size(); ++index )
         {
         auto nId   = properties[(int)index].get("id",    0).asUInt();
-        if (nId != index )
-            {
-            std::cerr << "ERROR: Sequence missmatch Property " << index << " has id " << nId << '\n';
-            exit(1);
-            }
         auto sName = properties[(int)index].get("name", "").asString();
 	oOdb.LoadProperty(nId, sName);
         }
@@ -37,17 +32,12 @@ int main()
     for ( size_t index = 0; index < atoms.size(); ++index )
         {
         auto nId     = atoms[(int)index].get("id",      0).asUInt();
-        if (nId != index )
-            {
-            std::cerr << "ERROR: Sequence missmatch Atom " << index << " has id " << nId << '\n';
-            exit(1);
-            }
         auto sName   = atoms[(int)index].get("name",   "").asString();
         auto sPrefix = atoms[(int)index].get("prefix", "").asString();
         auto sSuffix = atoms[(int)index].get("suffix", "").asString();
         auto sFormat = atoms[(int)index].get("format", "").asString();
         auto sData   = atoms[(int)index].get("data",   "").asString();
-        oOdb.MakeAtom(/*nId, */sData, sName, sPrefix, sSuffix, sFormat);
+        oOdb.LoadAtom(nId, sData, sName, sPrefix, sSuffix, sFormat);
         }
 
     const Json::Value & reasons = json["Object Database Dump"]["Reasons"];
@@ -55,11 +45,6 @@ int main()
     for ( size_t index = 0; index < reasons.size(); ++index )
         {
         auto nId   = reasons[(int)index].get("id",    0).asUInt();
-        if (nId != index )
-            {
-            std::cerr << "ERROR: Sequence missmatch Reason " << index << " has id " << nId << '\n';
-            exit(1);
-            }
         auto sName = reasons[(int)index].get("name", "").asString();
         oOdb.LoadReason(nId, sName);
         }
@@ -69,11 +54,6 @@ int main()
     for ( size_t index = 0; index < things.size(); ++index )
         {
         auto nId   = things[(int)index].get("id",    0).asUInt();
-        if (nId != index )
-            {
-            std::cerr << "ERROR: Sequence missmatch Thing " << index << " has id " << nId << '\n';
-            exit(1);
-            }
         auto sName = things[(int)index].get("name", "").asString();
         oOdb.LoadThing(nId, sName);
         }
@@ -85,14 +65,14 @@ int main()
         for ( size_t i = 0; i < p.size(); ++i )
             {
             auto nPId = p[(int)i].get("id", 0).asUInt();
-            oOdb.AppendProperty2Thing( nId, nPId );
+            oOdb.AppendProperty2Thing( nPId, nId );
             }
 
         const Json::Value & a = things[(int)index]["atoms"];
         for ( size_t i = 0; i < a.size(); ++i )
             {
             auto nAId = a[(int)i].get("id", 0).asUInt();
-            oOdb.AppendAtom2Thing( nId, nAId );
+            oOdb.AppendAtom2Thing( nAId, nId );
             }
 
         const Json::Value & l = things[(int)index]["links"];
@@ -103,21 +83,22 @@ int main()
             oOdb.LinkThing2Thing( nId, nTId, nRId );
             }
         }
-//  oOdb.print_json(std::cout);
+    oOdb.print_json(std::cout);
     }
 /*
 {
     "Object Database Dump": 
         {
-        "Properties": [ { "id": "0", "name": "Person" } ]
-        "Atoms": [ { "id": "0", "name": "round", "suffix": "%", "data": "100.2" } ]
-        "Reasons": [ { "id": "0", "name": "made" } ]
+	"Sizes": [ {"P": 1089},{"A": 3000},{"R": 10},{"T": 1000} ]
+        "Properties": [ { "id": 0, "name": "Person" } ]
+        "Atoms": [ { "id": 0, "name": "round", "suffix": "%", "data": "100.2" } ]
+        "Reasons": [ { "id": 0, "name": "made" } ]
         "Things": 
             [
                 { "id": 0, "name": "Wundertüte",
-                    "properties": [ {"id": "0"},{"id": "1"} ],
-                    "atoms": [ {"id": "13"},{"id": "14"} ],
-                    "links": [ {"thing-id": "6", "reason-id": "3"} ] }
+                    "properties": [ {"id": 0},{"id": 1} ],
+                    "atoms": [ {"id": 13},{"id": 14} ],
+                    "links": [ {"thing-id": 6, "reason-id": 3} ] }
             ]
         }
 }

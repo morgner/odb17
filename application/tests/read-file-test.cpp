@@ -53,6 +53,8 @@ tt0000002	short		Le clown et ses chiens	Le clown et ses chiens	0	1892		\N	5		Ani
 // Demo main program
 int main()
     {
+    size_t nReadLimit = 5000;
+
     int e = 0;
     static std::string sLine;
     std::fstream imdb_tb("../raw-data/title.basics.tsv", std::ifstream::in);
@@ -62,7 +64,7 @@ int main()
 
     std::getline(imdb_tb, sLine );
 
-    while ( std::getline(imdb_tb, sLine ) && (nId++ < 99950000 /*DEBUG*/) )
+    while ( std::getline(imdb_tb, sLine ) && (nId++ < nReadLimit /*DEBUG*/) )
         {
         std::string sId;
         std::string sName;
@@ -128,7 +130,7 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
     std::regex_token_iterator<std::string::iterator> end;
     auto ReasonAI = oOdb.MakeReason( "acts-in" );
     nId = 0;
-    while ( std::getline(imdb_nb, sLine) && (nId++ < 99970000 /*DEBUG*/) )
+    while ( std::getline(imdb_nb, sLine) && (nId++ < nReadLimit /*DEBUG*/) )
         {
         std::string sId;
         std::string sName;
@@ -173,7 +175,7 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
                         while (itM != end)
 			    {
 			    sItem = *itM++;
-			    try { if ( std::stoull( sItem.substr(2) ) > 50000 ) continue; } catch(...) { continue; }
+			    try { if ( std::stoull( sItem.substr(2) ) > nReadLimit /*DEBUG*/ ) continue; } catch(...) { continue; }
 			    if ( ""s    == sItem ) continue;
 			    if ( "\\N"s == sItem ) continue;
 			    odb::PThing movie = oOdb.FindOrMakeThingByProperty( "Linked Movie w/o title"s, sItem );

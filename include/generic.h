@@ -220,20 +220,20 @@ class Identifiable
     public:
 	/// Default constructor to let m_nId counting
                  Identifiable() = default;
-	/// Constructor initializing predefined ID (load operation)
+                 Identifiable(Identifiable const &) = default;
+                 Identifiable(Identifiable &&) = default;
+        /// Constructor initializing predefined ID (load operation)
         explicit Identifiable(size_t nId)                              : m_nId(nId)                   { idForObjectOf<T>(nId); }
-	/// Constructor initializing predefined ID (load operation) with NAME
-        explicit Identifiable(size_t nId, std::string const & crsName) : m_nId(nId), m_sName(crsName) { idForObjectOf<T>(nId); }
-	/// Constructor initializing NAME, let ID autocount
-        explicit Identifiable(            std::string const & crsName) :             m_sName(crsName) {                        }
+        /// Constructor initializing predefined ID (load operation) with NAME
+                 Identifiable(size_t nId, std::string const & crsName) : m_nId(nId), m_sName(crsName) { idForObjectOf<T>(nId); }
+        /// Constructor initializing NAME, let ID autocount
+                 Identifiable(            std::string const & crsName) :             m_sName(crsName) {                        }
         /// The ID of the instance (per type)
-	size_t m_nId { idForObjectOf<T>() };
-	/// The type of the instance
+        size_t m_nId { idForObjectOf<T>() };
+        /// The type of the instance
         std::string const type { demangle(typeid(T)) };
-	/// The name of the instance
+        /// The name of the instance
         std::string m_sName {""};
-        
-//	size_t const id { idForObjectOf<T>() };
     }; // class Identifiable
 
 

@@ -167,6 +167,8 @@ std::ostream& operator<< (std::ostream & ros, std::array<T, N> const & crContain
 /// forward declarations to befriend with
 class COdb;
 
+using TIAtom = Identifiable<CAtom>;
+
 /**
  @brief An Atom is a data field for a CThing
 
@@ -218,6 +220,48 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
 #endif
             : m_pAtomData(new SAtomData<T>(std::move(tAtomData))),
               m_sName  (crsName.length() ? crsName : s_csNameUnnamedAtom),
+              m_sPrefix(crsPrefix),
+              m_sSuffix(crsSuffix),
+              m_sFormat(crsFormat)
+            {
+            if ( CAtom::s_bDebug )
+                {
+                std::cout << "new atom for ";
+                if      ( decay_equiv<T, char>::value )                { std::cout << "char "; }
+                else if ( decay_equiv<T, short>::value )               { std::cout << "short "; }
+                else if ( decay_equiv<T, int>::value )                 { std::cout << "int "; }
+                else if ( decay_equiv<T, long>::value )                { std::cout << "long "; }
+                else if ( decay_equiv<T, unsigned>::value )            { std::cout << "unsigned "; }
+                else if ( decay_equiv<T, long long>::value )           { std::cout << "long_long "; }
+                else if ( decay_equiv<T, std::string>::value )         { std::cout << "std::string "; }
+                else if ( decay_equiv<T, float>::value )               { std::cout << "float "; }
+                else if ( decay_equiv<T, double>::value )              { std::cout << "double "; }
+
+                else if ( std::is_convertible<T, const char*>::value)  { std::cout << "const char*"; }
+                else if ( std::is_class<T>::value)                     { std::cout << "class"; }
+
+                else                                                   { std::cout << "UNKNOWN TYPE"; }
+
+                std::cout << ": " << *this << " (" << tAtomData << ')' << "\tname: " << m_sName << '\n';
+                }
+            }
+
+        template<typename T>
+        CAtom(size_t nId,
+            T tAtomData,
+#ifdef __DOXYGEN__
+            std::string const & crsName   = "",
+            std::string const & crsPrefix = "",
+            std::string const & crsSuffix = "",
+            std::string const & crsFormat = "")
+#else
+            std::string const & crsName   = ""s,
+            std::string const & crsPrefix = ""s,
+            std::string const & crsSuffix = ""s,
+            std::string const & crsFormat = ""s)
+#endif
+            : m_pAtomData(new SAtomData<T>(std::move(tAtomData))),
+              TIAtom(nId, crsName.length() ? crsName : s_csNameUnnamedAtom),
               m_sPrefix(crsPrefix),
               m_sSuffix(crsSuffix),
               m_sFormat(crsFormat)
