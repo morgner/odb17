@@ -54,12 +54,12 @@ std::ostream & operator << (std::ostream & ros, CThing const & crThing)
 
 
 CThing::CThing(std::string const & crsName)
-    : m_sName(crsName.length() ? crsName : s_csNameUnnamedThing)
+    : IThing(crsName.length() ? crsName : s_csNameUnnamedThing)
     {
     }
 
 CThing::CThing(size_t nId, std::string const & crsName)
-    : TIThing(nId, crsName.length() ? crsName : s_csNameUnnamedThing)
+    : IThing(nId, crsName.length() ? crsName : s_csNameUnnamedThing)
     {
     }
 

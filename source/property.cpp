@@ -27,12 +27,12 @@ std::ostream & operator << (std::ostream & ros, CProperty const & croProperty)
     }
 
 CProperty::CProperty(std::string const & crsName)
-    : TIProperty(crsName.length() ? crsName : s_csNameUnnamedProperty )
+    : IProperty(crsName.length() ? crsName : s_csNameUnnamedProperty )
     {
     }
 
 CProperty::CProperty(size_t nId, std::string const & crsName)
-    : TIProperty(nId, crsName.length() ? crsName : s_csNameUnnamedProperty )
+    : IProperty(nId, crsName.length() ? crsName : s_csNameUnnamedProperty )
     {
     }
 

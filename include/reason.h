@@ -19,17 +19,14 @@ void print(odb::CReasons const & crContainer);
 
 namespace odb {
 
-// using namespace std::string_literals;
-
 /// forward declarations to befriend with
 class COdb;
 
-using TIReason = Identifiable<CReason>;
 
 /**
     @brief A Reason to link two Things (Unidirectional)
  */
-class CReason : public Identifiable<CReason>
+class CReason : public IReason
     {
     friend COdb;
 
@@ -81,8 +78,6 @@ class CReason : public Identifiable<CReason>
         void print();
 
     protected:
-        /// The name of the reason
-        std::string m_sName{ s_csNameUnnamedReason };
         /// A map containing links from  one thing to another
         std::multimap<PThing, PThing> m_mRelations;
 

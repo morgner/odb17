@@ -27,12 +27,12 @@ std::ostream & operator << (std::ostream & ros, CReason const & croReason)
     }
 
 CReason::CReason(std::string const & crsName)
-: m_sName(crsName.length() ? crsName : s_csNameUnnamedReason )
+: IReason(crsName.length() ? crsName : s_csNameUnnamedReason )
     {
     }
 
 CReason::CReason(size_t nId, std::string const & crsName)
-: TIReason(nId, crsName.length() ? crsName : s_csNameUnnamedReason )
+: IReason(nId, crsName.length() ? crsName : s_csNameUnnamedReason )
     {
     }
 

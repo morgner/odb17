@@ -167,8 +167,6 @@ std::ostream& operator<< (std::ostream & ros, std::array<T, N> const & crContain
 /// forward declarations to befriend with
 class COdb;
 
-using TIAtom = Identifiable<CAtom>;
-
 /**
  @brief An Atom is a data field for a CThing
 
@@ -180,7 +178,7 @@ using TIAtom = Identifiable<CAtom>;
  @endrst
  */
 class CAtom : public std::enable_shared_from_this<CAtom>,
-              public Identifiable<CAtom>
+              public IAtom
     {
     friend COdb;
 
@@ -219,7 +217,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
             std::string const & crsFormat = ""s)
 #endif
             : m_pAtomData(new SAtomData<T>(std::move(tAtomData))),
-              m_sName  (crsName.length() ? crsName : s_csNameUnnamedAtom),
+              IAtom(crsName.length() ? crsName : s_csNameUnnamedAtom),
               m_sPrefix(crsPrefix),
               m_sSuffix(crsSuffix),
               m_sFormat(crsFormat)
@@ -246,6 +244,15 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
                 }
             }
 
+        /**
+            @brief Constructor able to receive data of maany types
+            @param nId The predefiined ID if loading a dataset
+            @param tAtomData The data unit to encapsulate
+            @param crsName The name for the atom
+            @param crsPrefix The prefix for user output
+            @param crsSuffix The suffix for user output
+            @param crsFormat The format for user output
+         */
         template<typename T>
         CAtom(size_t nId,
             T tAtomData,
@@ -261,7 +268,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
             std::string const & crsFormat = ""s)
 #endif
             : m_pAtomData(new SAtomData<T>(std::move(tAtomData))),
-              TIAtom(nId, crsName.length() ? crsName : s_csNameUnnamedAtom),
+              IAtom(nId, crsName.length() ? crsName : s_csNameUnnamedAtom),
               m_sPrefix(crsPrefix),
               m_sSuffix(crsSuffix),
               m_sFormat(crsFormat)
@@ -344,6 +351,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
         }
 
     /// Adds the backlink from the atom to a thing
+    /// @param poThing Inform a thinig about being linked from another thing
     auto RelatingThingAdd(PThing poThing)
         {
         m_spoThingsRelating.insert(poThing);
@@ -351,15 +359,12 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
         }
 
     /// Removes the backlink from the atom to a thing
+    /// @param poThing Inform a thing about no more being linked from another thing
     auto RelatingThingSub(PThing poThing)
         {
         return m_spoThingsRelating.erase(poThing);
         }
 
-    /// todo: decide which way:
-    public:
-        /// The actual name of the atom
-        std::string m_sName  {s_csNameUnnamedAtom};
     protected:
         /// The UI output format for the atom
         std::string m_sFormat{""s};

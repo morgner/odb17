@@ -36,8 +36,8 @@ template<typename... Args> void mkatoms     (Args&&... args) { (oOdb.MakeAtom   
 // 'cbForce' is 'true', the property will be added to the DB
 template<typename... Args>
 void ap2ts(std::string const & crsProperty, // name of the property
-		  bool const   cbForce,     // create it if not existent?
-		     Args&&... args)        // pack of names of 'things'
+                  bool const   cbForce,     // create it if not existent?
+                     Args&&... args)        // pack of names of 'things'
     {
     (oOdb.AppendProperty2Thing(crsProperty, cbForce, args), ...);
     }
@@ -53,7 +53,7 @@ tt0000002	short		Le clown et ses chiens	Le clown et ses chiens	0	1892		\N	5		Ani
 // Demo main program
 int main()
     {
-    size_t nReadLimit = 5000;
+    size_t nReadLimit = 50000000;
 
     int e = 0;
     static std::string sLine;
@@ -66,6 +66,8 @@ int main()
 
     while ( std::getline(imdb_tb, sLine ) && (nId++ < nReadLimit /*DEBUG*/) )
         {
+//      if ( nId % 1000 == 0 ) { std::cout << nId << '\n'; }
+            
         std::string sId;
         std::string sName;
         std::string sType;
@@ -73,45 +75,44 @@ int main()
         std::string sAtom;
         std::string sGenres;
 
-	char * ptr = std::strtok(&*sLine.begin(), "\t");
+        char * ptr = std::strtok(&*sLine.begin(), "\t");
         std::string sItem;
-	e = 0;
-	odb::PThing m;
+        e = 0;
+        odb::PThing m;
 //      0=id	1=/	2=/	3=name	4=/	5=p	6=/	7=(a)	8=p+
-	while ( ptr != nullptr )
-	    {
-	    sItem = ptr;
+        while ( ptr != nullptr )
+            {
+            sItem = ptr;
             switch ( e )
-	        {
-	        case 0: sId     = sItem; break; // nId = std::stoull( sItem.substr(2) ); break;
-	        case 1: sType   = sItem; break;
-	        case 3: sName   = sItem; break;
-	        case 5: sYearF  = sItem; break;
-	        case 7: sAtom   = sItem; break; // runtime
+                {
+                case 0: sId     = sItem; break; // nId = std::stoull( sItem.substr(2) ); break;
+                case 1: sType   = sItem; break;
+                case 3: sName   = sItem; break;
+                case 5: sYearF  = sItem; break;
+                case 7: sAtom   = sItem; break; // runtime
                 case 8: sGenres = sItem; // genres1...n = split(sItem, ",")
-//			oOdb.LoadThing(std::stoull( sItem.substr(2)), sName);
 //                      std::cout << sId << '\n';
                         if ( ""s    == sName ) sName = "Empty title";
                         if ( "\\N"s == sName ) sName = "No title";
                         m = oOdb.FindOrMakeThingByProperty( sName, sId );
-//		        std::cout << nId << " - " << m->m_nId << '\n';
-		        m->Append( oOdb.FindOrMakeProperty( "Movie"s ) );
-		        if ( (""s != sType ) && ("\\N"s != sType ) ) m->Append( oOdb.FindOrMakeProperty( sType ) );
-		        if ( (""s != sYearF) && ("\\N"s != sYearF) ) m->Append( oOdb.FindOrMakeProperty( sYearF ) );
-		        break;
-	        } //switch()
-	    ptr = strtok(nullptr, "\t");
-	    ++e;
-	    }
-	ptr = std::strtok(&*sGenres.begin(), ",");
-	std::string sGenre;
-	while ( ptr != nullptr )
-	    {
-	    sGenre = ptr;
-	    if ( (""s != sGenre) && ("\\N"s != sGenre) ) m->Append( oOdb.FindOrMakeProperty( sGenre ) );
-	    ptr = strtok(nullptr, ",");
-	    }
-//	std::cout << *m << '\n';
+//                      std::cout << nId << " - " << m->m_nId << '\n';
+                        m->Append( oOdb.FindOrMakeProperty( "Movie"s ) );
+                        if ( (""s != sType ) && ("\\N"s != sType ) ) m->Append( oOdb.FindOrMakeProperty( sType ) );
+                        if ( (""s != sYearF) && ("\\N"s != sYearF) ) m->Append( oOdb.FindOrMakeProperty( sYearF ) );
+                        break;
+                } //switch()
+            ptr = strtok(nullptr, "\t");
+            ++e;
+            }
+        ptr = std::strtok(&*sGenres.begin(), ",");
+        std::string sGenre;
+        while ( ptr != nullptr )
+            {
+            sGenre = ptr;
+            if ( (""s != sGenre) && ("\\N"s != sGenre) ) m->Append( oOdb.FindOrMakeProperty( sGenre ) );
+            ptr = strtok(nullptr, ",");
+            }
+//      std::cout << *m << '\n';
         }
     imdb_tb.close();
 
@@ -132,6 +133,8 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
     nId = 0;
     while ( std::getline(imdb_nb, sLine) && (nId++ < nReadLimit /*DEBUG*/) )
         {
+//      if ( nId % 1000 == 0) { std::cout << nId << '\n'; }
+
         std::string sId;
         std::string sName;
         std::string sYearB;
@@ -140,51 +143,50 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
         std::string sMovies;
 
         std::string sItem;
-	e = 0;
-	odb::PThing m;
-	std::regex_token_iterator<std::string::iterator> it(sLine.begin(), sLine.end(), r, -1);
+        e = 0;
+        odb::PThing m;
+        std::regex_token_iterator<std::string::iterator> it(sLine.begin(), sLine.end(), r, -1);
 //	0=id	1=name	2=Ybirth	3=Ydeath	4=profession	5=movies	
         while ( it != end )
-	    {
-	    sItem = *it++;
+            {
+            sItem = *it++;
             switch ( e++ )
-	        {
-	        case 0: sId          = sItem; break;
-	        case 1: sName        = sItem;
-//			oOdb.LoadProperty(std::stoull( sItem.substr(2)), sName);
-//			std::cout << sId << '\n';
-			m = oOdb.FindOrMakeThingByProperty( sName, sId );
-			std::cout << "Thing(" << m->m_nId << ") name: " << sName << "\n";
-		        break;
+                {
+                case 0: sId          = sItem; break;
+                case 1: sName        = sItem;
+//                      std::cout << sId << '\n';
+                        m = oOdb.FindOrMakeThingByProperty( sName, sId );
+//                       std::cout << "Thing(" << m->m_nId << ") name: " << sName << "\n";
+                        break;
 
-	        case 2: sYearB       = sItem; break;
-	        case 3: sYearD       = sItem; break;
-	        case 4: sProfessions = sItem; break;
+                case 2: sYearB       = sItem; break;
+                case 3: sYearD       = sItem; break;
+                case 4: sProfessions = sItem; break;
                 case 5: sMovies      = sItem;
-	                std::regex_token_iterator<std::string::iterator> itP(sProfessions.begin(), sProfessions.end(), k, -1);
+                        std::regex_token_iterator<std::string::iterator> itP(sProfessions.begin(), sProfessions.end(), k, -1);
                         while (itP != end)
-			    {
-			    std::cout << "m(" << m->m_nId << ")->Append( oOdb.FindOrMakeProperty( " << *itP << " ) );\n";
-			    sItem = *itP++;
-			    if ( ""s    == sItem ) continue;
-			    if ( "\\N"s == sItem ) continue;
-			    m->Append( oOdb.FindOrMakeProperty( sItem ) );
-			    }
+                            {
+//                          std::cout << "m(" << m->m_nId << ")->Append( oOdb.FindOrMakeProperty( " << *itP << " ) );\n";
+                            sItem = *itP++;
+                            if ( ""s    == sItem ) continue;
+                            if ( "\\N"s == sItem ) continue;
+                            m->Append( oOdb.FindOrMakeProperty( sItem ) );
+                            }
 
-	                std::regex_token_iterator<std::string::iterator> itM(sMovies.begin(), sMovies.end(), k, -1);
+                        std::regex_token_iterator<std::string::iterator> itM(sMovies.begin(), sMovies.end(), k, -1);
                         while (itM != end)
-			    {
-			    sItem = *itM++;
-			    try { if ( std::stoull( sItem.substr(2) ) > nReadLimit /*DEBUG*/ ) continue; } catch(...) { continue; }
-			    if ( ""s    == sItem ) continue;
-			    if ( "\\N"s == sItem ) continue;
-			    odb::PThing movie = oOdb.FindOrMakeThingByProperty( "Linked Movie w/o title"s, sItem );
-		            m->Link( movie, ReasonAI );
-		            std::cout << sItem << ": oOdb.LinkThing2Thing( " << m->m_sName << ", " << movie->m_sName << ", " << ReasonAI->m_nId << " );\n";
-			    }
-		        break;
-	        } // switch(e)
-	    } // while ( it != end )
+                            {
+                            sItem = *itM++;
+                            try { if ( std::stoull( sItem.substr(2) ) > nReadLimit /*DEBUG*/ ) continue; } catch(...) { continue; }
+                            if ( ""s    == sItem ) continue;
+                            if ( "\\N"s == sItem ) continue;
+                            odb::PThing movie = oOdb.FindOrMakeThingByProperty( "Linked Movie w/o title"s, sItem );
+                                                m->Link( movie, ReasonAI );
+//                          std::cout << sItem << ": oOdb.LinkThing2Thing( " << m->m_sName << ", " << movie->m_sName << ", " << ReasonAI->m_nId << " );\n";
+                            }
+                        break;
+                } // switch(e)
+            } // while ( it != end )
         } // while ( std::getline(imdb_nb, sLine) ...)
     imdb_nb.close();
 

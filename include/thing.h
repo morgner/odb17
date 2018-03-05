@@ -23,14 +23,12 @@
 
 namespace odb {
 
-using namespace std::string_literals;
-
 /// forward declarations to befriend with
 class COdb;
 class CProperty;
 class CReason;
 
-using TIThing = Identifiable<CThing>;
+using IThing = Identifiable<CThing>;
 
 /**
     @brief A Thing as there are many
@@ -38,7 +36,7 @@ using TIThing = Identifiable<CThing>;
     @since  0.1.17
  */
 class CThing : public std::enable_shared_from_this<CThing>,
-               public Identifiable<CThing>
+               public IThing
     {
     friend class COdb;
     friend class CProperty;
@@ -148,9 +146,6 @@ class CThing : public std::enable_shared_from_this<CThing>,
          */
         PThing & RelatingThingSub(PThing & poThing);
 
-        public:
-            /// The name of the CThing
-            std::string m_sName{s_csNameUnnamedThing};
         protected:
             /**
              * @brief Holds the links to another CThing for CReason

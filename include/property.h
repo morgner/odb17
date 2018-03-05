@@ -19,17 +19,13 @@ void print(odb::CProperties const & crContainer);
 
 namespace odb {
 
-using namespace std::string_literals;
-
 /// forward declarations to befriend with
 class COdb;
-
-using TIProperty = Identifiable<CProperty>;
 
 /**
     @brief A Property for a CThing
  */
-class CProperty : public TIProperty
+class CProperty : public IProperty
     {
     friend COdb;
 
@@ -40,8 +36,7 @@ class CProperty : public TIProperty
                  /// @brief deleted: default constructor
                  CProperty() = delete;
 
-                 /// @brief deleted: copy constructor
-		 /// There is no reason to copy a CProperty
+                 /// There is no reason to copy a CProperty
                  CProperty(CProperty const & src) = delete;
 
                  /// Normal constructor, receiving the name of the property
@@ -78,8 +73,6 @@ class CProperty : public TIProperty
         void print();
 
     public:
-        /// The name of the property
-//        std::string m_sName{ s_csNameUnnamedProperty };
 //  ? protected:
         /// A set containing backlinks from things
         std::set<PThing> m_oRelations;

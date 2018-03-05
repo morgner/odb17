@@ -48,17 +48,17 @@ class COdb : public Identifiable<COdb>
                  */
                  COdb() = default;
                  /**
-		  * @brief deleted: copy constructor
-		  *  
-		  * Copying a databse is not supported yet. We will support it
-                  * as soon as we find out what it means.
-		  */ 
+                   * @brief deleted: copy constructor
+                   *  
+                   * Copying a databse is not supported yet. We will support it
+                   * as soon as we find out what it means.
+                   */ 
                  COdb(COdb const & src) = delete;
                  /**
-		  * @brief deleted: Assignment operator
-		  *
-		  * Here we are in the same situation as with copy construction
-		  */
+                   * @brief deleted: Assignment operator
+                   *
+                   * Here we are in the same situation as with copy construction
+                   */
                  COdb & operator = (COdb const & src) = delete;
                  /**
                   * @brief Some cleanup
@@ -100,6 +100,15 @@ class COdb : public Identifiable<COdb>
             return std::move( p );
             }
 
+        /**
+         * @brief Creates a PThing with predefined ID
+         *
+         * Creates a shared_ptr with a new CThing named as given in the
+         * call. If no name is given, the name will be the class default
+         * 
+         * @param nId The predefined ID if loading given sets into odb
+         * @param crsName The name for the CThing
+         */
 #ifdef __DOXYGEN__
         PThing LoadThing(size_t nId, std::string const & crsName = "")
 #else
@@ -131,6 +140,16 @@ class COdb : public Identifiable<COdb>
             return std::move( p );
             }
 
+        /**
+         * @brief Creates a PProperty with predefined ID
+         *
+         * Creates a shared_ptr with a new CProperty named as given in
+         * the call. If no name is given, the name will be the class 
+         * default
+         * 
+         * @param nId The predefined ID if loading given sets into odb
+         * @param crsName The name for the CProperty
+         */
 #ifdef __DOXYGEN__
         PProperty LoadProperty(size_t nId, std::string const & crsName = "")
 #else
@@ -183,6 +202,26 @@ class COdb : public Identifiable<COdb>
             return std::move( p );
             }
 
+        /**
+            @brief Creates a PAtom with predefined ID
+
+            Creates a shared_ptr with a new CAtom named as given in the
+            call. If no name is given, the name will be the class default
+
+            The data type of the data element in CAtom follows the input
+            data type. It can be if any primitive type or most of the
+            simple containers, like string or vector.
+
+            CAtom further on manages the life time of the data element.
+            It's a unique_ptr
+
+            @param nId The predefined ID if loading given sets into odb
+            @param data The data for the CAtom
+            @param crsName The name for the CAtom
+            @param crsPrefix The prefix for the CAtom in a GUI
+            @param crsSuffix The suffix for the CAtom in a GUI
+            @param crsFormat The format for the CAtom in a GUI
+         */
 #ifdef __DOXYGEN__
         PAtom const LoadAtom(
             size_t nId,
@@ -216,9 +255,9 @@ class COdb : public Identifiable<COdb>
          * @param crsName The name for the CReason
          */
 #ifdef __DOXYGEN__
-        PReason MakeReason(std::string const & crsName = "")
+         PReason MakeReason(std::string const & crsName = "")
 #else
-        auto MakeReason(std::string const & crsName = ""s)
+         auto MakeReason(std::string const & crsName = ""s)
 #endif
             {
             auto p = std::make_shared<CReason>(crsName);
@@ -226,6 +265,15 @@ class COdb : public Identifiable<COdb>
             return std::move( p );
             }
 
+        /**
+         * @brief Creates a PReason with predefined ID
+         *
+         * Creates a shared_ptr with a new CReason named as given in the
+         * call. If no name is given, the name will be the class default
+         *
+         * @param nId The predefined ID if loading given sets into odb
+         * @param crsName The name for the CReason
+         */
 #ifdef __DOXYGEN__
         PReason LoadReason(size_t nId, std::string const & crsName = "")
 #else
@@ -288,9 +336,9 @@ class COdb : public Identifiable<COdb>
          * @brief Print out container of identifiable objects
          *
          * @tparam T A shared_ptr of an 'Identifiable' type, enriched with
-	 *         a memberm_sName
+         *         a memberm_sName
          * @param  crContainer The forward iterable container, containing
-	 *         all T instances
+         *         all T instances
          */
         template<typename T>
         void print(std::deque<T> const & crContainer)
@@ -303,7 +351,12 @@ class COdb : public Identifiable<COdb>
                 }
             } // void print(std::deque<T> const & crContainer)
 
-
+        /**
+         * @brief Print out container of CThing's
+         *
+         * @param crContainer The forward iterable container, containing
+         *        all CThing instances
+         */
         void print(CThings const & crContainer)
             {
             for (auto const & e:crContainer)
@@ -314,6 +367,12 @@ class COdb : public Identifiable<COdb>
                 }
             } // void print(CThings const & crContainer)
 
+        /**
+         * @brief Print out container of CProperty's
+         *
+         * @param crContainer The forward iterable container, containing
+         *        all CProperty instances
+         */
         void print(CProperties const & crContainer)
             {
             for (auto const & e:crContainer)
@@ -324,6 +383,12 @@ class COdb : public Identifiable<COdb>
                 }
             } // void print(CProperties const & crContainer)
 
+        /**
+         * @brief Print out container of CReason's
+         *
+         * @param crContainer The forward iterable container, containing
+         *        all CReason instances
+         */
         void print(CReasons const & crContainer)
             {
             for (auto const & e:crContainer)
@@ -334,7 +399,12 @@ class COdb : public Identifiable<COdb>
                 }
             } // void print(CReasons const & crContainer)
 
-
+        /**
+         * @brief Print out container of T's
+         *
+         * @param crContainer The forward iterable container, containing
+         *        all T instances
+         */
         template<typename T>
         void print(std::set<T, lessIdentifiableName<T>> const & crContainer)
             {
@@ -347,7 +417,11 @@ class COdb : public Identifiable<COdb>
             } // void print(std::set<T> const & crContainer)
 
 
-        std::regex m_oRegexDQ{"\""};
+	auto Escape(std::string const & crsInput)
+	    {
+	    static std::regex m_oRegexESC{R"(\"|\\)"};
+	    return std::regex_replace(crsInput, m_oRegexESC, "\\$&");
+	    }
 
         /**
          * @brief Dump all CThings in Sub-JSON format
@@ -367,7 +441,7 @@ class COdb : public Identifiable<COdb>
                 ros << spcr<4> << "{ ";
 //              ros            << "\"type\": \"" << e->type    << "\", ";
                 ros            << "\"id\": "     << e->m_nId      << ", ";
-                ros            << "\"name\": \"" << std::regex_replace(e->m_sName, m_oRegexDQ, "\\\"") << "\",\n";
+                ros            << "\"name\": \"" << Escape(e->m_sName) << "\",\n";
 
                 ros << spcr<5> << "\"properties\": [ ";
                 long lc{0};     // Block counter
@@ -424,8 +498,8 @@ class COdb : public Identifiable<COdb>
             for ( auto const & a:crContainer )
                 {
                 ros << spcr<4> << "{ ";
-                ros            << "\"id\": "       <<  a->m_nId        << ", ";
-                ros            << "\"name\": \""   <<  std::regex_replace(a->m_sName, m_oRegexDQ, "\\\"") << "\" ";
+                ros            << "\"id\": "       << a->m_nId        << ", ";
+                ros            << "\"name\": \""   << Escape(a->m_sName)  << "\" ";
                 if ( ++cc < cm ) { ros << "},\n"; } else { ros << "}\n"; }
                 }
             ros << spcr<3> << "],\n";
@@ -449,10 +523,12 @@ class COdb : public Identifiable<COdb>
                                            ros << spcr<4> << "{ ";
 //                                         ros << "\"type\": \""   <<  a->type      << "\", ";
                                            ros << "\"id\": "       <<  a->m_nId        << ", ";
-                if ( a->m_sName.size() )   ros << "\"name\": \""   <<  std::regex_replace(a->m_sName,   m_oRegexDQ, "\\\"") << "\", ";
-                if ( a->m_sPrefix.size() ) ros << "\"prefix\": \"" <<  std::regex_replace(a->m_sPrefix, m_oRegexDQ, "\\\"") << "\", ";
-                if ( a->m_sSuffix.size() ) ros << "\"suffix\": \"" <<  std::regex_replace(a->m_sSuffix, m_oRegexDQ, "\\\"") << "\", ";
-                if ( a->m_sFormat.size() ) ros << "\"format\": \"" <<  std::regex_replace(a->m_sFormat, m_oRegexDQ, "\\\"") << "\", ";
+/*
+                if ( a->m_sName.size() )   ros << "\"name\": \""   <<  Escape(a->m_sName  ) << "\", ";
+                if ( a->m_sPrefix.size() ) ros << "\"prefix\": \"" <<  Escape(a->m_sPrefix) << "\", ";
+                if ( a->m_sSuffix.size() ) ros << "\"suffix\": \"" <<  Escape(a->m_sSuffix) << "\", ";
+                if ( a->m_sFormat.size() ) ros << "\"format\": \"" <<  Escape(a->m_sFormat) << "\", ";
+*/
                                            ros << "\"data\": \""   << *a            << "\" ";
                 if ( ++cc < cm ) { ros << "},\n"; } else { ros << "}\n"; }
                 }
@@ -475,7 +551,7 @@ class COdb : public Identifiable<COdb>
                 {
                 ros << spcr<4> << "{ ";
                 ros            << "\"id\": "       << a->m_nId        << ", ";
-                ros            << "\"name\": \""   << std::regex_replace(a->m_sName, m_oRegexDQ, "\\\"") << "\" ";
+                ros            << "\"name\": \""   << Escape(a->m_sName) << "\" ";
                 if ( ++cc < cm ) { ros << "},\n"; } else { ros << "}\n"; }
                 }
             ros << spcr<3> << "],\n";
@@ -496,10 +572,10 @@ class COdb : public Identifiable<COdb>
             ros << spcr<2> << '{' << '\n';
             
             ros << spcr<2> << "\"Sizes\": [ {\"P\": " << 
-		    m_oProperties.size() << "},{\"A\": " << 
-		    m_oAtoms.size() << "},{\"R\": " << 
-		    m_oReasons.size() << "},{\"T\": " << 
-		    m_oThings.size() << "} ]" << '\n';
+            m_oProperties.size() << "},{\"A\": " << 
+            m_oAtoms.size() << "},{\"R\": " << 
+            m_oReasons.size() << "},{\"T\": " << 
+            m_oThings.size() << "} ]," << '\n';
 
             print_json(m_oProperties, ros);
             print_json(m_oAtoms,      ros);
@@ -513,10 +589,10 @@ class COdb : public Identifiable<COdb>
 {
     "Object Database Dump": 
         {
-        "Sizes": [ {"P": 1089},{"A": 3000},{"R": 10},{"T": 1000} ]
-        "Properties": [ { "id": 0, "name": "Person" } ]
-        "Atoms": [ { "id": 0, "name": "round", "suffix": "%", "data": "100.2" } ]
-        "Reasons": [ { "id": 0, "name": "made" } ]
+        "Sizes": [ {"P": 1089},{"A": 3000},{"R": 10},{"T": 1000} ],
+        "Properties": [ { "id": 0, "name": "Person" } ],
+        "Atoms": [ { "id": 0, "name": "round", "suffix": "%", "data": "100.2" } ],
+        "Reasons": [ { "id": 0, "name": "made" } ],
         "Things": 
             [
                 { "id": 0, "name": "Wundertüte",
@@ -528,8 +604,14 @@ class COdb : public Identifiable<COdb>
 }
 */
 
-
+        /// @brief Has to return a thing with specified ID, if it does not exists, it is to make
+        /// @param nId The id of the thing
+        /// @param crsName The name of the thing if it has to be created
+#ifdef __DOXYGEN__
+        PThing FindOrLoadThingById( size_t nId, std::string const & crsName = "" )
+#else
         PThing FindOrLoadThingById( size_t nId, std::string const & crsName = ""s )
+#endif
             {
             PThing poThing;
 
@@ -546,7 +628,7 @@ class COdb : public Identifiable<COdb>
             }
 
         /**
-         * @brief Finds or creates a PThing with a named Property, which also may be created and appended
+         * @brief Finds or creates a PThing with a named Property, which also may be created and assigned
          *
          * @param crsThing The name for the CThing
          * @param crsProperty The name for the CProperty
@@ -576,55 +658,57 @@ class COdb : public Identifiable<COdb>
             poResult->Append(poProperty);
             }
 
-	    return poResult;
+            return poResult;
             }
 
+        /// @brief Has to return a property, if it does not exists, it is to make
+        /// @param crsProperty The name of the Property
         PProperty & FindOrMakeProperty( std::string const & crsProperty )
-	    {
-	    static PProperty poProperty;
+            {
+            static PProperty poProperty;
             auto itProperty =  m_oProperties.get<name>().find(crsProperty);
             if ( itProperty == m_oProperties.get<name>().end() )
                 {
                 poProperty = std::move(MakeProperty(crsProperty));
                 }
-	    else
-	        {
-		poProperty = *itProperty;
-		}
-	    return poProperty;
-	    }
+            else
+                {
+                poProperty = *itProperty;
+                }
+            return poProperty;
+        }
 
         /// todo: optimize / Appends a Property to a Thing by given index value
         bool AppendProperty2Thing( size_t nProperty, size_t nThing)
             {
             auto itProperty = m_oProperties.get<id>().find( nProperty );
-	    auto itThing    = m_oThings.get<id>().find( nThing );
+            auto itThing    = m_oThings.get<id>().find( nThing );
 
             if ( (itThing == m_oThings.end()) || (itProperty == m_oProperties.end()) )
                 {
-//	        std::cout << "FALSE AppendProperty2Thing( size_t "<< nProperty <<", size_t " << nThing << " )" << '\n';
+//              std::cout << "FALSE AppendProperty2Thing( size_t "<< nProperty <<", size_t " << nThing << " )" << '\n';
                 return false;
                 }
-//	    std::cout << "true AppendProperty2Thing( size_t "<< nProperty <<", size_t " << nThing << " )" << '\n';
+//          std::cout << "true AppendProperty2Thing( size_t "<< nProperty <<", size_t " << nThing << " )" << '\n';
             PProperty poProperty = *itProperty;
-	    (*itThing)->Append( poProperty );
+            (*itThing)->Append( poProperty );
             return true;
             }
 
         /// todo: optimize / Appends a Property to a Thing by given names
         bool AppendProperty2Thing( std::string const & crsProperty, bool bForce, std::string const & crsThing )
             {
-	    PProperty poProperty;
+            PProperty poProperty;
             auto itProperty =  m_oProperties.get<name>().find( crsProperty );
             if ( itProperty == m_oProperties.get<name>().end() )
                 {
                 if ( !bForce ) return false;
                 poProperty = MakeProperty(crsProperty);
                 }
-	    else
-	        {
-		poProperty = *itProperty;
-		}
+            else
+                {
+                poProperty = *itProperty;
+                }
 
             for ( auto & a:m_oThings )
                 {
@@ -637,9 +721,9 @@ class COdb : public Identifiable<COdb>
         bool AppendAtom2Thing( size_t nThing, size_t nAtom )
             {
             if ( (nThing > m_oThings.size()) || (nAtom > m_oAtoms.size()) ) return false;
-	    auto itThing = std::find_if(m_oThings.begin(), m_oThings.end(), [&](PThing const & e){return e->m_nId == nThing;});
+            auto itThing = std::find_if(m_oThings.begin(), m_oThings.end(), [&](PThing const & e){return e->m_nId == nThing;});
             if ( itThing == m_oThings.end() ) return false;
-	    auto itAtom  = std::find_if(m_oAtoms.begin(),  m_oAtoms.end(),  [&](PAtom  const & e){return e->m_nId == nAtom;});
+            auto itAtom  = std::find_if(m_oAtoms.begin(),  m_oAtoms.end(),  [&](PAtom  const & e){return e->m_nId == nAtom;});
             if ( itAtom  == m_oAtoms.end() ) return false;
 
             (*itThing)->Append( *itAtom );
@@ -649,12 +733,12 @@ class COdb : public Identifiable<COdb>
         /// todo: optimize / Links a Thing to a Thing for a Reason by given index value
         bool LinkThing2Thing( size_t nThingFrom, size_t nThingTo, size_t nReason )
             {
-	    auto itThingFrom  =  m_oThings.get<id>().find( nThingFrom );
-	    auto itThingTo    =  m_oThings.get<id>().find( nThingTo );
-	    auto itReason     =  m_oReasons.get<id>().find( nReason );
+            auto itThingFrom  =  m_oThings.get<id>().find( nThingFrom );
+            auto itThingTo    =  m_oThings.get<id>().find( nThingTo );
+            auto itReason     =  m_oReasons.get<id>().find( nReason );
             if ( (itThingFrom == m_oThings.end()) || (itThingTo == m_oThings.end()) || (itReason == m_oReasons.end()) )
                 {
-	        std::cout << "0 " << (*itThingFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itThingTo)->m_sName << '\n';
+                std::cout << "0 " << (*itThingFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itThingTo)->m_sName << '\n';
                 return false;
                 }
 //          std::cout << "true LinkThing2Thing( size_t " << nThingFrom << ", size_t " << nThingTo << ", size_t " << nReason << " )\n";
@@ -677,7 +761,7 @@ class COdb : public Identifiable<COdb>
             CAggregate result{};
 
             std::regex crsRegex(crsProperty);
-	    std::vector<PProperty> oSelection(m_oProperties.size());
+            std::vector<PProperty> oSelection(m_oProperties.size());
             auto itSelection = std::copy_if(m_oProperties.begin(),
                                             m_oProperties.end(),
 //                                             oSelection.begin(), [&](PProperty const & e) {return e->m_sName == crsProperty;});
