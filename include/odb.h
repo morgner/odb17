@@ -416,7 +416,8 @@ class COdb : public Identifiable<COdb>
                 }
             } // void print(std::set<T> const & crContainer)
 
-
+        /// @brief Replaces 2 with \" and \ with \\
+	/// @param crsInput The string to be escaped
 	auto Escape(std::string const & crsInput)
 	    {
 	    static std::regex m_oRegexESC{R"(\"|\\)"};
@@ -483,6 +484,54 @@ class COdb : public Identifiable<COdb>
             } // void print_json(CThings const & crContainer, std::ostream & ros)
 
         /**
+         * @brief Dump all CThings in Sub-JSON format
+         *
+         * @param crContainer The forward iterable container, containing
+         *        all CThing instances
+         * @param ros The output destination
+         */
+        void print_json_stream(CThings const & crContainer, std::ostream & ros)
+            {
+            std::size_t cm{crContainer.size()};
+            std::size_t cc{0};
+            ros << "\"Things\":[";
+            for (auto const & e:crContainer)
+                {
+//              ros << "{\"type\":\"" << e->type  << "\",";
+                ros << "{\"id\":"     << e->m_nId << ",";
+                ros <<  "\"name\":\"" << Escape(e->m_sName) << "\",";
+
+                ros << "\"properties\":[";
+                bool lb{false}; // Start signal
+                for (auto const & a:e->m_spoProperties)
+                    {
+                    if ( !lb ) { lb=true; } else { ros << ","; }
+                    ros << "{\"id\":" << a->m_nId << "}";
+                    }
+                ros << "],";
+
+                ros << "\"atoms\":[";
+                lb = false; // Start signal
+                for (auto const & a:e->m_spoAtoms)
+                    {
+                    if ( !lb ) { lb=true; } else { ros << ","; }
+                    ros << "{\"id\":" << a->m_nId << "}";
+                    }
+                ros << "],";
+
+                ros << "\"links\":[";
+                lb = false; // Start signal
+                for (auto const & b:e->m_mLink)
+                    {
+                    if ( !lb ) { lb=true; } else { ros << ","; }
+                    ros << "{\"thing-id\":" << b.first->m_nId << ",\"reason-id\":" << b.second->m_nId << "}";
+                    }
+                if ( ++cc < cm ) { ros << "]},"; } else { ros << "]}"; }
+                }
+            ros << "]";
+            } // void print_json_stream(CThings const & crContainer, std::ostream & ros)
+
+        /**
          * @brief Dump all CProperty's in Sub-JSON format
          *
          * @param crContainer The forward iterable container, containing
@@ -506,6 +555,28 @@ class COdb : public Identifiable<COdb>
             } // void print_json(CProperties const & crContainer, std::ostream & ros)
             
         /**
+         * @brief Dump all CProperty's in Sub-JSON format
+         *
+         * @param crContainer The forward iterable container, containing
+         *        all CProperty instances
+         * @param ros The output destination
+         */
+        void print_json_stream(CProperties const & crContainer, std::ostream & ros)
+            {
+            std::size_t cm{crContainer.size()};
+            std::size_t cc{0};
+            ros << "\"Properties\":[";
+            for ( auto const & a:crContainer )
+                {
+                ros << "{";
+                ros << "\"id\":"     << a->m_nId             << ",";
+                ros << "\"name\":\"" << Escape(a->m_sName)   << "\"";
+                if ( ++cc < cm ) { ros << "},"; } else { ros << "}"; }
+                }
+            ros << "]";
+            } // void print_json_stream(CProperties const & crContainer, std::ostream & ros)
+            
+        /**
          * @brief Dump all CAtoms in Sub-JSON format
          *
          * @param crContainer The forward iterable container, containing
@@ -523,17 +594,46 @@ class COdb : public Identifiable<COdb>
                                            ros << spcr<4> << "{ ";
 //                                         ros << "\"type\": \""   <<  a->type      << "\", ";
                                            ros << "\"id\": "       <<  a->m_nId        << ", ";
-/*
+
                 if ( a->m_sName.size() )   ros << "\"name\": \""   <<  Escape(a->m_sName  ) << "\", ";
                 if ( a->m_sPrefix.size() ) ros << "\"prefix\": \"" <<  Escape(a->m_sPrefix) << "\", ";
                 if ( a->m_sSuffix.size() ) ros << "\"suffix\": \"" <<  Escape(a->m_sSuffix) << "\", ";
                 if ( a->m_sFormat.size() ) ros << "\"format\": \"" <<  Escape(a->m_sFormat) << "\", ";
-*/
+
                                            ros << "\"data\": \""   << *a            << "\" ";
                 if ( ++cc < cm ) { ros << "},\n"; } else { ros << "}\n"; }
                 }
             ros << spcr<3> << "],\n";
             } // void print_json(CAtoms const & crContainer, long const nRI, std::ostream & ros)
+
+        /**
+         * @brief Dump all CAtoms in Sub-JSON format
+         *
+         * @param crContainer The forward iterable container, containing
+         *        all CAtom instances
+         * @param ros The output destination
+         */
+        void print_json_stream(CAtoms const & crContainer, std::ostream & ros)
+            {
+            std::size_t cm{crContainer.size()};
+            std::size_t cc{0};
+            ros << "\"Atoms\":[";
+            for ( auto const & a:crContainer )
+                {
+                                           ros << "{";
+//                                         ros << "\"type\":\"" <<  a->type  << "\",";
+                                           ros << "\"id\":"     <<  a->m_nId << ",";
+
+                if ( a->m_sName.size() )   ros << "\"name\":\""   <<  Escape(a->m_sName  ) << "\",";
+                if ( a->m_sPrefix.size() ) ros << "\"prefix\":\"" <<  Escape(a->m_sPrefix) << "\",";
+                if ( a->m_sSuffix.size() ) ros << "\"suffix\":\"" <<  Escape(a->m_sSuffix) << "\",";
+                if ( a->m_sFormat.size() ) ros << "\"format\":\"" <<  Escape(a->m_sFormat) << "\",";
+
+                                           ros << "\"data\":\""   << *a << "\"";
+                if ( ++cc < cm ) { ros << "},"; } else { ros << "}"; }
+                }
+            ros << "]";
+            } // void print_json_stream(CAtoms const & crContainer, long const nRI, std::ostream & ros)
 
         /**
          * @brief Dump all CReasons in Sub-JSON format
@@ -557,6 +657,26 @@ class COdb : public Identifiable<COdb>
             ros << spcr<3> << "],\n";
             }
 
+        /**
+         * @brief Dump all CReasons in Sub-JSON format
+         * @param crContainer The forward iterable container, containing
+         *        all CReason instances
+         * @param ros The output destination
+         */
+        void print_json_stream(CReasons const & crContainer, std::ostream & ros)
+            {
+            std::size_t cm{crContainer.size()};
+            std::size_t cc{0};
+            ros << "\"Reasons\":[";
+            for ( auto const & a:crContainer )
+                {
+                ros << "{\"id\":"      << a->m_nId           << ",";
+                ros <<  "\"name\":\""  << Escape(a->m_sName) << "\"";
+                if ( ++cc < cm ) { ros << "},"; } else { ros << "}"; }
+                }
+            ros << "]";
+            }
+
 
         /**
          * @brief Dump the hole database in JSON format
@@ -564,7 +684,68 @@ class COdb : public Identifiable<COdb>
          * see also: JSON validator+converter: https://jsonformatter.org/
          *
          * @param ros The output destination
-         */
+
+ @par Sample: Link Atoms to Things and Thing to Thing and dump it as JSON
+ @rst
+ .. code-block:: cpp
+ 
+	 #include <iostream>
+
+	 #include "odb.h"
+	 #include "atom.h"
+	 #include "thing.h"
+
+	 int main()
+		{
+		auto oOdb    = odb::COdb();
+		auto pThing1 = oOdb.MakeThing("Ulrich");
+		auto pThing2 = oOdb.MakeThing("Fred");
+		auto pAtom1  = oOdb.MakeAtom("Leader", "Role");
+		auto pAtom2  = oOdb.MakeAtom("Member", "Role");
+		auto pReason = oOdb.MakeReason("pays");
+		pThing1->Append(pAtom1);
+		pThing2->Append(pAtom2);
+		pThing1->Link(pThing2, pReason);
+		oOdb.print_json(std::cout);
+		}
+ 
+ Output
+ 
+ .. code-block:: none
+
+	{
+		"Object Database Dump": 
+			{
+			"Sizes": [ {"P": 0},{"A": 2},{"R": 1},{"T": 2} ],
+			"Properties": 
+				[
+				],
+			"Atoms": 
+				[
+					{ "id": 0, "data": "Leader" },
+					{ "id": 1, "data": "Member" }
+				],
+			"Reasons": 
+				[
+					{ "id": 0, "name": "pays" }
+				],
+			"Things": 
+				[
+					{ "id": 0, "name": "Ulrich",
+						"properties": [  ],
+						"atoms": [ {"id": 0} ],
+						"links": [ {"thing-id": 1, "reason-id": 0} ] },
+					{ "id": 1, "name": "Fred",
+						"properties": [  ],
+						"atoms": [ {"id": 1} ],
+						"links": [  ] }
+				]
+			}
+	 }
+ 
+ @endrst
+
+*/
         void print_json(std::ostream & ros)
             {
             ros << spcr<0> << '{' << '\n';
@@ -602,6 +783,36 @@ class COdb : public Identifiable<COdb>
             ]
         }
 }
+*/
+        /**
+         * @brief Dump the hole database in JSON format
+         * @param ros The output destination
+         */
+        void print_json_stream(std::ostream & ros)
+            {
+            ros << "{\"Object Database Dump\":{" << '\n';
+            
+            ros <<            "\"Sizes\":[" 
+		<< "{\"T\":" << m_oThings.size()     << "},"
+		<< "{\"P\":" << m_oProperties.size() << "},"
+		<< "{\"R\":" << m_oReasons.size()    << "},"
+		<< "{\"A\":" << m_oAtoms.size()      << "}"
+		                                     << "],\n";
+
+            print_json_stream(m_oProperties, ros); ros << ",\n";
+            print_json_stream(m_oAtoms,      ros); ros << ",\n";
+            print_json_stream(m_oReasons,    ros); ros << ",\n";
+            print_json_stream(m_oThings,     ros); ros << "";
+
+            ros << "}}\n";
+            }
+/*
+{"Object Database Dump":{
+"Sizes":[{"T":2},{"P":0},{"R":1},{"A":2}],
+"Properties":[],
+"Atoms":[{"id":0,"name":"Role","data":"Leader"},{"id":1,"name":"Role","data":"Member"}],
+"Reasons":[{"id":0,"name":"pays"}],
+"Things":[{"id":0,"name":"Ulrich","properties":[],"atoms":[{"id":0}],"links":[{"thing-id":1,"reason-id":0}]},{"id":1,"name":"Fred","properties":[],"atoms":[{"id":1}],"links":[]}]}}
 */
 
         /// @brief Has to return a thing with specified ID, if it does not exists, it is to make
@@ -742,9 +953,9 @@ class COdb : public Identifiable<COdb>
                 return false;
                 }
 //          std::cout << "true LinkThing2Thing( size_t " << nThingFrom << ", size_t " << nThingTo << ", size_t " << nReason << " )\n";
-//	    std::cout << "+ " << (*itThingFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itThingTo)->m_sName << '\n';
-	    (*itThingFrom)->Link( const_cast<PThing&>(*itThingTo), const_cast<PReason&>(*itReason) );
-//	     Link( *itThingFrom, *itReason, *itThingTo );
+//          std::cout << "+ " << (*itThingFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itThingTo)->m_sName << '\n';
+            (*itThingFrom)->Link( const_cast<PThing&>(*itThingTo), const_cast<PReason&>(*itReason) );
+//          Link( *itThingFrom, *itReason, *itThingTo );
             return true;
             }
 

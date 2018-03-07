@@ -29,4 +29,5 @@ int main()
     std::cout << "thing: " << *pThing2 << '\n';
     oOdb.print();
     oOdb.print_json(std::cout);
+    oOdb.print_json_stream(std::cout);
     }

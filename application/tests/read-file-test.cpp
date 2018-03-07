@@ -191,7 +191,7 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
     imdb_nb.close();
 
     std::fstream imdb("db.json", std::ifstream::out);
-    oOdb.print_json(imdb);
+    oOdb.print_json_stream(imdb);
     imdb.close();
 
     std::cout << "---------------- " <<  oOdb.Things().size()     << " things" << '\n';
