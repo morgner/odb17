@@ -839,6 +839,33 @@ class COdb : public Identifiable<COdb>
             }
 
         /**
+         * @brief Finds PThing with a named Property
+         *
+         * @param crsProperty The name for the CProperty
+         */
+        PThing FindThingByProperty( std::string const & crsProperty )
+            {
+            PProperty poProperty;
+
+            auto itProperty =  m_oProperties.get<name>().find( crsProperty );
+            if ( itProperty == m_oProperties.get<name>().end() )
+                {
+                return nullptr;
+                }
+            else
+                {
+                poProperty = *itProperty;
+                }
+
+            if ( 0 == poProperty->m_oRelations.size() )
+                {
+                return nullptr;
+                }
+
+            return *poProperty->m_oRelations.begin();
+            }
+
+        /**
          * @brief Finds or creates a PThing with a named Property, which also may be created and assigned
          *
          * @param crsThing The name for the CThing
@@ -1017,3 +1044,4 @@ class COdb : public Identifiable<COdb>
 
 // CODB_H
 #endif
+

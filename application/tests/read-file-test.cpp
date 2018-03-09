@@ -54,6 +54,9 @@ tt0000002	short		Le clown et ses chiens	Le clown et ses chiens	0	1892		\N	5		Ani
 int main()
     {
     size_t nReadLimit = 50000000;
+    std::cout << "Read so many lines: ";
+    std::cin >> nReadLimit;
+	
 
     int e = 0;
     static std::string sLine;
@@ -189,9 +192,89 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
             } // while ( it != end )
         } // while ( std::getline(imdb_nb, sLine) ...)
     imdb_nb.close();
+/*
+ * title.principals.tsv
+tconst	ordering	nconst	category	job	characters
+tt0000001	1	nm1588970	self	\N	["Herself"]
+tt0000001	2	nm0005690	director	\N	\N
+tt0000001	3	nm0374658	cinematographer	director of photography	\N
+tt0000002	1	nm0721526	director	\N	\N
+tt0000002	2	nm1335271	composer	\N	\N
+tt0000003	1	nm0721526	director	\N	\N
+tt0000003	2	nm5442194	producer	producer	\N
+*/
+
+    std::fstream imdb_pp("../raw-data/title.principals.tsv", std::ifstream::in);
+    std::getline(imdb_pp, sLine);
+    nId = 0;
+    auto brk{false};
+    while ( std::getline(imdb_pp, sLine) && (nId++ < nReadLimit /*DEBUG*/) )
+        {
+//      if ( nId % 1000 == 0) { std::cout << nId << '\n'; }
+
+        std::string sTId;
+        std::string sOrder;
+        std::string sNId;
+        std::string sCategory;
+        std::string sJob;
+        std::string sCharacters;
+
+        std::string sItem;
+        e = 0;
+	brk = false;
+        odb::PThing tt;
+        odb::PThing nm;
+        std::regex_token_iterator<std::string::iterator> it(sLine.begin(), sLine.end(), r, -1);
+//	0=tid		1=ordering	2=nid		3=category	4=job	5=characters
+//	tt0000001	1		nm1588970	self		\N	["Herself"]
+        while ( (it != end) && !brk )
+            {
+            sItem = *it++;
+            switch ( e++ )
+                {
+                case 0: sTId         = sItem; 
+//                      std::cout << sId << '\n';
+                        tt = oOdb.FindThingByProperty( sTId );
+			if ( tt == nullptr ) { brk = true; continue; }
+//                      std::cout << "Thing(" << m->m_nId << ") name: " << sName << "\n";
+			break;
+                case 1: sOrder       = sItem; break;
+                case 2: sNId         = sItem; 
+//                      std::cout << sId << '\n';
+                        nm = oOdb.FindThingByProperty( sNId );
+			if ( nm == nullptr ) { brk = true; continue; }
+//                      std::cout << "Thing(" << m->m_nId << ") name: " << sName << "\n";
+			break;
+                case 3: sCategory    = sItem;
+                        if ( (""s != sItem) && ("\\N"s != sItem) )
+			    {
+                            std::cout << "CAT: oOdb.LinkThing2Thing( " << nm->m_sName << ", " << tt->m_sName << ", " << sItem << " );\n";
+                            nm->Append( oOdb.FindOrMakeProperty( sItem ) );
+                            }
+			break;
+                case 4: sJob         = sItem;
+                        if ( (""s != sItem) && ("\\N"s != sItem) )
+			    {
+                            std::cout << "JOB: oOdb.LinkThing2Thing( " << nm->m_sName << ", " << tt->m_sName << ", " << sItem << " );\n";
+                            nm->Append( oOdb.FindOrMakeProperty( sItem ) );
+                            }
+			break;
+                case 5: sCharacters  = sItem;
+                        if ( (""s != sItem) && ("\\N"s != sItem) )
+			    {
+                            std::cout << "CHR: oOdb.LinkThing2Thing( " << nm->m_sName << ", " << tt->m_sName << ", " << sItem << " );\n";
+                            nm->Append( oOdb.FindOrMakeProperty( sItem ) );
+                            }
+                        break;
+                } // switch(e)
+            } // while ( it != end )
+        } // while ( std::getline(imdb_pp, sLine) ...)
+    imdb_pp.close();
+
 
     std::fstream imdb("db.json", std::ifstream::out);
-    oOdb.print_json_stream(imdb);
+    oOdb.print_json(imdb);
+//    oOdb.print_json_stream(imdb);
     imdb.close();
 
     std::cout << "---------------- " <<  oOdb.Things().size()     << " things" << '\n';
