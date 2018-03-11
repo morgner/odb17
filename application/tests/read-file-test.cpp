@@ -302,16 +302,16 @@ tt0000003	2	nm5442194	producer	producer	\N
 
 //  ===========================================================================
     std::string sInput;
-    while ( sInput != "q" )
+    char c{'t'};
+    do
         {
-        char c{'t'};
 	std::cout << "\n---------------- Search in (t)hings or (r)easons or (p)roperties: ";
 	std::cin >> c;
 	switch (c)
             {
             case 't': std::cout << "\n---------------- Search in Things: "; break;
 	    case 'r': std::cout << "\n---------------- Search in Reasons: "; break;
-            case 'p': std::cout << "\n-X-------------- Search in Properties: "; break;
+            case 'p': std::cout << "\n---------------- Search in Properties: "; break;
             case 'a': std::cout << "\n-X-------------- Search in Atoms: "; break;
             }
 	std::cin >> sInput;
@@ -337,9 +337,8 @@ tt0000003	2	nm5442194	producer	producer	\N
                       for (auto const & a:as) { std::cout << '\n' << *a << '\n'; } std::cout << "  total: " << as.size() << '\n'; 
                       break;
 */
-	    case 'q': break; 
 	    }
-        } // while ( sInput != "q" )
+        } while ( c != 'q' );
 
     std::fstream imdb("db.json", std::ifstream::out);
     oOdb.print_json(imdb);
