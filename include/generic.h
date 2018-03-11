@@ -27,6 +27,7 @@
 
 #include <deque>
 #include <set>
+#include <regex>
 
 /**
  * Demangle C++ types into something human readable
@@ -87,7 +88,7 @@ class Identifiable
                  Identifiable(size_t nId, std::string const & crsName) : m_nId(nId), m_sName(crsName) { idForObjectOf<T>(nId); }
         /// @brief Constructor initializing NAME, let ID autocount
         /// @param crsName The name for the object
-                 Identifiable(            std::string const & crsName) :             m_sName(crsName) {                        }
+        explicit Identifiable(            std::string const & crsName) :             m_sName(crsName) {                        }
         /// The ID of the instance (per type)
         size_t m_nId { idForObjectOf<T>() };
         /// The type of the instance
@@ -153,7 +154,7 @@ struct lessIdentifiableId
 template<typename T>
 struct lessIdentifiableName
     {
-    /// makes the operators to appear polymorph
+    /// makes the operators to appear polymorphic
     using is_transparent = void;
 
     /**
@@ -170,19 +171,23 @@ struct lessIdentifiableName
      * @param crsName The element to compare
      * @param p The element to compare with
      */
-    bool operator()(std::string const & crsName, T const & p) const
-        {
-        return crsName < p->m_sName;
-        }
+    // bool operator()(std::string const & crsName, T const & p) const
+    //     {
+    //     std::regex sRegex(crsName);
+    //     return std::regex_match(p->m_sName, sRegex);
+//  //     return crsName < p->m_sName;
+    //     }
     /**
      * @brief Compares an objects derived from Identifiable
      * @param p The element to compare
      * @param crsName The element to compare with
      */
-    bool operator()(T const & p, std::string const & crsName) const
-        {
-        return p->m_sName < crsName;
-        }
+    // bool operator()(T const & p, std::string const & crsName) const
+    //     {
+    //     std::regex sRegex(crsName);
+    //     return std::regex_match(p->m_sName, sRegex);
+//  //     return p->m_sName < crsName;
+    //     }
     };
 
 /* 2

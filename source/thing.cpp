@@ -41,8 +41,8 @@ std::ostream & operator << (std::ostream & ros, CThing const & crThing)
     for (auto const & a:crThing.m_mLink)
         {
         if (bFirst) { bFirst = false; } else { ros << '\n' << "  "; }
-        ros << " => linked to: " << '"' << a.first->m_sName << '"' << " for reason: " << '"' << *a.second << '"';
-        ros << " = " << crThing.m_sName << ' ' << *a.second << ' ' << a.first->m_sName;
+        ros << " => linked to: " << '"' << a.first->m_sName << '"' << " for reason: " << '"' << a.second->m_sName << '"';
+//      ros << " = " << crThing.m_sName << ' ' << *a.second << ' ' << a.first->m_sName;
         }
     for (auto const & a:crThing.m_spoThingsRelating)
         {

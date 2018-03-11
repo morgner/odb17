@@ -22,7 +22,12 @@ namespace odb {
 
 std::ostream & operator << (std::ostream & ros, CProperty const & croProperty)
     {
-    ros << croProperty.m_sName; // << '\n';
+    ros << croProperty.m_sName << '\n';
+    for ( auto const & a:croProperty.m_oRelations )
+        {
+	ros << "  Property of: " << a->m_sName << '\n';
+	}
+    ros << "  total: " << croProperty.m_oRelations.size() << '\n';
     return ros;
     }
 

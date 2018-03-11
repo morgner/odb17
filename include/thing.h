@@ -58,7 +58,7 @@ class CThing : public std::enable_shared_from_this<CThing>,
                  CThing(CThing &&) = default;
 
                  /// Normal constructor, receiving the name of the reason
-                 CThing(std::string const & crsName);
+                 explicit CThing(std::string const & crsName);
                  
                  /// Load constructor, receiving the ID and name of the reason
                  CThing(size_t nId, std::string const & crsName);

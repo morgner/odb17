@@ -12,6 +12,8 @@ mkdir -p build
 cd build
 cmake ..
 cmake --build .
+or:
+cmake --build . --target all -- -j4
 ```
 
 Building **WITHOUT** the documentation
@@ -25,6 +27,8 @@ mkdir -p build
 cd build
 cmake .. -DBUILD_DOCS=Off
 cmake --build .
+or
+cmake --build . --target all -- -j4
 ```
 
 ------------------- OR (e.g.)

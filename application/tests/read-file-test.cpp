@@ -51,12 +51,22 @@ tt0000002	short		Le clown et ses chiens	Le clown et ses chiens	0	1892		\N	5		Ani
 */
 
 // Demo main program
-int main()
+int main( int argc, const char* argv[] )
     {
-    size_t nReadLimit = 50000000;
-    std::cout << "Read so many lines: ";
-    std::cin >> nReadLimit;
-	
+    size_t nReadLimit{1};
+    try
+        {
+	size_t n = std::stoull( argv[1] );
+	nReadLimit = n;
+	}
+    catch(...)
+       	{
+	nReadLimit = 1000;
+	}
+      std::cout << nReadLimit << " lines per file\n";
+//    std::cout << "Read how many lines per file? : ";
+//    std::cin >> nReadLimit;
+
 
     int e = 0;
     static std::string sLine;
@@ -133,6 +143,7 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
     std::regex k(",");
     std::regex_token_iterator<std::string::iterator> end;
     auto ReasonAI = oOdb.MakeReason( "acts-in" );
+    auto brk{false};
     nId = 0;
     while ( std::getline(imdb_nb, sLine) && (nId++ < nReadLimit /*DEBUG*/) )
         {
@@ -147,10 +158,11 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
 
         std::string sItem;
         e = 0;
-        odb::PThing m;
+        odb::PThing m; m = nullptr;
+	odb::PThing movie; movie = nullptr;
         std::regex_token_iterator<std::string::iterator> it(sLine.begin(), sLine.end(), r, -1);
 //	0=id	1=name	2=Ybirth	3=Ydeath	4=profession	5=movies	
-        while ( it != end )
+        while ( (it != end) && (!brk) )
             {
             sItem = *it++;
             switch ( e++ )
@@ -158,35 +170,41 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
                 case 0: sId          = sItem; break;
                 case 1: sName        = sItem;
 //                      std::cout << sId << '\n';
-                        m = oOdb.FindOrMakeThingByProperty( sName, sId );
-//                       std::cout << "Thing(" << m->m_nId << ") name: " << sName << "\n";
+//                      m = oOdb.FindOrMakeThingByProperty( sName, sId );
+//                      std::cout << "Thing(" << m->m_nId << ") name: " << sName << "\n";
                         break;
 
                 case 2: sYearB       = sItem; break;
                 case 3: sYearD       = sItem; break;
                 case 4: sProfessions = sItem; break;
                 case 5: sMovies      = sItem;
-                        std::regex_token_iterator<std::string::iterator> itP(sProfessions.begin(), sProfessions.end(), k, -1);
-                        while (itP != end)
-                            {
-//                          std::cout << "m(" << m->m_nId << ")->Append( oOdb.FindOrMakeProperty( " << *itP << " ) );\n";
-                            sItem = *itP++;
-                            if ( ""s    == sItem ) continue;
-                            if ( "\\N"s == sItem ) continue;
-                            m->Append( oOdb.FindOrMakeProperty( sItem ) );
-                            }
-
                         std::regex_token_iterator<std::string::iterator> itM(sMovies.begin(), sMovies.end(), k, -1);
                         while (itM != end)
                             {
                             sItem = *itM++;
-                            try { if ( std::stoull( sItem.substr(2) ) > nReadLimit /*DEBUG*/ ) continue; } catch(...) { continue; }
+//                          try { if ( std::stoull( sItem.substr(2) ) > nReadLimit /*DEBUG*/ ) continue; } catch(...) { continue; }
                             if ( ""s    == sItem ) continue;
                             if ( "\\N"s == sItem ) continue;
-                            odb::PThing movie = oOdb.FindOrMakeThingByProperty( "Linked Movie w/o title"s, sItem );
-                                                m->Link( movie, ReasonAI );
+                            movie = oOdb.FindThingByProperty( sItem );
+			    if ( movie == nullptr ) continue;
+                            if ( m == nullptr ) m = oOdb.FindOrMakeThingByProperty( sName, sId );
+//                          odb::PThing movie = oOdb.FindOrMakeThingByProperty( "Linked Movie w/o title"s, sItem );
+                            m->Link( movie, ReasonAI );
 //                          std::cout << sItem << ": oOdb.LinkThing2Thing( " << m->m_sName << ", " << movie->m_sName << ", " << ReasonAI->m_nId << " );\n";
                             }
+
+			if ( movie != nullptr )
+			    {
+                            std::regex_token_iterator<std::string::iterator> itP(sProfessions.begin(), sProfessions.end(), k, -1);
+                            while (itP != end)
+                                {
+//                              std::cout << "m(" << m->m_nId << ")->Append( oOdb.FindOrMakeProperty( " << *itP << " ) );\n";
+                                sItem = *itP++;
+                                if ( ""s    == sItem ) continue;
+                                if ( "\\N"s == sItem ) continue;
+                                m->Append( oOdb.FindOrMakeProperty( sItem ) );
+                                }
+			    }
                         break;
                 } // switch(e)
             } // while ( it != end )
@@ -207,7 +225,6 @@ tt0000003	2	nm5442194	producer	producer	\N
     std::fstream imdb_pp("../raw-data/title.principals.tsv", std::ifstream::in);
     std::getline(imdb_pp, sLine);
     nId = 0;
-    auto brk{false};
     while ( std::getline(imdb_pp, sLine) && (nId++ < nReadLimit /*DEBUG*/) )
         {
 //      if ( nId % 1000 == 0) { std::cout << nId << '\n'; }
@@ -248,22 +265,25 @@ tt0000003	2	nm5442194	producer	producer	\N
                 case 3: sCategory    = sItem;
                         if ( (""s != sItem) && ("\\N"s != sItem) )
 			    {
-                            std::cout << "CAT: oOdb.LinkThing2Thing( " << nm->m_sName << ", " << tt->m_sName << ", " << sItem << " );\n";
-                            nm->Append( oOdb.FindOrMakeProperty( sItem ) );
+//                          std::cout << "CAT: oOdb.LinkThing2Thing( " << nm->m_sName << ", " << tt->m_sName << ", " << sItem << " );\n";
+                            nm->Link( tt, oOdb.FindOrMakeReason( sItem ) );
+//                          nm->Append( oOdb.FindOrMakeProperty( sItem ) );
                             }
 			break;
                 case 4: sJob         = sItem;
                         if ( (""s != sItem) && ("\\N"s != sItem) )
 			    {
-                            std::cout << "JOB: oOdb.LinkThing2Thing( " << nm->m_sName << ", " << tt->m_sName << ", " << sItem << " );\n";
-                            nm->Append( oOdb.FindOrMakeProperty( sItem ) );
+//                          std::cout << "JOB: oOdb.LinkThing2Thing( " << nm->m_sName << ", " << tt->m_sName << ", " << sItem << " );\n";
+                            nm->Link( tt, oOdb.FindOrMakeReason( sItem ) );
+//                          nm->Append( oOdb.FindOrMakeProperty( sItem ) );
                             }
 			break;
                 case 5: sCharacters  = sItem;
                         if ( (""s != sItem) && ("\\N"s != sItem) )
 			    {
-                            std::cout << "CHR: oOdb.LinkThing2Thing( " << nm->m_sName << ", " << tt->m_sName << ", " << sItem << " );\n";
-                            nm->Append( oOdb.FindOrMakeProperty( sItem ) );
+//                          std::cout << "CHR: oOdb.LinkThing2Thing( " << nm->m_sName << ", " << tt->m_sName << ", " << sItem << " );\n";
+                            nm->Link( tt, oOdb.FindOrMakeReason( sItem ) );
+//                          nm->Append( oOdb.FindOrMakeProperty( sItem ) );
                             }
                         break;
                 } // switch(e)
@@ -271,6 +291,55 @@ tt0000003	2	nm5442194	producer	producer	\N
         } // while ( std::getline(imdb_pp, sLine) ...)
     imdb_pp.close();
 
+
+//  auto ts = oOdb.FindThing("Cyrus Townsend Brady"); // ...
+//  auto ts = oOdb.FindThings("Ed Brady");
+//  auto ts = oOdb.FindThings("Richard Adams");
+//  auto ts = oOdb.FindThings(std::regex("^.* Anderson$")); std::cout << "'^.* Anderson$' : " << ts.size() << '\n';
+//       ts = oOdb.FindThings(std::regex("^.* Adams$"));    std::cout << "'^.* Adams$'    : " << ts.size() << '\n';
+//       ts = oOdb.FindThings(std::regex("^Yolanda .*"));   std::cout << "'^Yolanda .*'   : " << ts.size() << '\n';
+//       ts = oOdb.FindThings(std::regex(".*Stahl.*"));     std::cout << "'.* Stahl .*'   : " << ts.size() << '\n';
+
+//  ===========================================================================
+    std::string sInput;
+    while ( sInput != "q" )
+        {
+        char c{'t'};
+	std::cout << "\n---------------- Search in (t)hings or (r)easons or (p)roperties: ";
+	std::cin >> c;
+	switch (c)
+            {
+            case 't': std::cout << "\n---------------- Search in Things: "; break;
+	    case 'r': std::cout << "\n---------------- Search in Reasons: "; break;
+            case 'p': std::cout << "\n-X-------------- Search in Properties: "; break;
+            case 'a': std::cout << "\n-X-------------- Search in Atoms: "; break;
+            }
+	std::cin >> sInput;
+	odb::CThings     ts;
+	odb::CReasons    rs;
+	odb::CProperties ps;
+	odb::CAtoms      as;
+	switch (c)
+            {
+            case 't': ts = oOdb.FindThings(std::regex( sInput ));
+                      for (auto const & a:ts) { std::cout << '\n' << *a << '\n'; } std::cout << "  total: " << ts.size() << '\n'; 
+                      break;
+
+	    case 'r': rs = oOdb.FindReasons(std::regex( sInput ));
+                      for (auto const & a:rs) { std::cout << '\n' << *a << '\n'; } std::cout << "  total: " << rs.size() << '\n'; 
+                      break;
+
+            case 'p': ps = oOdb.FindProperties(std::regex( sInput ));
+                      for (auto const & a:ps) { std::cout << '\n' << *a << '\n'; } std::cout << "  total: " << ps.size() << '\n'; 
+                      break;
+/*
+            case 'a': as = oOdb.FindAtoms(std::regex( sInput ));
+                      for (auto const & a:as) { std::cout << '\n' << *a << '\n'; } std::cout << "  total: " << as.size() << '\n'; 
+                      break;
+*/
+	    case 'q': break; 
+	    }
+        } // while ( sInput != "q" )
 
     std::fstream imdb("db.json", std::ifstream::out);
     oOdb.print_json(imdb);

@@ -866,6 +866,64 @@ class COdb : public Identifiable<COdb>
             }
 
         /**
+         * @brief Finds PThing with a named ID
+         *
+         * @param nId The ID of the Thing
+         */
+        PThing FindThing( size_t nId )
+            {
+            PThing poThing;
+
+            auto itThing =  m_oThings.get<id>().find( nId );
+            if ( itThing == m_oThings.get<id>().end() )
+                {
+                return nullptr;
+                }
+            else
+                {
+                return *itThing;
+                }
+            }
+
+
+        /**
+         * @brief Finds all PThings with the given name
+         *
+         * @param crsName The name of the Things
+         */
+        CThings FindThings( std::string const & crsName )
+            {
+//	    auto oThingRange = m_oThings.get<name>().equal_range(crsName, [&](std::string const & a, std::string const & b) {return a < b;});
+	    auto oThingRange = m_oThings.get<name>().equal_range(crsName);
+
+            // todo: preallocation
+	    CThings oThings;
+	    for ( auto it = oThingRange.first; it != oThingRange.second; ++it )
+	        {
+		oThings.insert(*it);
+		}
+	    return std::move(oThings);
+            }
+
+
+        /**
+         * @brief Finds all PThings with the given regular expresion
+         *
+         * @param crsRegex The regular expression for the name of the Things
+         */
+        CThings FindThings( std::regex const & crsRegex )
+            {
+            // todo: preallocation
+	    CThings oThings;
+	    for ( auto a:m_oThings )
+	        {
+                if ( std::regex_match(a->m_sName, crsRegex) ) oThings.insert(a);
+	        }
+	    return std::move(oThings);
+            }
+
+
+        /**
          * @brief Finds or creates a PThing with a named Property, which also may be created and assigned
          *
          * @param crsThing The name for the CThing
@@ -914,6 +972,23 @@ class COdb : public Identifiable<COdb>
                 poProperty = *itProperty;
                 }
             return poProperty;
+        }
+
+        /// @brief Has to return a Reason, if it does not exists, it is to make
+        /// @param crsReason The name of the Reason
+        PReason & FindOrMakeReason( std::string const & crsReason )
+            {
+            static PReason poReason;
+            auto itReason =  m_oReasons.get<name>().find(crsReason);
+            if ( itReason == m_oReasons.get<name>().end() )
+                {
+                poReason = std::move(MakeReason(crsReason));
+                }
+            else
+                {
+                poReason = *itReason;
+                }
+            return poReason;
         }
 
         /// todo: optimize / Appends a Property to a Thing by given index value
@@ -986,6 +1061,79 @@ class COdb : public Identifiable<COdb>
             return true;
             }
 
+
+        /**
+         * @brief Finds all PReasons with the given name
+         *
+         * @param crsName The name of the Reasons
+         */
+        CReasons FindReasons( std::string const & crsName )
+            {
+	    auto oReasonRange = m_oReasons.get<name>().equal_range(crsName);
+
+            // todo: preallocation
+	    CReasons oReasons;
+	    for ( auto it = oReasonRange.first; it != oReasonRange.second; ++it )
+	        {
+		oReasons.insert(*it);
+		}
+	    return std::move(oReasons);
+            }
+
+
+        /**
+         * @brief Finds all PReasons with the given regular expresion
+         *
+         * @param crsRegex The regular expression for the name of the Reasons
+         */
+        CReasons FindReasons( std::regex const & crsRegex )
+            {
+            // todo: preallocation
+	    CReasons oReasons;
+	    for ( auto a:m_oReasons )
+	        {
+                if ( std::regex_match(a->m_sName, crsRegex) ) oReasons.insert(a);
+	        }
+	    return std::move(oReasons);
+            }
+
+
+        /**
+         * @brief Finds all PProperties with the given name
+         *
+         * @param crsName The name of the Properties
+         */
+        CProperties FindProperties( std::string const & crsName )
+            {
+	    auto oRange = m_oProperties.get<name>().equal_range(crsName);
+
+            // todo: preallocation
+	    CProperties oProperties;
+	    for ( auto it = oRange.first; it != oRange.second; ++it )
+	        {
+		oProperties.insert(*it);
+		}
+	    return std::move(oProperties);
+            }
+
+
+        /**
+         * @brief Finds all PProperties with the given regular expresion
+         *
+         * @param crsRegex The regular expression for the name of the Properties
+         */
+        CProperties FindProperties( std::regex const & crsRegex )
+            {
+            // todo: preallocation
+	    CProperties oProperties;
+	    for ( auto a:m_oProperties )
+	        {
+                if ( std::regex_match(a->m_sName, crsRegex) ) oProperties.insert(a);
+	        }
+	    return std::move(oProperties);
+            }
+
+
         //
         // =================== Search operations =======================
         //
@@ -998,12 +1146,11 @@ class COdb : public Identifiable<COdb>
             {
             CAggregate result{};
 
-            std::regex crsRegex(crsProperty);
+            std::regex sRegex(crsProperty);
             std::vector<PProperty> oSelection(m_oProperties.size());
             auto itSelection = std::copy_if(m_oProperties.begin(),
                                             m_oProperties.end(),
-//                                             oSelection.begin(), [&](PProperty const & e) {return e->m_sName == crsProperty;});
-                                               oSelection.begin(), [&](PProperty const & e) {return std::regex_match(e->m_sName, crsRegex);});
+                                               oSelection.begin(), [&](PProperty const & e) {return std::regex_match(e->m_sName, sRegex);});
             oSelection.resize(std::distance(oSelection.begin(), itSelection));
 
             for ( auto const & s:oSelection )
@@ -1043,5 +1190,37 @@ class COdb : public Identifiable<COdb>
 } // namespace odb
 
 // CODB_H
+
+
+/*
+template<typename CompatibleKey> std::pair<iterator,iterator> equal_range(const CompatibleKey& x)const;
+
+Requires: CompatibleKey is a compatible key of key_compare.
+Effects: Equivalent to make_pair(lower_bound(x),upper_bound(x)).
+Complexity: O(log(n)).
+
+
+
+template<typename CompatibleKey,typename CompatibleCompare> std::pair<iterator,iterator> equal_range(const CompatibleKey& x,const CompatibleCompare& comp)const;
+
+Requires: (CompatibleKey, CompatibleCompare) is a compatible extension of key_compare.
+Effects: Equivalent to make_pair(lower_bound(x,comp),upper_bound(x,comp)).
+Complexity: O(log(n)).
+
+
+
+template<typename Modifier> bool modify(iterator position,Modifier mod);
+
+Requires: mod is a unary function object accepting arguments of type value_type&. position is a valid dereferenceable iterator of the index. The execution of mod(e), where e is the element pointed to by position, does not invoke any operation of the multi_index_container after e is directly modified or, before modification, if the operation would invalidate position.
+Effects: Calls mod(e) where e is the element pointed to by position and rearranges *position into all the indices of the multi_index_container. Rearrangement is successful if
+the index is non-unique OR no other element exists with equivalent key,
+AND rearrangement is allowed by all other indices of the multi_index_container.
+If the rearrangement fails, the element is erased.
+Postconditions: Validity of position is preserved if the operation succeeds. If the key of the modified value is equivalent to that of the original value, the position of the element does not change.
+Returns: true if the operation succeeded, false otherwise.
+Complexity: O(M(n)).
+Exception safety: Basic. If an exception is thrown by some user-provided operation (except possibly mod), then the element pointed to by position is erased.
+*/
+
 #endif
 
