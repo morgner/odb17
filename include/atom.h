@@ -12,9 +12,9 @@
 
 #include <iostream>
 #include <vector>
-#include <forward_list> // 
-#include <list>         // 
-#include <set>          // 
+#include <forward_list> //
+#include <list>         //
+#include <set>          //
 
 #include "generic.h"
 #include "thing.h"
@@ -167,13 +167,15 @@ std::ostream& operator<< (std::ostream & ros, std::array<T, N> const & crContain
 /// forward declarations to befriend with
 class COdb;
 
+using IAtom = Identifiable<CAtom>;
+
 /**
  @brief An Atom is a data field for a CThing
 
  @par Sample Code goes here
  @rst
  .. code-block:: cpp
- 
+
     #include <odb>
  @endrst
  */
@@ -397,7 +399,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
             static_assert
                 (
                     (
-                    !std::is_pointer<decltype(tData)>::value || 
+                    !std::is_pointer<decltype(tData)>::value ||
                      std::is_convertible<T, const char*>::value
                     ), "arrays and pointers not supported"
                 );

@@ -11,9 +11,9 @@
 #include <string>
 #include <memory>    // shared_ptr
 #include <iostream>  // cout
-#include <regex> 
-#include <set> 
-#include <vector> 
+#include <regex>
+#include <set>
+#include <vector>
 
 #include "generic.h"
 
@@ -49,10 +49,10 @@ class COdb : public Identifiable<COdb>
                  COdb() = default;
                  /**
                    * @brief deleted: copy constructor
-                   *  
+                   *
                    * Copying a databse is not supported yet. We will support it
                    * as soon as we find out what it means.
-                   */ 
+                   */
                  COdb(COdb const & src) = delete;
                  /**
                    * @brief deleted: Assignment operator
@@ -62,7 +62,7 @@ class COdb : public Identifiable<COdb>
                  COdb & operator = (COdb const & src) = delete;
                  /**
                   * @brief Some cleanup
-                  *  
+                  *
                   * If we wish to convience valgrind we are doing it right,
                   * we have to free all links to other objects before leaving
                   * the show.
@@ -105,7 +105,7 @@ class COdb : public Identifiable<COdb>
          *
          * Creates a shared_ptr with a new CThing named as given in the
          * call. If no name is given, the name will be the class default
-         * 
+         *
          * @param nId The predefined ID if loading given sets into odb
          * @param crsName The name for the CThing
          */
@@ -124,7 +124,7 @@ class COdb : public Identifiable<COdb>
          * @brief Creates a PProperty
          *
          * Creates a shared_ptr with a new CProperty named as given in
-         * the call. If no name is given, the name will be the class 
+         * the call. If no name is given, the name will be the class
          * default
          *
          * @param crsName The name for the CProperty
@@ -144,9 +144,9 @@ class COdb : public Identifiable<COdb>
          * @brief Creates a PProperty with predefined ID
          *
          * Creates a shared_ptr with a new CProperty named as given in
-         * the call. If no name is given, the name will be the class 
+         * the call. If no name is given, the name will be the class
          * default
-         * 
+         *
          * @param nId The predefined ID if loading given sets into odb
          * @param crsName The name for the CProperty
          */
@@ -198,7 +198,7 @@ class COdb : public Identifiable<COdb>
 #endif
             {
             auto p = std::make_shared<CAtom>(data, crsName, crsPrefix, crsSuffix, crsFormat);
-            m_oAtoms.push_back( p );
+            m_oAtoms.insert( p );
             return std::move( p );
             }
 
@@ -242,7 +242,7 @@ class COdb : public Identifiable<COdb>
 #endif
             {
             auto p = std::make_shared<CAtom>(nId, data, crsName, crsPrefix, crsSuffix, crsFormat);
-            m_oAtoms.push_back( p );
+            m_oAtoms.insert( p );
             return std::move( p );
             }
 
@@ -553,7 +553,7 @@ class COdb : public Identifiable<COdb>
                 }
             ros << spcr<3> << "],\n";
             } // void print_json(CProperties const & crContainer, std::ostream & ros)
-            
+
         /**
          * @brief Dump all CProperty's in Sub-JSON format
          *
@@ -575,7 +575,7 @@ class COdb : public Identifiable<COdb>
                 }
             ros << "]";
             } // void print_json_stream(CProperties const & crContainer, std::ostream & ros)
-            
+
         /**
          * @brief Dump all CAtoms in Sub-JSON format
          *
@@ -688,7 +688,7 @@ class COdb : public Identifiable<COdb>
  @par Sample: Link Atoms to Things and Thing to Thing and dump it as JSON
  @rst
  .. code-block:: cpp
- 
+
 	 #include <iostream>
 
 	 #include "odb.h"
@@ -708,28 +708,28 @@ class COdb : public Identifiable<COdb>
 		pThing1->Link(pThing2, pReason);
 		oOdb.print_json(std::cout);
 		}
- 
+
  Output
- 
+
  .. code-block:: none
 
 	{
-		"Object Database Dump": 
+		"Object Database Dump":
 			{
 			"Sizes": [ {"P": 0},{"A": 2},{"R": 1},{"T": 2} ],
-			"Properties": 
+			"Properties":
 				[
 				],
-			"Atoms": 
+			"Atoms":
 				[
 					{ "id": 0, "data": "Leader" },
 					{ "id": 1, "data": "Member" }
 				],
-			"Reasons": 
+			"Reasons":
 				[
 					{ "id": 0, "name": "pays" }
 				],
-			"Things": 
+			"Things":
 				[
 					{ "id": 0, "name": "Ulrich",
 						"properties": [  ],
@@ -742,7 +742,7 @@ class COdb : public Identifiable<COdb>
 				]
 			}
 	 }
- 
+
  @endrst
 
 */
@@ -751,11 +751,11 @@ class COdb : public Identifiable<COdb>
             ros << spcr<0> << '{' << '\n';
             ros << spcr<1> << "\"Object Database Dump\": " << '\n';
             ros << spcr<2> << '{' << '\n';
-            
-            ros << spcr<2> << "\"Sizes\": [ {\"P\": " << 
-            m_oProperties.size() << "},{\"A\": " << 
-            m_oAtoms.size() << "},{\"R\": " << 
-            m_oReasons.size() << "},{\"T\": " << 
+
+            ros << spcr<2> << "\"Sizes\": [ {\"P\": " <<
+            m_oProperties.size() << "},{\"A\": " <<
+            m_oAtoms.size() << "},{\"R\": " <<
+            m_oReasons.size() << "},{\"T\": " <<
             m_oThings.size() << "} ]," << '\n';
 
             print_json(m_oProperties, ros);
@@ -768,13 +768,13 @@ class COdb : public Identifiable<COdb>
             }
 /*
 {
-    "Object Database Dump": 
+    "Object Database Dump":
         {
         "Sizes": [ {"P": 1089},{"A": 3000},{"R": 10},{"T": 1000} ],
         "Properties": [ { "id": 0, "name": "Person" } ],
         "Atoms": [ { "id": 0, "name": "round", "suffix": "%", "data": "100.2" } ],
         "Reasons": [ { "id": 0, "name": "made" } ],
-        "Things": 
+        "Things":
             [
                 { "id": 0, "name": "Wundertüte",
                     "properties": [ {"id": 0},{"id": 1} ],
@@ -791,8 +791,8 @@ class COdb : public Identifiable<COdb>
         void print_json_stream(std::ostream & ros)
             {
             ros << "{\"Object Database Dump\":{" << '\n';
-            
-            ros <<            "\"Sizes\":[" 
+
+            ros <<            "\"Sizes\":["
 		<< "{\"T\":" << m_oThings.size()     << "},"
 		<< "{\"P\":" << m_oProperties.size() << "},"
 		<< "{\"R\":" << m_oReasons.size()    << "},"
@@ -1034,12 +1034,13 @@ class COdb : public Identifiable<COdb>
         bool AppendAtom2Thing( size_t nThing, size_t nAtom )
             {
             if ( (nThing > m_oThings.size()) || (nAtom > m_oAtoms.size()) ) return false;
-            auto itThing = std::find_if(m_oThings.begin(), m_oThings.end(), [&](PThing const & e){return e->m_nId == nThing;});
+            auto itThing =  m_oThings.get<id>().find( nThing );
+//          auto itThing = std::find_if(m_oThings.begin(), m_oThings.end(), [&](PThing const & e){return e->m_nId == nThing;});
             if ( itThing == m_oThings.end() ) return false;
-            auto itAtom  = std::find_if(m_oAtoms.begin(),  m_oAtoms.end(),  [&](PAtom  const & e){return e->m_nId == nAtom;});
+            auto itAtom  =  m_oAtoms.get<id>().find( nAtom );
             if ( itAtom  == m_oAtoms.end() ) return false;
 
-            (*itThing)->Append( *itAtom );
+            (*itThing)->Append( const_cast<PAtom&>(*itAtom) );
             return true;
             }
 
@@ -1134,6 +1135,43 @@ class COdb : public Identifiable<COdb>
             }
 
 
+        /**
+         * @brief Finds all PAtoms with the given name
+         *
+         * @param crsName The name of the Atoms
+         */
+        CAtoms FindAtoms( std::string const & crsName )
+            {
+	    auto oRange = m_oAtoms.get<name>().equal_range(crsName);
+
+            // todo: preallocation
+	    CAtoms oAtoms;
+	    for ( auto it = oRange.first; it != oRange.second; ++it )
+	        {
+		oAtoms.insert(*it);
+		}
+	    return std::move(oAtoms);
+            }
+
+
+        /**
+         * @brief Finds all PAtoms with the given regular expresion
+         *
+         * @param crsRegex The regular expression for the name of the Atoms
+         */
+        CAtoms FindAtoms( std::regex const & crsRegex )
+            {
+            // todo: preallocation
+            CAtoms oAtoms;
+//++?       if ( (oAtoms = FindAtoms(std::string(crsRegex))) > 0 ) return std::move(oAtoms);
+	        for ( auto a:m_oAtoms )
+	            {
+                if ( std::regex_match(a->m_sName, crsRegex) ) oAtoms.insert(a);
+	            }
+	    return std::move(oAtoms);
+            }
+
+
         //
         // =================== Search operations =======================
         //
@@ -1141,7 +1179,7 @@ class COdb : public Identifiable<COdb>
         /// Result container of collecting operations, collecting IDs
         using CAggregate = std::set<size_t>;
 
-        /// todo: optimize / Selects Thing-IDs by a Property 
+        /// todo: optimize / Selects Thing-IDs by a Property
         CAggregate SelectThingsByProperty( std::string const & crsProperty )
             {
             CAggregate result{};

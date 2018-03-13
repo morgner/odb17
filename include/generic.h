@@ -248,7 +248,16 @@ using PAtom  = std::shared_ptr<CAtom>;
 /// The type to inherite from (Identifiable<>)
 using IAtom  = Identifiable<CAtom>;
 /// A container for the shared_ptr's of the entity
-using CAtoms = std::deque<PAtom>;
+//using CAtoms = std::deque<PAtom>;
+using CAtoms = multi_index_container<
+  PAtom,
+  indexed_by<
+    /// sort by less<int> on ID
+    ordered_unique    <tag<id>,  member<IAtom, size_t,      &IAtom::m_nId> >,
+    /// sort by less<string> on NAME
+    ordered_non_unique<tag<name>,member<IAtom, std::string, &IAtom::m_sName> >
+  >
+>;
 
 /// Forward decleration to befriend with it in other classes
 class CProperty;
@@ -288,6 +297,8 @@ using CReasons = multi_index_container<
 class CStrand;
 /// The shared_ptr of the entity
 using PStrand  = std::shared_ptr<CStrand>;
+/// The type to inherite from (Identifiable<>)
+using IStrand  = Identifiable<CStrand>;
 /// A container for the shared_ptr's of the entity
 using CStrands = std::deque<PStrand>;
 

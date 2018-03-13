@@ -309,10 +309,11 @@ tt0000003	2	nm5442194	producer	producer	\N
 	std::cin >> c;
 	switch (c)
             {
-            case 't': std::cout << "\n---------------- Search in Things: "; break;
-	    case 'r': std::cout << "\n---------------- Search in Reasons: "; break;
+            case 't': std::cout << "\n---------------- Search in Things: ";     break;
+	    case 'r': std::cout << "\n---------------- Search in Reasons: ";    break;
             case 'p': std::cout << "\n---------------- Search in Properties: "; break;
-            case 'a': std::cout << "\n-X-------------- Search in Atoms: "; break;
+            case 'a': std::cout << "\n---------------- Search in Atoms: ";      break;
+	    default : continue;
             }
 	std::cin >> sInput;
 	odb::CThings     ts;
@@ -321,30 +322,31 @@ tt0000003	2	nm5442194	producer	producer	\N
 	odb::CAtoms      as;
 	switch (c)
             {
-            case 't': ts = oOdb.FindThings(std::regex( sInput ));
+            case 't': ts = oOdb.FindThings(std::string( sInput )); if (ts.size() == 0) ts = oOdb.FindThings(std::regex( sInput ));
                       for (auto const & a:ts) { std::cout << '\n' << *a << '\n'; } std::cout << "  total: " << ts.size() << '\n'; 
                       break;
 
-	    case 'r': rs = oOdb.FindReasons(std::regex( sInput ));
+	    case 'r': rs = oOdb.FindReasons(std::string( sInput )); if (ts.size() == 0) rs = oOdb.FindReasons(std::regex( sInput ));
                       for (auto const & a:rs) { std::cout << '\n' << *a << '\n'; } std::cout << "  total: " << rs.size() << '\n'; 
                       break;
 
-            case 'p': ps = oOdb.FindProperties(std::regex( sInput ));
+            case 'p': ps = oOdb.FindProperties(std::string( sInput )); if (ts.size() == 0) ps = oOdb.FindProperties(std::regex( sInput ));
                       for (auto const & a:ps) { std::cout << '\n' << *a << '\n'; } std::cout << "  total: " << ps.size() << '\n'; 
                       break;
-/*
-            case 'a': as = oOdb.FindAtoms(std::regex( sInput ));
+
+            case 'a': as = oOdb.FindAtoms(std::string( sInput )); if (ts.size() == 0) as = oOdb.FindAtoms(std::regex( sInput ));
                       for (auto const & a:as) { std::cout << '\n' << *a << '\n'; } std::cout << "  total: " << as.size() << '\n'; 
                       break;
-*/
+
+	    default : continue;
 	    }
         } while ( c != 'q' );
-
+/*
     std::fstream imdb("db.json", std::ifstream::out);
     oOdb.print_json(imdb);
 //    oOdb.print_json_stream(imdb);
     imdb.close();
-
+*/
     std::cout << "---------------- " <<  oOdb.Things().size()     << " things" << '\n';
     std::cout << "---------------- " <<  oOdb.Properties().size() << " properties" << '\n';
     std::cout << "---------------- " <<  oOdb.Reasons().size()    << " reasons" << '\n';

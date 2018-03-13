@@ -25,7 +25,7 @@ std::ostream & operator << (std::ostream & ros, CReason const & croReason)
     ros << croReason.m_sName << '\n';
     for (auto const & a:croReason.m_mRelations)
         {
-        ros << "  Links " << a.first->m_sName << "\" to \"" << a.second->m_sName << "\"" << '\n';
+        ros << "  Links \"" << a.first->m_sName << "\" to \"" << a.second->m_sName << "\"" << '\n';
         }
     ros << "  total: " << croReason.m_mRelations.size() << '\n';
     return ros;

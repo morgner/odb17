@@ -2,7 +2,7 @@
 #define CSTRAND_H
 
 /**
- * @file atom.h
+ * @file strand.h
  *
  * @author Manfred Morgner
  * @date 07.01.2018
@@ -19,10 +19,12 @@ namespace odb {
 /// forward declarations to befriend with
 class COdb;
 
+using IStrand = Identifiable<CStrand>;
+
 /**
  * A Strand to link two Things (Unidirectional)
  */
-class CStrand : public Identifiable<CStrand>
+class CStrand : public IStrand
     {
     friend COdb;
 
@@ -42,7 +44,7 @@ class CStrand : public Identifiable<CStrand>
         PAtom Append(PAtom poAtom)
             {
             /// todo: implementation
-            m_poAtoms.push_back(poAtom);
+            m_poAtoms.insert(poAtom);
             return poAtom;
             }
 
