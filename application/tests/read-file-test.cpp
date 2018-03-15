@@ -305,7 +305,13 @@ tt0000003	2	nm5442194	producer	producer	\N
     char c{'t'};
     do
         {
-	std::cout << "\n---------------- Search in (t)hings or (r)easons or (p)roperties: ";
+        std::cout << "---------------- " <<  oOdb.Things().size()     << " things" << '\n';
+        std::cout << "---------------- " <<  oOdb.Properties().size() << " properties" << '\n';
+        std::cout << "---------------- " <<  oOdb.Reasons().size()    << " reasons" << '\n';
+        std::cout << "---------------- " <<  oOdb.Atoms().size()      << " atoms" << '\n';
+
+	std::cout << "\n":
+	std::cout << "---------------- Search in (t)hings or (r)easons or (p)roperties or (a)tom or (q)uit: ";
 	std::cin >> c;
 	switch (c)
             {
@@ -347,11 +353,6 @@ tt0000003	2	nm5442194	producer	producer	\N
 //    oOdb.print_json_stream(imdb);
     imdb.close();
 */
-    std::cout << "---------------- " <<  oOdb.Things().size()     << " things" << '\n';
-    std::cout << "---------------- " <<  oOdb.Properties().size() << " properties" << '\n';
-    std::cout << "---------------- " <<  oOdb.Reasons().size()    << " reasons" << '\n';
-    std::cout << "---------------- " <<  oOdb.Atoms().size()      << " atoms" << '\n';
-
 /*
     std::cout << "---------------- all properties" << '\n';
     for ( auto const & a:oOdb.Properties() )
