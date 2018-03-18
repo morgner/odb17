@@ -15,7 +15,8 @@
 
 #include <fstream>
 #include <stdlib.h> // atol
-#include <cstring>
+//#include <cstring>
+#include <string>
 #include <regex>
 
 #include "generic.h"
@@ -109,7 +110,7 @@ int main( int argc, const char* argv[] )
                         if ( "\\N"s == sName ) sName = "No title";
                         m = oOdb.FindOrMakeThingByProperty( sName, sId );
 //                      std::cout << nId << " - " << m->m_nId << '\n';
-                        m->Append( oOdb.FindOrMakeProperty( "Movie"s ) );
+/* class */             m->Append( oOdb.FindOrMakeProperty( "class:movie"s ) );
                         if ( (""s != sType ) && ("\\N"s != sType ) ) m->Append( oOdb.FindOrMakeProperty( sType ) );
                         if ( (""s != sYearF) && ("\\N"s != sYearF) ) m->Append( oOdb.FindOrMakeProperty( sYearF ) );
                         break;
@@ -190,6 +191,7 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
                             if ( m == nullptr ) m = oOdb.FindOrMakeThingByProperty( sName, sId );
 //                          odb::PThing movie = oOdb.FindOrMakeThingByProperty( "Linked Movie w/o title"s, sItem );
                             m->Link( movie, ReasonAI );
+/* class */                 m->Append( oOdb.FindOrMakeProperty( "class:person" ) );
 //                          std::cout << sItem << ": oOdb.LinkThing2Thing( " << m->m_sName << ", " << movie->m_sName << ", " << ReasonAI->m_nId << " );\n";
                             }
 
@@ -260,6 +262,7 @@ tt0000003	2	nm5442194	producer	producer	\N
 //                      std::cout << sId << '\n';
                         nm = oOdb.FindThingByProperty( sNId );
 			if ( nm == nullptr ) { brk = true; continue; }
+/* class */             nm->Append( oOdb.FindOrMakeProperty( "class:person" ) );
 //                      std::cout << "Thing(" << m->m_nId << ") name: " << sName << "\n";
 			break;
                 case 3: sCategory    = sItem;
@@ -310,8 +313,8 @@ tt0000003	2	nm5442194	producer	producer	\N
         std::cout << "---------------- " <<  oOdb.Reasons().size()    << " reasons" << '\n';
         std::cout << "---------------- " <<  oOdb.Atoms().size()      << " atoms" << '\n';
 
-	std::cout << "\n":
-	std::cout << "---------------- Search in (t)hings or (r)easons or (p)roperties or (a)tom or (q)uit: ";
+	std::cout << "\n";
+	std::cout << "---------------- Search in (t)hings or (r)easons or (p)roperties or (a)tom or (q)uit or (s)ave&quit: ";
 	std::cin >> c;
 	switch (c)
             {
@@ -326,33 +329,42 @@ tt0000003	2	nm5442194	producer	producer	\N
 	odb::CReasons    rs;
 	odb::CProperties ps;
 	odb::CAtoms      as;
+
+//auto y = oOdb.Find(oOdb.Things(), sInput);
+//
+//size_t st = 379;
+//auto x = oOdb.Find(oOdb.Things(), st);
+//if ( x ) std::cout << "--" << '\n' << *x << '\n' << "--" << '\n'; 
+
 	switch (c)
             {
-            case 't': ts = oOdb.FindThings(std::string( sInput )); if (ts.size() == 0) ts = oOdb.FindThings(std::regex( sInput ));
+            case 't': ts = oOdb.Find(oOdb.Things(),std::string( sInput )); if (ts.size() == 0) ts = oOdb.Find(oOdb.Things(),std::regex( sInput ));
                       for (auto const & a:ts) { std::cout << '\n' << *a << '\n'; } std::cout << "  total: " << ts.size() << '\n'; 
                       break;
 
-	    case 'r': rs = oOdb.FindReasons(std::string( sInput )); if (ts.size() == 0) rs = oOdb.FindReasons(std::regex( sInput ));
+	    case 'r': rs = oOdb.Find(oOdb.Reasons(),std::string( sInput )); if (ts.size() == 0) rs = oOdb.Find(oOdb.Reasons(),std::regex( sInput ));
                       for (auto const & a:rs) { std::cout << '\n' << *a << '\n'; } std::cout << "  total: " << rs.size() << '\n'; 
                       break;
 
-            case 'p': ps = oOdb.FindProperties(std::string( sInput )); if (ts.size() == 0) ps = oOdb.FindProperties(std::regex( sInput ));
+            case 'p': ps = oOdb.Find(oOdb.Properties(),std::string( sInput )); if (ts.size() == 0) ps = oOdb.Find(oOdb.Properties(),std::regex( sInput ));
                       for (auto const & a:ps) { std::cout << '\n' << *a << '\n'; } std::cout << "  total: " << ps.size() << '\n'; 
                       break;
 
-            case 'a': as = oOdb.FindAtoms(std::string( sInput )); if (ts.size() == 0) as = oOdb.FindAtoms(std::regex( sInput ));
+            case 'a': as = oOdb.Find(oOdb.Atoms(),std::string( sInput )); if (ts.size() == 0) as = oOdb.Find(oOdb.Atoms(),std::regex( sInput ));
                       for (auto const & a:as) { std::cout << '\n' << *a << '\n'; } std::cout << "  total: " << as.size() << '\n'; 
                       break;
 
 	    default : continue;
 	    }
-        } while ( c != 'q' );
-/*
-    std::fstream imdb("db.json", std::ifstream::out);
-    oOdb.print_json(imdb);
-//    oOdb.print_json_stream(imdb);
-    imdb.close();
-*/
+        } while ( (c != 'q') && (c != 's') );
+
+    if ( c == 's' )
+        {
+        std::fstream imdb("db.json", std::ifstream::out);
+        oOdb.print_json(imdb);
+//      oOdb.print_json_stream(imdb);
+        imdb.close();
+        }
 /*
     std::cout << "---------------- all properties" << '\n';
     for ( auto const & a:oOdb.Properties() )

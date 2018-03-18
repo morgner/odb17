@@ -353,7 +353,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
         }
 
     /// Adds the backlink from the atom to a thing
-    /// @param poThing Inform a thinig about being linked from another thing
+    /// @param poThing Inform a thing about being linked from another thing
     auto RelatingThingAdd(PThing poThing)
         {
         m_spoThingsRelating.insert(poThing);

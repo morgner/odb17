@@ -713,35 +713,35 @@ class COdb : public Identifiable<COdb>
 
  .. code-block:: none
 
-	{
-		"Object Database Dump":
-			{
-			"Sizes": [ {"P": 0},{"A": 2},{"R": 1},{"T": 2} ],
-			"Properties":
-				[
-				],
-			"Atoms":
-				[
-					{ "id": 0, "data": "Leader" },
-					{ "id": 1, "data": "Member" }
-				],
-			"Reasons":
-				[
-					{ "id": 0, "name": "pays" }
-				],
-			"Things":
-				[
-					{ "id": 0, "name": "Ulrich",
-						"properties": [  ],
-						"atoms": [ {"id": 0} ],
-						"links": [ {"thing-id": 1, "reason-id": 0} ] },
-					{ "id": 1, "name": "Fred",
-						"properties": [  ],
-						"atoms": [ {"id": 1} ],
-						"links": [  ] }
-				]
-			}
-	 }
+    {
+    "Object Database Dump":
+        {
+        "Sizes": [ {"P": 0},{"A": 2},{"R": 1},{"T": 2} ],
+        "Properties":
+            [
+            ],
+        "Atoms":
+            [
+                { "id": 0, "data": "Leader" },
+                { "id": 1, "data": "Member" }
+            ],
+        "Reasons":
+            [
+                { "id": 0, "name": "pays" }
+            ],
+        "Things":
+            [
+                { "id": 0, "name": "Ulrich",
+                    "properties": [  ],
+                    "atoms": [ {"id": 0} ],
+                    "links": [ {"thing-id": 1, "reason-id": 0} ] },
+                { "id": 1, "name": "Fred",
+                    "properties": [  ],
+                    "atoms": [ {"id": 1} ],
+                    "links": [  ] }
+            ]
+        }
+     }
 
  @endrst
 
@@ -838,97 +838,57 @@ class COdb : public Identifiable<COdb>
             return poThing;
             }
 
-        /**
-         * @brief Finds PThing with a named Property
-         *
-         * @param crsProperty The name for the CProperty
-         */
+
+        /// @brief Finds PThing with a named Property only if it's one
+        /// 
+        /// @param crsProperty The name for the CProperty
+        /// 
         PThing FindThingByProperty( std::string const & crsProperty )
             {
             PProperty poProperty;
 
-            auto itProperty =  m_oProperties.get<name>().find( crsProperty );
+	    auto itProperty =  m_oProperties.get<name>().find( crsProperty );
             if ( itProperty == m_oProperties.get<name>().end() )
                 {
                 return nullptr;
                 }
-            else
-                {
-                poProperty = *itProperty;
-                }
-
-            if ( 0 == poProperty->m_oRelations.size() )
+	    poProperty = *itProperty;
+            if ( (0 == poProperty->m_oRelations.size()) && 
+		      (poProperty->m_oRelations.size() > 1) )
                 {
                 return nullptr;
                 }
-
             return *poProperty->m_oRelations.begin();
             }
 
-        /**
-         * @brief Finds PThing with a named ID
-         *
-         * @param nId The ID of the Thing
-         */
-        PThing FindThing( size_t nId )
+
+        /// @brief Finds PThing with a named Property only if it's one
+        /// 
+        /// @param crsProperty The name for the CProperty
+        /// 
+        CThings FindThingsByProperty( std::string const & crsProperty )
             {
-            PThing poThing;
+            PProperty poProperty;
 
-            auto itThing =  m_oThings.get<id>().find( nId );
-            if ( itThing == m_oThings.get<id>().end() )
-                {
-                return nullptr;
-                }
-            else
-                {
-                return *itThing;
-                }
-            }
-
-
-        /**
-         * @brief Finds all PThings with the given name
-         *
-         * @param crsName The name of the Things
-         */
-        CThings FindThings( std::string const & crsName )
-            {
-//	    auto oThingRange = m_oThings.get<name>().equal_range(crsName, [&](std::string const & a, std::string const & b) {return a < b;});
-	    auto oThingRange = m_oThings.get<name>().equal_range(crsName);
-
+	    auto oRange = m_oProperties.get<name>().equal_range(crsProperty);
             // todo: preallocation
-	    CThings oThings;
-	    for ( auto it = oThingRange.first; it != oThingRange.second; ++it )
-	        {
-		oThings.insert(*it);
-		}
-	    return std::move(oThings);
-            }
+            CThings oResult;
+            for ( auto it = oRange.first; it != oRange.second; ++it )
+                {
+		for (auto const & a:(*it)->m_oRelations)
+		    {
+        	    oResult.insert(a);
+		    }
+        	}
+            return std::move(oResult);
+            } // CThings FindThingsByProperty( std::string ...
 
 
-        /**
-         * @brief Finds all PThings with the given regular expresion
-         *
-         * @param crsRegex The regular expression for the name of the Things
-         */
-        CThings FindThings( std::regex const & crsRegex )
-            {
-            // todo: preallocation
-	    CThings oThings;
-	    for ( auto a:m_oThings )
-	        {
-                if ( std::regex_match(a->m_sName, crsRegex) ) oThings.insert(a);
-	        }
-	    return std::move(oThings);
-            }
-
-
-        /**
-         * @brief Finds or creates a PThing with a named Property, which also may be created and assigned
-         *
-         * @param crsThing The name for the CThing
-         * @param crsProperty The name for the CProperty
-         */
+        /// @brief Finds or creates a PThing with a named Property, which also may be created and assigned
+        ///
+        /// @param crsThing The name for the CThing
+        /// @param crsProperty The name for the CProperty
+	///
         PThing FindOrMakeThingByProperty( std::string const & crsThing, std::string const & crsProperty )
             {
             PThing    poResult;
@@ -950,12 +910,13 @@ class COdb : public Identifiable<COdb>
                 }
             else
                 {
-            poResult = MakeThing(crsThing);
-            poResult->Append(poProperty);
-            }
-
+                poResult = MakeThing(crsThing);
+                poResult->Append(poProperty);
+                }
+ 
             return poResult;
-            }
+            } // PThing FindOrMakeThingByProperty( std::string ...
+
 
         /// @brief Has to return a property, if it does not exists, it is to make
         /// @param crsProperty The name of the Property
@@ -972,7 +933,7 @@ class COdb : public Identifiable<COdb>
                 poProperty = *itProperty;
                 }
             return poProperty;
-        }
+            }
 
         /// @brief Has to return a Reason, if it does not exists, it is to make
         /// @param crsReason The name of the Reason
@@ -989,7 +950,7 @@ class COdb : public Identifiable<COdb>
                 poReason = *itReason;
                 }
             return poReason;
-        }
+            }
 
         /// todo: optimize / Appends a Property to a Thing by given index value
         bool AppendProperty2Thing( size_t nProperty, size_t nThing)
@@ -1012,6 +973,7 @@ class COdb : public Identifiable<COdb>
         bool AppendProperty2Thing( std::string const & crsProperty, bool bForce, std::string const & crsThing )
             {
             PProperty poProperty;
+
             auto itProperty =  m_oProperties.get<name>().find( crsProperty );
             if ( itProperty == m_oProperties.get<name>().end() )
                 {
@@ -1035,7 +997,6 @@ class COdb : public Identifiable<COdb>
             {
             if ( (nThing > m_oThings.size()) || (nAtom > m_oAtoms.size()) ) return false;
             auto itThing =  m_oThings.get<id>().find( nThing );
-//          auto itThing = std::find_if(m_oThings.begin(), m_oThings.end(), [&](PThing const & e){return e->m_nId == nThing;});
             if ( itThing == m_oThings.end() ) return false;
             auto itAtom  =  m_oAtoms.get<id>().find( nAtom );
             if ( itAtom  == m_oAtoms.end() ) return false;
@@ -1047,130 +1008,104 @@ class COdb : public Identifiable<COdb>
         /// todo: optimize / Links a Thing to a Thing for a Reason by given index value
         bool LinkThing2Thing( size_t nThingFrom, size_t nThingTo, size_t nReason )
             {
-            auto itThingFrom  =  m_oThings.get<id>().find( nThingFrom );
-            auto itThingTo    =  m_oThings.get<id>().find( nThingTo );
+            auto itThingFrom  =  m_oThings .get<id>().find( nThingFrom );
+            auto itThingTo    =  m_oThings .get<id>().find( nThingTo );
             auto itReason     =  m_oReasons.get<id>().find( nReason );
-            if ( (itThingFrom == m_oThings.end()) || (itThingTo == m_oThings.end()) || (itReason == m_oReasons.end()) )
+            if ( (itThingFrom == m_oThings .end()) || (itThingTo == m_oThings.end()) || (itReason == m_oReasons.end()) )
                 {
                 std::cout << "0 " << (*itThingFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itThingTo)->m_sName << '\n';
                 return false;
                 }
-//          std::cout << "true LinkThing2Thing( size_t " << nThingFrom << ", size_t " << nThingTo << ", size_t " << nReason << " )\n";
+//	    std::cout << "true LinkThing2Thing( size_t " << nThingFrom << ", size_t " << nThingTo << ", size_t " << nReason << " )\n";
 //          std::cout << "+ " << (*itThingFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itThingTo)->m_sName << '\n';
-            (*itThingFrom)->Link( const_cast<PThing&>(*itThingTo), const_cast<PReason&>(*itReason) );
+	    (*itThingFrom)->Link( const_cast<PThing&>(*itThingTo), const_cast<PReason&>(*itReason) );
 //          Link( *itThingFrom, *itReason, *itThingTo );
             return true;
             }
 
 
         /**
-         * @brief Finds all PReasons with the given name
+         * @brief Finds the T with ID nId
          *
-         * @param crsName The name of the Reasons
+         * @tparam T the type of the filtered objects
+         * @param croContainer The container to be filtered
+         * @param nId The ID of the T
          */
-        CReasons FindReasons( std::string const & crsName )
+        template<typename T>
+        PT<T> Find( CT<T> const & croContainer, size_t nId )
             {
-	    auto oReasonRange = m_oReasons.get<name>().equal_range(crsName);
-
-            // todo: preallocation
-	    CReasons oReasons;
-	    for ( auto it = oReasonRange.first; it != oReasonRange.second; ++it )
-	        {
-		oReasons.insert(*it);
-		}
-	    return std::move(oReasons);
+	    auto oResult =  croContainer.find(nId);
+	    if ( oResult == croContainer.end() ) return nullptr;
+	    return std::move( *oResult );
             }
-
 
         /**
-         * @brief Finds all PReasons with the given regular expresion
+         * @brief Finds all Ts with the given NAME
          *
-         * @param crsRegex The regular expression for the name of the Reasons
+         * @tparam T the type of the filtered objects
+         * @param croContainer The container to be filtered
+         * @param crsName The NAME of the Reasons
          */
-        CReasons FindReasons( std::regex const & crsRegex )
+        template<typename T>
+        CT<T> Find( CT<T> const & croContainer, std::string const & crsName )
             {
-            // todo: preallocation
-	    CReasons oReasons;
-	    for ( auto a:m_oReasons )
-	        {
-                if ( std::regex_match(a->m_sName, crsRegex) ) oReasons.insert(a);
-	        }
-	    return std::move(oReasons);
-            }
+            auto oRange = croContainer.template get<name>().equal_range(crsName);
 
+            // todo: preallocation
+            CT<T> oResult;
+            for ( auto it = oRange.first; it != oRange.second; ++it )
+                {
+        	oResult.insert(*it);
+        	}
+            return std::move(oResult);
+            }
 
         /**
-         * @brief Finds all PProperties with the given name
+         * @brief Finds all Ts with the given NAME as RegEx
          *
-         * @param crsName The name of the Properties
+         * @tparam T the type of the filtered objects
+         * @param croContainer The container to be filtered
+         * @param crsRegex The NAME of the Ts in Regex
          */
-        CProperties FindProperties( std::string const & crsName )
-            {
-	    auto oRange = m_oProperties.get<name>().equal_range(crsName);
-
-            // todo: preallocation
-	    CProperties oProperties;
-	    for ( auto it = oRange.first; it != oRange.second; ++it )
-	        {
-		oProperties.insert(*it);
-		}
-	    return std::move(oProperties);
-            }
-
-
-        /**
-         * @brief Finds all PProperties with the given regular expresion
-         *
-         * @param crsRegex The regular expression for the name of the Properties
-         */
-        CProperties FindProperties( std::regex const & crsRegex )
+        template<typename T>
+        CT<T> Find( CT<T> const & croContainer, std::regex const & crsRegex )
             {
             // todo: preallocation
-	    CProperties oProperties;
-	    for ( auto a:m_oProperties )
-	        {
-                if ( std::regex_match(a->m_sName, crsRegex) ) oProperties.insert(a);
-	        }
-	    return std::move(oProperties);
+            CT<T> oResult;
+            for ( auto a:croContainer )
+                {
+                if ( std::regex_match(a->m_sName, crsRegex) ) oResult.insert(a);
+                }
+            return std::move(oResult);
             }
 
+        /// API Adapter
+        auto FindThing     ( size_t                  nId ) { return Find(m_oThings, nId     ); }
+        /// API Adapter
+        auto FindThings    ( std::string const & crsName ) { return Find(m_oThings, crsName ); }
+        /// API Adapter
+        auto FindThings    ( std::regex const & crsRegex ) { return Find(m_oThings, crsRegex); }
 
-        /**
-         * @brief Finds all PAtoms with the given name
-         *
-         * @param crsName The name of the Atoms
-         */
-        CAtoms FindAtoms( std::string const & crsName )
-            {
-	    auto oRange = m_oAtoms.get<name>().equal_range(crsName);
+	/// API Adapter
+        auto FindProperty  ( size_t                  nId ) { return Find(m_oProperties, nId     ); }
+        /// API Adapter
+        auto FindProperties( std::string const & crsName ) { return Find(m_oProperties, crsName ); }
+        /// API Adapter
+        auto FindProperties( std::regex const & crsRegex ) { return Find(m_oProperties, crsRegex); }
 
-            // todo: preallocation
-	    CAtoms oAtoms;
-	    for ( auto it = oRange.first; it != oRange.second; ++it )
-	        {
-		oAtoms.insert(*it);
-		}
-	    return std::move(oAtoms);
-            }
+	/// API Adapter
+        auto FindReason    ( size_t                  nId ) { return Find(m_oReasons, nId     ); }
+        /// API Adapter
+        auto FindReasons   ( std::string const & crsName ) { return Find(m_oReasons, crsName ); }
+        /// API Adapter
+        auto FindReasons   ( std::regex const & crsRegex ) { return Find(m_oReasons, crsRegex); }
 
-
-        /**
-         * @brief Finds all PAtoms with the given regular expresion
-         *
-         * @param crsRegex The regular expression for the name of the Atoms
-         */
-        CAtoms FindAtoms( std::regex const & crsRegex )
-            {
-            // todo: preallocation
-            CAtoms oAtoms;
-//++?       if ( (oAtoms = FindAtoms(std::string(crsRegex))) > 0 ) return std::move(oAtoms);
-	        for ( auto a:m_oAtoms )
-	            {
-                if ( std::regex_match(a->m_sName, crsRegex) ) oAtoms.insert(a);
-	            }
-	    return std::move(oAtoms);
-            }
-
+	/// API Adapter
+        auto FindAtoms     ( size_t                  nId ) { return Find(m_oAtoms, nId     ); }
+        /// API Adapter
+        auto FindAtoms     ( std::string const & crsName ) { return Find(m_oAtoms, crsName ); }
+        /// API Adapter
+        auto FindAtoms     ( std::regex const & crsRegex ) { return Find(m_oAtoms, crsRegex); }
 
         //
         // =================== Search operations =======================
@@ -1186,8 +1121,8 @@ class COdb : public Identifiable<COdb>
 
             std::regex sRegex(crsProperty);
             std::vector<PProperty> oSelection(m_oProperties.size());
-            auto itSelection = std::copy_if(m_oProperties.begin(),
-                                            m_oProperties.end(),
+            auto itSelection = std::copy_if  (m_oProperties.begin(),
+                                              m_oProperties.end(),
                                                oSelection.begin(), [&](PProperty const & e) {return std::regex_match(e->m_sName, sRegex);});
             oSelection.resize(std::distance(oSelection.begin(), itSelection));
 
