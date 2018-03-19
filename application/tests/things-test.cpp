@@ -71,46 +71,46 @@ int main()
 
     // INTERSECTION
     // collect all drivers
-    auto drivers = oOdb.SelectThingsByProperty( "driver" );
+    auto drivers = oOdb.FindThingsByProperty( "driver" );
     // collect all females
-    auto females = oOdb.SelectThingsByProperty( "female" );
+    auto females = oOdb.FindThingsByProperty( "female" );
     // intersect 'drivers' with 'females', resulting in an aggregate of 'female drivers'
-    std::vector<size_t> vFemaleDrivers;
+    std::vector<odb::PThing> vFemaleDrivers;
     std::set_intersection(drivers.begin(), drivers.end(),
                           females.begin(), females.end(),
                           std::back_inserter(vFemaleDrivers));
 
     // UNION
     // collect all artists
-    auto artists = oOdb.SelectThingsByProperty( "artist" );
+    auto artists = oOdb.FindThingsByProperty( "artist" );
     // collect all builder
-    auto builder = oOdb.SelectThingsByProperty( "builder" );
+    auto builder = oOdb.FindThingsByProperty( "builder" );
     // sum 'artists' and 'builder', resulting in an aggregate of 'artist or builder'
-    std::set<size_t> vArtistOrBuilder;
+    odb::CThings vArtistOrBuilder;
     for ( auto const & a:artists ) vArtistOrBuilder.insert(a);
     for ( auto const & a:builder ) vArtistOrBuilder.insert(a);
 
-    // REGEX
-    // collect all having properties with names begining with 'con'
-    auto vSelection = oOdb.SelectThingsByProperty( "^con.*" );
+//    // REGEX
+//    // collect all having properties with names begining with 'con'
+//    auto vSelection = oOdb.FindThingsByProperty( "^con.*" );
 
     std::cout << "---------------- selected 'things' having properties 'driver' and 'female'" << '\n';
     for ( auto const & a:vFemaleDrivers )
         {
-        std::cout << **(oOdb.Things().find(a)) << "\tid: " << (*oOdb.Things().find(a))->m_nId << '\n';
+        std::cout << *a << "\tid: " << a->m_nId << '\n';
         }
 
     std::cout << "---------------- selected 'things' having properties 'artist' or 'builder'" << '\n';
     for ( auto const & a:vArtistOrBuilder )
         {
-        std::cout << **(oOdb.Things().find(a)) << '\n';
+        std::cout << *a << "\tid: " << a->m_nId << '\n';
         }
 
-    std::cout << "---------------- selected 'things' having properties with '^con'" << '\n';
-    for ( auto const & a:vSelection )
-        {
-        std::cout << **(oOdb.Things().find(a)) << '\n';
-        }
+//    std::cout << "---------------- selected 'things' having properties with '^con'" << '\n';
+//    for ( auto const & a:vSelection )
+//        {
+//        std::cout << a << '\n';
+//        }
 
     std::cout << "---------------- all properties" << '\n';
     for ( auto const & a:oOdb.Properties() )

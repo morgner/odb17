@@ -1107,34 +1107,6 @@ class COdb : public Identifiable<COdb>
         /// API Adapter
         auto FindAtoms     ( std::regex const & crsRegex ) { return Find(m_oAtoms, crsRegex); }
 
-        //
-        // =================== Search operations =======================
-        //
-
-        /// Result container of collecting operations, collecting IDs
-        using CAggregate = std::set<size_t>;
-
-        /// todo: optimize / Selects Thing-IDs by a Property
-        CAggregate SelectThingsByProperty( std::string const & crsProperty )
-            {
-            CAggregate result{};
-
-            std::regex sRegex(crsProperty);
-            std::vector<PProperty> oSelection(m_oProperties.size());
-            auto itSelection = std::copy_if  (m_oProperties.begin(),
-                                              m_oProperties.end(),
-                                               oSelection.begin(), [&](PProperty const & e) {return std::regex_match(e->m_sName, sRegex);});
-            oSelection.resize(std::distance(oSelection.begin(), itSelection));
-
-            for ( auto const & s:oSelection )
-                {
-                for ( auto const & a:s->m_oRelations )
-                    {
-                    result.insert(a->m_nId);
-                    }
-                }
-            return std::move(result);
-            }
 
         /// Access function to call then container of CThing's
         CThings      const & Things () const { return m_oThings;  }
