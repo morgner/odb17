@@ -186,9 +186,10 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
 //                          try { if ( std::stoull( sItem.substr(2) ) > nReadLimit /*DEBUG*/ ) continue; } catch(...) { continue; }
                             if ( ""s    == sItem ) continue;
                             if ( "\\N"s == sItem ) continue;
-                            movie = oOdb.FindThingByProperty( sItem );
+
+                            movie = oOdb.FindThingByProperty( sItem ).value_or(nullptr);
 			    if ( movie == nullptr ) continue;
-                            if ( m == nullptr ) m = oOdb.FindOrMakeThingByProperty( sName, sId );
+                            if ( m     == nullptr ) m = oOdb.FindOrMakeThingByProperty( sName, sId );
 //                          odb::PThing movie = oOdb.FindOrMakeThingByProperty( "Linked Movie w/o title"s, sItem );
                             m->Link( movie, ReasonAI );
 /* class */                 m->Append( oOdb.FindOrMakeProperty( "class:person" ) );
@@ -253,14 +254,14 @@ tt0000003	2	nm5442194	producer	producer	\N
                 {
                 case 0: sTId         = sItem; 
 //                      std::cout << sId << '\n';
-                        tt = oOdb.FindThingByProperty( sTId );
+                        tt = oOdb.FindThingByProperty( sTId ).value_or(nullptr);
 			if ( tt == nullptr ) { brk = true; continue; }
 //                      std::cout << "Thing(" << m->m_nId << ") name: " << sName << "\n";
 			break;
                 case 1: sOrder       = sItem; break;
                 case 2: sNId         = sItem; 
 //                      std::cout << sId << '\n';
-                        nm = oOdb.FindThingByProperty( sNId );
+                        nm = oOdb.FindThingByProperty( sNId ).value_or(nullptr);
 			if ( nm == nullptr ) { brk = true; continue; }
 /* class */             nm->Append( oOdb.FindOrMakeProperty( "class:person" ) );
 //                      std::cout << "Thing(" << m->m_nId << ") name: " << sName << "\n";

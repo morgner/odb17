@@ -28,6 +28,7 @@
 #include <deque>
 #include <set>
 #include <regex>
+#include <optional>
 
 /**
  * Demangle C++ types into something human readable
@@ -233,6 +234,8 @@ class CThing;
 using PThing  = PT<CThing>;
 /// The type to inherite from (Identifiable<>)
 using IThing  = IT<CThing>;
+/// A return value for 'optional' returns
+using OThing = std::optional<PThing>;
 /// A container for the shared_ptr's of the entity
 using CThings = CT<CThing>; 
 

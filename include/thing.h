@@ -99,7 +99,7 @@ class CThing : public std::enable_shared_from_this<CThing>,
          *
          * @param poProperty A Property to bind with the Thing
          */
-        PProperty & Append (PProperty & poProperty);
+        PProperty Append (PProperty poProperty);
 
         /**
          * @brief Appends an CAtom to its atom list
@@ -109,7 +109,7 @@ class CThing : public std::enable_shared_from_this<CThing>,
          *
          * @param poAtom An Atom to bind into the Thing
          */
-        PAtom & Append (PAtom & poAtom);
+        PAtom Append (PAtom poAtom);
 
         /**
          * @brief The free Append function for CAtoms to CThing
@@ -123,7 +123,7 @@ class CThing : public std::enable_shared_from_this<CThing>,
          * @param po2Thing A Thing to Link to
          * @param po4Reason The Reason we link for
          */
-        PThing & Link(PThing & po2Thing, PReason & po4Reason);
+        PThing Link(PThing po2Thing, PReason po4Reason);
 
         /**
          * @brief The free Link function for CThing to CThing
@@ -138,19 +138,19 @@ class CThing : public std::enable_shared_from_this<CThing>,
          * @param po2Thing A Thing to Linked to
          * @param po4Reason The Reason we linked for
          */
-        PThing & Unlink(PThing & po2Thing, PReason & po4Reason);
+        PThing Unlink(PThing po2Thing, PReason po4Reason);
 
         /**
          * @brief adds a CThing as referencing to this
          * @param poThing A CThing that links to us notifies us, we register it
          */
-        PThing & RelatingThingAdd(PThing & poThing);
+        PThing RelatingThingAdd(PThing poThing);
 
         /**
          * @brief subtract a CThing as referencing to this
          * @param poThing A CThing that linked to us notifies us, we deregister it
          */
-        PThing & RelatingThingSub(PThing & poThing);
+        PThing RelatingThingSub(PThing poThing);
 
         protected:
             /**

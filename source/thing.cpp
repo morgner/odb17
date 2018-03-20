@@ -64,30 +64,30 @@ CThing::CThing(size_t nId, std::string const & crsName)
     }
 
 
-PProperty & CThing::Append (PProperty & poProperty)
+PProperty CThing::Append (PProperty poProperty)
     {
     if ( m_spoProperties.insert(poProperty).second )
         {
         poProperty->RelationAdd( shared_from_this() );
         }
-    return poProperty;
+    return std::move(poProperty);
     }
 
-PAtom & CThing::Append (PAtom & poAtom)
+PAtom CThing::Append (PAtom poAtom)
     {
     if ( m_spoAtoms.insert(poAtom).second )
         {
         poAtom->RelatingThingAdd( shared_from_this() );
         }
-    return poAtom;
+    return std::move(poAtom);
     }
 
-PAtom & Append (PThing & poThing, PAtom & poAtom)
+PAtom Append (PThing poThing, PAtom poAtom)
     {
     return poThing->Append( poAtom );
     }
 
-PThing & CThing::Link(PThing & po2Thing, PReason & po4Reason)
+PThing CThing::Link(PThing po2Thing, PReason po4Reason)
     {
     auto me = shared_from_this();
     if (s_bDebug) std::cout << ":--LINK- -- -intern ... ---------------------------------" << '\n';
@@ -120,15 +120,15 @@ PThing & CThing::Link(PThing & po2Thing, PReason & po4Reason)
         }
 
     if (s_bDebug) std::cout << " 2 RESLT -- " << m_mLink.count(po2Thing) << ' ' << m_sName << " (" << me.use_count()-1 << "), " << *po4Reason << " (" << po4Reason.use_count() << "), " << po2Thing->m_sName << " (" << po2Thing.use_count() << ")\n";
-    return po2Thing;
+    return std::move(po2Thing);
     }
 
-PThing & Link(PThing & poThing, PReason & po4Reason, PThing & po2Thing)
+PThing Link(PThing poThing, PReason po4Reason, PThing po2Thing)
     {
     return poThing->Link( po2Thing, po4Reason );
     }
 
-PThing & CThing::Unlink(PThing & po2Thing, PReason & po4Reason)
+PThing CThing::Unlink(PThing po2Thing, PReason po4Reason)
     {
     auto me = shared_from_this();
     if (s_bDebug) std::cout << ":-UNLINK -- ---------------------------------------------" << '\n';
@@ -156,23 +156,23 @@ PThing & CThing::Unlink(PThing & po2Thing, PReason & po4Reason)
             }
         }
     if (s_bDebug) std::cout << " 6 RESLT -- " << m_mLink.count(po2Thing) << ' ' << m_sName << " (" << me.use_count()-1 << "), " << *po4Reason << " (" << po4Reason.use_count() << "), " << po2Thing->m_sName << " (" << po2Thing.use_count() << ")\n";
-    return po2Thing;
+    return std::move(po2Thing);
     }
 
-PThing & CThing::RelatingThingAdd(PThing & poThing)
+PThing CThing::RelatingThingAdd(PThing poThing)
     {
     if (s_bDebug) std::cout << " ===> RelatingThingAdd : " << this->m_sName << " (" << poThing.use_count() << ") -> " << poThing->m_sName << " (" << poThing.use_count() << ")\n";
     m_spoThingsRelating.insert(poThing);
     if (s_bDebug) std::cout << " <=== RelatingThingAdd : " << this->m_sName << " (" << poThing.use_count() << ") -> " << poThing->m_sName << " (" << poThing.use_count() << ")\n";
-    return poThing;
+    return std::move(poThing);
     }
 
-PThing & CThing::RelatingThingSub(PThing & poThing)
+PThing CThing::RelatingThingSub(PThing poThing)
     {
     if (s_bDebug) std::cout << " ==== RelatingThingSub : " << this->m_sName << " -> " << poThing->m_sName << " (" << poThing.use_count() << ")\n";
     m_spoThingsRelating.erase(poThing);
     if (s_bDebug) std::cout << " ==== RelatingThingSub : " << this->m_sName << " -> " << poThing->m_sName << " (" << poThing.use_count() << ")\n";
-    return poThing;
+    return std::move(poThing);
     }
 
 } // namespace odb

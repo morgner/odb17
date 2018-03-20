@@ -6,9 +6,9 @@
  */
 
 #include <iostream>     // cout
-#include <forward_list> // 
-#include <list>         // 
-#include <set>          // 
+#include <forward_list> //
+#include <list>         //
+#include <set>          //
 
 #include "thing.h"
 #include "property.h"

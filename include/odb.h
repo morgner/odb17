@@ -14,6 +14,7 @@
 #include <regex>
 #include <set>
 #include <vector>
+#include <optional>
 
 #include "generic.h"
 
@@ -835,28 +836,28 @@ class COdb : public Identifiable<COdb>
                 {
                 poThing = *itThing;
                 }
-            return poThing;
+            return std::move(poThing);
             }
 
 
-        /// @brief Finds PThing with a named Property only if it's one
+        /// @brief Finds PThing with a named Property only if it's unique
         /// 
         /// @param crsProperty The name for the CProperty
         /// 
-        PThing FindThingByProperty( std::string const & crsProperty )
+        OThing FindThingByProperty( std::string const & crsProperty )
             {
             PProperty poProperty;
 
 	    auto itProperty =  m_oProperties.get<name>().find( crsProperty );
             if ( itProperty == m_oProperties.get<name>().end() )
                 {
-                return nullptr;
+                return std::nullopt;
                 }
 	    poProperty = *itProperty;
             if ( (0 == poProperty->m_oRelations.size()) && 
 		      (poProperty->m_oRelations.size() > 1) )
                 {
-                return nullptr;
+                return std::nullopt;
                 }
             return *poProperty->m_oRelations.begin();
             }
@@ -914,15 +915,16 @@ class COdb : public Identifiable<COdb>
                 poResult->Append(poProperty);
                 }
  
-            return poResult;
+            return std::move(poResult);
             } // PThing FindOrMakeThingByProperty( std::string ...
 
 
         /// @brief Has to return a property, if it does not exists, it is to make
         /// @param crsProperty The name of the Property
-        PProperty & FindOrMakeProperty( std::string const & crsProperty )
+        PProperty FindOrMakeProperty( std::string const & crsProperty )
             {
-            static PProperty poProperty;
+            PProperty poProperty;
+
             auto itProperty =  m_oProperties.get<name>().find(crsProperty);
             if ( itProperty == m_oProperties.get<name>().end() )
                 {
@@ -932,14 +934,15 @@ class COdb : public Identifiable<COdb>
                 {
                 poProperty = *itProperty;
                 }
-            return poProperty;
+            return std::move(poProperty);
             }
 
         /// @brief Has to return a Reason, if it does not exists, it is to make
         /// @param crsReason The name of the Reason
-        PReason & FindOrMakeReason( std::string const & crsReason )
+        PReason FindOrMakeReason( std::string const & crsReason )
             {
-            static PReason poReason;
+            PReason poReason;
+
             auto itReason =  m_oReasons.get<name>().find(crsReason);
             if ( itReason == m_oReasons.get<name>().end() )
                 {
@@ -949,7 +952,7 @@ class COdb : public Identifiable<COdb>
                 {
                 poReason = *itReason;
                 }
-            return poReason;
+            return std::move(poReason);
             }
 
         /// todo: optimize / Appends a Property to a Thing by given index value
@@ -995,7 +998,7 @@ class COdb : public Identifiable<COdb>
         /// todo: optimize / Appends an Atom to a Thing by given index value
         bool AppendAtom2Thing( size_t nThing, size_t nAtom )
             {
-            if ( (nThing > m_oThings.size()) || (nAtom > m_oAtoms.size()) ) return false;
+            if ( (nThing >  m_oThings.size()) || (nAtom > m_oAtoms.size()) ) return false;
             auto itThing =  m_oThings.get<id>().find( nThing );
             if ( itThing == m_oThings.end() ) return false;
             auto itAtom  =  m_oAtoms.get<id>().find( nAtom );
@@ -1032,10 +1035,10 @@ class COdb : public Identifiable<COdb>
          * @param nId The ID of the T
          */
         template<typename T>
-        PT<T> Find( CT<T> const & croContainer, size_t nId )
+        std::optional<PT<T>> Find( CT<T> const & croContainer, size_t nId )
             {
 	    auto oResult =  croContainer.find(nId);
-	    if ( oResult == croContainer.end() ) return nullptr;
+	    if ( oResult == croContainer.end() ) return std::nullopt;
 	    return std::move( *oResult );
             }
 
