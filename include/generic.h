@@ -83,7 +83,7 @@ class Identifiable
         /// @param "" The Source
                  Identifiable(Identifiable &&) = default;
         
-		 /// @brief Constructor initializing predefined ID (load operation)
+        /// @brief Constructor initializing predefined ID (load operation)
         /// @param nId A predefined ID, for loading data sets with IDs
         explicit Identifiable(size_t nId)                              : m_nId(nId)                   { idForObjectOf<T>(nId); }
         
@@ -101,7 +101,7 @@ class Identifiable
 	size_t m_nId { idForObjectOf<T>() };
         /// The type of the instance
         
-	std::string const type { demangle(typeid(T)) };
+	std::string const m_sType { demangle(typeid(T)) };
         
 	/// The name of the instance
         std::string m_sName {""};

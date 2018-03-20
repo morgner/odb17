@@ -13,7 +13,7 @@ void print(odb::CStrands & crContainer)
     {
     for (auto const & e:crContainer)
         {
-        std::cout << e->type << " id: " << e->m_nId << ' ' << '"' << *e << '"' << " (" << e.use_count() << ')' << '\n';
+        std::cout << e->m_sType << " id: " << e->m_nId << ' ' << '"' << *e << '"' << " (" << e.use_count() << ')' << '\n';
         e->print();
         }
     }

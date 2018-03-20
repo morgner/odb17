@@ -82,6 +82,7 @@ class COdb : public Identifiable<COdb>
          */
         void clear();
 
+
         /**
          * @brief Creates a PThing
          *
@@ -326,7 +327,7 @@ class COdb : public Identifiable<COdb>
             {
             for (auto && e : crContainer)
                 {
-                std::cout << e->type << '\t' << " id: " << e->m_nId << '\t'
+                std::cout << e->m_sType << '\t' << " id: " << e->m_nId << '\t'
                           << " name: " << e->m_sName << '\t'
                           << '(' << e.use_count() << ')' << '\t'
                           << " data: " << *e << '\n';
@@ -346,7 +347,7 @@ class COdb : public Identifiable<COdb>
             {
             for (auto const & e:crContainer)
                 {
-                std::cout << e->type << '\t' << " id: " << e->m_nId << '\t'
+                std::cout << e->m_sType << '\t' << " id: " << e->m_nId << '\t'
                           << " name: " << e->m_sName << '\t'
                           << '(' << e.use_count() << ')' << '\n';
                 }
@@ -362,7 +363,7 @@ class COdb : public Identifiable<COdb>
             {
             for (auto const & e:crContainer)
                 {
-                std::cout << e->type << '\t' << " id: " << e->m_nId << '\t'
+                std::cout << e->m_sType << '\t' << " id: " << e->m_nId << '\t'
                           << " name: " << e->m_sName << '\t'
                           << '(' << e.use_count() << ')' << '\n';
                 }
@@ -378,7 +379,7 @@ class COdb : public Identifiable<COdb>
             {
             for (auto const & e:crContainer)
                 {
-                std::cout << e->type << '\t' << " id: " << e->m_nId << '\t'
+                std::cout << e->m_sType << '\t' << " id: " << e->m_nId << '\t'
                           << " name: " << e->m_sName << '\t'
                           << '(' << e.use_count() << ')' << '\n';
                 }
@@ -394,7 +395,7 @@ class COdb : public Identifiable<COdb>
             {
             for (auto const & e:crContainer)
                 {
-                std::cout << e->type << '\t' << " id: " << e->m_nId << '\t'
+                std::cout << e->m_sType << '\t' << " id: " << e->m_nId << '\t'
                           << " name: " << e->m_sName << '\t'
                           << '(' << e.use_count() << ')' << '\n';
                 }
@@ -411,7 +412,7 @@ class COdb : public Identifiable<COdb>
             {
             for (auto const & e:crContainer)
                 {
-                std::cout << e->type << '\t' << " id: " << e->m_nId << '\t'
+                std::cout << e->m_sType << '\t' << " id: " << e->m_nId << '\t'
                           << " name: " << e->m_sName << '\t'
                           << '(' << e.use_count() << ')' << '\n';
                 }
