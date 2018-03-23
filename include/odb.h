@@ -821,9 +821,9 @@ class COdb : public Identifiable<COdb>
         /// @param nId The id of the thing
         /// @param crsName The name of the thing if it has to be created
 #ifdef __DOXYGEN__
-        PThing FindOrLoadThingById( size_t nId, std::string const & crsName = "" )
+        PThing FindOrLoadThingById( size_t const nId, std::string const & crsName = "" )
 #else
-        PThing FindOrLoadThingById( size_t nId, std::string const & crsName = ""s )
+        auto FindOrLoadThingById( size_t const nId, std::string const & crsName = ""s )
 #endif
             {
             PThing poThing;
@@ -831,7 +831,7 @@ class COdb : public Identifiable<COdb>
             auto itThing =  m_oThings.get<id>().find( nId );
             if ( itThing == m_oThings.get<id>().end() )
                 {
-                if ( ""s == crsName ) poThing = LoadThing(nId); else poThing = LoadThing(nId, crsName);
+                poThing = ( ""s == crsName ) ? LoadThing(nId) : LoadThing(nId, crsName);
                 }
             else
                 {
@@ -1111,6 +1111,32 @@ class COdb : public Identifiable<COdb>
         /// API Adapter
         auto FindAtoms     ( std::regex const & crsRegex ) { return Find(m_oAtoms, crsRegex); }
 
+
+
+        /// Result container of collecting operations, collecting IDs
+        using CAggregate = std::set<size_t>;
+
+        /// todo: optimize / Selects Thing-IDs by a Property
+        /// Returns the IDs of all things having a property as RegExNamed
+        CAggregate SelectThingsByProperty( std::regex const & croProperty )
+            {
+            CAggregate result{};
+
+            std::vector<PProperty> oSelection;
+            auto itSelection = std::copy_if(m_oProperties.begin(),
+                                            m_oProperties.end(),
+                         std::back_inserter(oSelection), [&](PProperty const & e) {return std::regex_match(e->m_sName, croProperty);});
+//          shrink_to_fit();
+
+            for ( auto const & s:oSelection )
+                {
+                for ( auto const & a:s->m_oRelations )
+                    {
+                    result.insert(a->m_nId);
+                    }
+                }
+            return std::move(result);
+            }
 
         /// Access function to call then container of CThing's
         CThings      const & Things () const { return m_oThings;  }

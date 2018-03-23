@@ -42,6 +42,25 @@ add_executable(7-read-imdb.test
   $<TARGET_OBJECTS:${PROJECT_NAME}>
   )
 
+add_executable(8-odbd.test
+  tests/odbd.cpp
+  $<TARGET_OBJECTS:${PROJECT_NAME}>
+  )
+
+target_link_libraries(8-odbd.test
+  jsoncpp
+  ${CMAKE_THREAD_LIBS_INIT}
+  )
+
+add_executable(9-odbcli.test
+  tests/odbcli.cpp
+  $<TARGET_OBJECTS:${PROJECT_NAME}>
+  )
+
+target_link_libraries(9-odbcli.test
+  ${CMAKE_THREAD_LIBS_INIT}
+  )
+
 target_link_libraries(odb.server
   ${CMAKE_THREAD_LIBS_INIT}
   )

@@ -325,7 +325,9 @@ tt0000003	2	nm5442194	producer	producer	\N
             case 'a': std::cout << "\n---------------- Search in Atoms: ";      break;
 	    default : continue;
             }
-	std::cin >> sInput;
+//	std::cin >> sInput;
+        std::getline (std::cin,sInput); // eat the linebreak
+        std::getline (std::cin,sInput);
 	odb::CThings     ts;
 	odb::CReasons    rs;
 	odb::CProperties ps;
@@ -358,6 +360,12 @@ tt0000003	2	nm5442194	producer	producer	\N
 	    default : continue;
 	    }
         } while ( (c != 'q') && (c != 's') );
+
+// sregex_token_iterator
+/*
+    auto x = oOdb.SelectThingsByProperty( ".ovi.*" );
+    for (auto a:x) std::cout << a << '\n';
+*/
 
     if ( c == 's' )
         {
