@@ -126,74 +126,67 @@ void LoadDB( )
         }
     } // LoadDB(...)    
 
+// Transport
+// ~~~~~~~~~
+// Copyright (c) 2003-2011 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-
-
-
-#include <cstdlib>
-#include <iostream>
-#include <memory>
-#include <utility>
-#include <asio/ts/buffer.hpp>
-#include <asio/ts/internet.hpp>
+#include <asio/ip/tcp.hpp>
+#include <asio/io_service.hpp>
 
 using asio::ip::tcp;
 
-class session : public std::enable_shared_from_this<session>
+bool Answer(std::string const & crsQuery, tcp::iostream & ros)
     {
-    public:
-        session(tcp::socket socket)
-        : m_oSocket(std::move(socket))
-        { }
+    ros << "< " + crsQuery;
 
-        void start()
-            {
-            do_read();
-            }
+    if ( crsQuery.length() < 2 ) return false;
 
-    private:
-        void do_read()
-            {
-            auto self(shared_from_this());
-            m_oSocket.async_read_some(asio::buffer(m_acBuffer, m_nBufferSize), [&](std::error_code ec, std::size_t length) { if (!ec) { do_write(length); } });
-            }
+    char c = crsQuery[0];
+    std::string sInput = crsQuery.substr(2, std::string::npos);
 
-        void do_write(std::size_t length)
-            {
-            auto self(shared_from_this());
-            asio::async_write(m_oSocket, asio::buffer(m_acBuffer, 1024), [this, self](std::error_code ec, std::size_t) { if (!ec) { do_read(); } });
-            }
+    odb::CThings     ts;
+    odb::CReasons    rs;
+    odb::CProperties ps;
+    odb::CAtoms      as;
 
-        tcp::socket m_oSocket;
-        enum { m_nBufferSize = 1024 };
-        char m_acBuffer[m_nBufferSize];
-    }; // class sesssion
+    switch (c)
+        {
+        case 't': ts = oOdb.Find(oOdb.Things(),std::string( sInput )); if (ts.size() == 0) ts = oOdb.Find(oOdb.Things(),std::regex( sInput ));
+                  for (auto const & a:ts) { ros << '\n' << *a << '\n'; } ros << "  total: " << ts.size() << '\n';
+                  break;
 
-class server
-{
-    public:
-        server(asio::io_context& io_context, short port)
-        : acceptor_(io_context,
-          tcp::endpoint(tcp::v4(), port)),
-          m_oSocket(io_context)
-            {
-            do_accept();
-            }
+        case 'r': rs = oOdb.Find(oOdb.Reasons(),std::string( sInput )); if (ts.size() == 0) rs = oOdb.Find(oOdb.Reasons(),std::regex( sInput ));
+                  for (auto const & a:rs) { ros << '\n' << *a << '\n'; } ros << "  total: " << rs.size() << '\n';
+                  break;
 
-    private:
-        void do_accept()
-            {
-            acceptor_.async_accept(m_oSocket, [this](std::error_code ec) { if (!ec) { std::make_shared<session>(std::move(m_oSocket))->start(); } do_accept(); });
-            }
+        case 'p': ps = oOdb.Find(oOdb.Properties(),std::string( sInput )); if (ts.size() == 0) ps = oOdb.Find(oOdb.Properties(),std::regex( sInput ));
+                  for (auto const & a:ps) { ros << '\n' << *a << '\n'; } ros << "  total: " << ps.size() << '\n';
+                  break;
 
-    tcp::acceptor acceptor_;
-    tcp::socket m_oSocket;
-    }; // class server
+        case 'a': as = oOdb.Find(oOdb.Atoms(),std::string( sInput )); if (ts.size() == 0) as = oOdb.Find(oOdb.Atoms(),std::regex( sInput ));
+                  for (auto const & a:as) { ros << '\n' << *a << '\n'; } ros << "  total: " << as.size() << '\n';
+                  break;
+
+        default : ros << ": empty-result";
+        }
+
+    return true;
+    } // bool Answer(std::string const & crsQuery, tcp::iostream & ros)
 
 
-// Demo main program
-int main( int argc, const char* argv[] )
+int main(int argc, char* argv[])
     {
+    if (argc != 2)
+        {
+        std::cout << "Usage: " << argv[0] << " <ip> <port>\n";
+        std::cout << "Example:\n";
+        std::cout << "  " << argv[0] << " 1025 &\n";
+        return 1;
+        }
+
     LoadDB();
 
     std::cout << '\n';
@@ -204,23 +197,44 @@ int main( int argc, const char* argv[] )
 
     try
         {
-        if (argc != 2)
+        asio::io_service io_service;
+
+        tcp::endpoint endpoint(tcp::v4(), std::stoul(argv[1]));
+        tcp::acceptor acceptor(io_service, endpoint);
+
+        for (;;)
             {
-            std::cerr << "Usage: odbd <port>\n";
-            return 1;
+            tcp::iostream stream;
+            asio::error_code ec;
+            acceptor.accept(*stream.rdbuf(), ec);
+            std::string sQuery;
+            std::getline(stream, sQuery);
+            if ( sQuery == "help" )
+                {
+                stream << "help    - this help page\n";
+                stream << " \n";
+                stream << "t:regex - search for \n";
+                stream << "p:regex - search for \n";
+                stream << "r:regex - search for \n";
+                stream << "a:regex - search for \n";
+                stream << "t:regex - search for \n";
+                stream << " \n";
+                stream << "Example\n";
+                stream << " \n";
+                stream << "t:Star Trek.*\n";
+                }
+            else
+                {
+                if ( not Answer(sQuery, stream) ) stream << "\n";
+                }
+            stream << ".\n";
             }
-
-        asio::io_context io_context;
-
-        server s(io_context, std::atoi(argv[1]));
-
-        io_context.run();
         }
     catch (std::exception& e)
         {
-        std::cerr << "Exception: " << e.what() << "\n";
+        std::cerr << e.what() << std::endl;
         }
 
     return 0;
-
     }
+

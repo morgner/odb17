@@ -49,10 +49,10 @@ void test1()
     auto r1 = g_oOdb.MakeReason("wrote"s);
     auto r2 = g_oOdb.MakeReason("read"s);
 
-    Link(d1, r1, d3);
-    Link(d1, r1, d4);
-    Link(d1, r1, d5);
-    Link(d2, r1, d3); // double link
+    d1->Link(d3, r1);
+    d1->Link(d4, r1);
+    d1->Link(d5, r1);
+    d2->Link(d3, r1);
 
     std::cout << "d1 " << d1.use_count() << " d2 " << d2.use_count() << " d3 " << d3.use_count() << " d4 " << d4.use_count() << " d5 " << d5.use_count() << '\n';
     std::cout << "r1 " << r1.use_count() << " r2 " << r2.use_count() << '\n';
@@ -63,12 +63,6 @@ void test1()
     d1->Link(d4, r1);
     d1->Link(d5, r1);
     d2->Link(d3, r1);
-
-    /// double links
-    Link(d1, r1, d3);
-    Link(d1, r1, d4);
-    Link(d1, r1, d5);
-    Link(d2, r1, d3);
 
     std::cout << "d1 " << d1.use_count() << " d2 " << d2.use_count() << " d3 " << d3.use_count() << " d4 " << d4.use_count() << " d5 " << d5.use_count() << '\n';
     std::cout << "r1 " << r1.use_count() << " r2 " << r2.use_count() << '\n';
