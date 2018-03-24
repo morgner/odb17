@@ -155,19 +155,19 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
     switch (c)
         {
         case 't': ts = oOdb.Find(oOdb.Things(),std::string( sInput )); if (ts.size() == 0) ts = oOdb.Find(oOdb.Things(),std::regex( sInput ));
-                  for (auto const & a:ts) { ros << '\n' << *a << '\n'; } ros << "  total: " << ts.size() << '\n';
+                  for (auto const & a:ts) { ros << " \n" << *a << " \n"; } ros << "  total:" << ts.size() << " \n";
                   break;
 
         case 'r': rs = oOdb.Find(oOdb.Reasons(),std::string( sInput )); if (ts.size() == 0) rs = oOdb.Find(oOdb.Reasons(),std::regex( sInput ));
-                  for (auto const & a:rs) { ros << '\n' << *a << '\n'; } ros << "  total: " << rs.size() << '\n';
+                  for (auto const & a:rs) { ros << " \n" << *a << " \n"; } ros << "  total:" << rs.size() << " \n";
                   break;
 
         case 'p': ps = oOdb.Find(oOdb.Properties(),std::string( sInput )); if (ts.size() == 0) ps = oOdb.Find(oOdb.Properties(),std::regex( sInput ));
-                  for (auto const & a:ps) { ros << '\n' << *a << '\n'; } ros << "  total: " << ps.size() << '\n';
+                  for (auto const & a:ps) { ros << " \n" << *a << " \n"; } ros << "  total:" << ps.size() << " \n";
                   break;
 
         case 'a': as = oOdb.Find(oOdb.Atoms(),std::string( sInput )); if (ts.size() == 0) as = oOdb.Find(oOdb.Atoms(),std::regex( sInput ));
-                  for (auto const & a:as) { ros << '\n' << *a << '\n'; } ros << "  total: " << as.size() << '\n';
+                  for (auto const & a:as) { ros << " \n" << *a << " \n"; } ros << "  total:" << as.size() << " \n";
                   break;
 
         default : ros << ": empty-result";

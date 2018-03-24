@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
                 return 1;
                 }
 
-            std::cout << "< ";
+            std::cout << "> ";
             std::string sInput;
             std::getline(std::cin, sInput);
             s << sInput + "\n";
