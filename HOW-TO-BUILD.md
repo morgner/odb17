@@ -2,7 +2,8 @@ Building with the documentation
 ===============================
 
 required: boost-containers
-
+          asio
+          linenoise
 ```
 cd <project_root>
 virtualenv env
@@ -20,7 +21,8 @@ Building **WITHOUT** the documentation
 ======================================
 
 required: boost-containers
-
+          asio
+          linenoise
 ```
 cd <project_root>
 mkdir -p build
