@@ -1,16 +1,4 @@
-//
-// odbcli
-// ~~~~~~~~~~~~~~~
-// Partial
-// Copyright (c) 2003-2018 Christopher M. Kohlhoff (chris at kohlhoff dot com)
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-//
-
 #include <iostream>
-// #include <istream>
-// #include <ostream>
 #include <string>
 #include <asio/ts/internet.hpp>
 
@@ -29,30 +17,36 @@ int main(int argc, char* argv[])
             }
         for (;;)
             {
-            asio::ip::tcp::iostream s;
-//          s.expires_after(std::chrono::seconds(60));
-            s.connect(argv[1], argv[2]);
-            if (!s)
+            asio::ip::tcp::iostream oStream;
+//          oStream.expires_after(std::chrono::seconds(60));
+            oStream.connect(argv[1], argv[2]);
+            if (!oStream)
                 {
-                std::cout << "Unable to connect: " << s.error().message() << "\n";
+                std::cout << "Unable to connect: " << oStream.error().message() << "\n";
                 return 1;
                 }
 
             std::cout << "> ";
             std::string sInput;
             std::getline(std::cin, sInput);
-            s << sInput + "\n";
+            oStream << sInput + "\n";
 
             std::string sOutput;
             do
                 {
-                std::getline(s, sOutput);
-                std::cout << sOutput << "\n";
+                std::getline(oStream, sOutput);
+                if ( sOutput == "+" )
+                    {
+                    std::cout << "\n";
+                    }
+                else
+                    {
+                    std::cout << sOutput << "\n";
+                    }
                 } while ( (sOutput != ".") && (sOutput != "") );
 
             // Write the remaining data to output.
-//              std::cout << s.rdbuf();
-//              std::cout << "+\n";
+//          std::cout << oStream.rdbuf();
             }
         }
     catch (std::exception& e)

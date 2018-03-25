@@ -3,6 +3,17 @@
  
     @author Manfred Morgner
     @date 22.03.2018
+
+    to use this server:
+
+    Save a odb to file (JSON) and name it wodb.json. Put this file in the
+    same directory as you run the server in and start the server. E.g. by:
+
+        ./odbd 1025 &
+
+    After loading the database a statistic will be print to the console and
+    the tcp server starts listening for client conections.
+
  */
 
 #include <iostream>
@@ -15,7 +26,6 @@
 
 #include <fstream>
 #include <stdlib.h> // atol
-//#include <cstring>
 #include <string>
 #include <regex>
 
@@ -45,19 +55,19 @@ void ap2ts(std::string const & crsProperty, // name of the property
     (oOdb.AppendProperty2Thing(crsProperty, cbForce, args), ...);
     }
 
-void SaveDB( )
-    {
-    std::fstream imdb("wdb.json", std::ifstream::out);
-    oOdb.print_json(imdb);
-//  oOdb.print_json_stream(imdb);
-    imdb.close();
-    }
-            
 void LoadDB( )
     {            
     Json::Value json;
-    std::ifstream db_dump("wdb.json", std::ifstream::binary);
-    db_dump >> json;
+    try
+        {
+        std::ifstream db_dump("wdb.json", std::ifstream::binary);
+        db_dump >> json;
+        }
+    catch (...)
+        {
+        std::cerr << "db file not found or not readable";
+        return;
+        }
 
     const Json::Value & properties = json["Object Database Dump"]["Properties"];
 //    std::cout << "odb read in " << properties.size() << " properties.\n";
@@ -126,26 +136,63 @@ void LoadDB( )
         }
     } // LoadDB(...)    
 
-// Transport
-// ~~~~~~~~~
-// Copyright (c) 2003-2011 Christopher M. Kohlhoff (chris at kohlhoff dot com)
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+void SaveDB( )
+    {
+    std::fstream imdb("wdb.json", std::ifstream::out);
+    oOdb.print_json(imdb);
+//  oOdb.print_json_stream(imdb);
+    imdb.close();
+    }
+            
 
 #include <asio/ip/tcp.hpp>
 #include <asio/io_service.hpp>
 
 using asio::ip::tcp;
 
-bool Answer(std::string const & crsQuery, tcp::iostream & ros)
+
+bool Insert(std::string const & crsQuery, tcp::iostream & ros)
     {
-    ros << "< " + crsQuery;
+    ros << "+ " + crsQuery;
 
     if ( crsQuery.length() < 2 ) return false;
 
     char c = crsQuery[0];
-    std::string sInput = crsQuery.substr(2, std::string::npos);
+    std::string sInput = crsQuery.substr(2);
+
+    odb::PThing    t;
+    odb::PReason   r;
+    odb::PProperty p;
+    odb::PAtom     a;
+
+    switch (c)
+        {
+        case 't': t = oOdb.MakeThing(sInput);    ros << " \n" << ":" << t->m_nId << ":" << *t << " \n";
+                  break;
+
+        case 'r': r = oOdb.MakeReason(sInput);   ros << " \n" << ":" << r->m_nId << ":" << *r << " \n";
+                  break;
+
+        case 'p': p = oOdb.MakeProperty(sInput); ros << " \n" << ":" << p->m_nId << ":" << *p << " \n";
+                  break;
+
+        case 'a': a = oOdb.MakeAtom(sInput);     ros << " \n" << ":" << a->m_nId << ":" << *a << " \n";
+                  break;
+
+        default : ros << ": no insert";
+        }
+
+    return true;
+    }
+
+bool Answer(std::string const & crsQuery, tcp::iostream & ros)
+    {
+    ros << "? " + crsQuery;
+
+    if ( crsQuery.length() < 2 ) return false;
+
+    char c = crsQuery[0];
+    std::string sInput = crsQuery.substr(2);
 
     odb::CThings     ts;
     odb::CReasons    rs;
@@ -155,22 +202,22 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
     switch (c)
         {
         case 't': ts = oOdb.Find(oOdb.Things(),std::string( sInput )); if (ts.size() == 0) ts = oOdb.Find(oOdb.Things(),std::regex( sInput ));
-                  for (auto const & a:ts) { ros << " \n" << *a << " \n"; } ros << "  total:" << ts.size() << " \n";
+                  for (auto const & a:ts) { ros << " \n" << ":" << a->m_nId << ":" << *a << " \n"; } ros << "  total: " << ts.size() << " \n";
                   break;
 
         case 'r': rs = oOdb.Find(oOdb.Reasons(),std::string( sInput )); if (ts.size() == 0) rs = oOdb.Find(oOdb.Reasons(),std::regex( sInput ));
-                  for (auto const & a:rs) { ros << " \n" << *a << " \n"; } ros << "  total:" << rs.size() << " \n";
+                  for (auto const & a:rs) { ros << " \n" << ":" << a->m_nId << ":" << *a << " \n"; } ros << "  total: " << rs.size() << " \n";
                   break;
 
         case 'p': ps = oOdb.Find(oOdb.Properties(),std::string( sInput )); if (ts.size() == 0) ps = oOdb.Find(oOdb.Properties(),std::regex( sInput ));
-                  for (auto const & a:ps) { ros << " \n" << *a << " \n"; } ros << "  total:" << ps.size() << " \n";
+                  for (auto const & a:ps) { ros << " \n" << ":" << a->m_nId << ":" << *a << " \n"; } ros << "  total: " << ps.size() << " \n";
                   break;
 
         case 'a': as = oOdb.Find(oOdb.Atoms(),std::string( sInput )); if (ts.size() == 0) as = oOdb.Find(oOdb.Atoms(),std::regex( sInput ));
-                  for (auto const & a:as) { ros << " \n" << *a << " \n"; } ros << "  total:" << as.size() << " \n";
+                  for (auto const & a:as) { ros << " \n" << ":" << a->m_nId << ":" << *a << " \n"; } ros << "  total: " << as.size() << " \n";
                   break;
 
-        default : ros << ": empty-result";
+        default : ros << ": no result";
         }
 
     return true;
@@ -212,20 +259,46 @@ int main(int argc, char* argv[])
             if ( sQuery == "help" )
                 {
                 stream << "help    - this help page\n";
-                stream << " \n";
-                stream << "t:regex - search for \n";
-                stream << "p:regex - search for \n";
-                stream << "r:regex - search for \n";
-                stream << "a:regex - search for \n";
-                stream << "t:regex - search for \n";
-                stream << " \n";
+                stream << "save    . saves the DB to disk\n";
+                stream << "+\n";
+                stream << "t:regex - search for a thing\n";
+                stream << "p:regex - search for a property\n";
+                stream << "r:regex - search for a reason\n";
+                stream << "a:regex - search for an atom\n";
+                stream << "+\n";
                 stream << "Example\n";
-                stream << " \n";
-                stream << "t:Star Trek.*\n";
+                stream << "+\n";
+                stream << "t:Star (Trek|Wars).*\n";
+                stream << "+\n";
+                stream << "Searches for all 'things' named \"Star Trek\" or \"Star Wars\"\n";
+                stream << "+\n";
+                stream << "t+name  - insert a thing\n";
+                stream << "p+name  - insert a property\n";
+                stream << "r+name  - insert a reason\n";
+                stream << "a+name  - insert an atom\n";
                 }
             else
                 {
-                if ( not Answer(sQuery, stream) ) stream << "\n";
+                if ( sQuery == "save" )
+                    {
+                    SaveDB();
+                    }
+                else if ( sQuery.length() < 2 )
+                        {
+                        stream << "try: 'help' to get help\n";
+                        }
+                else if ( sQuery[1] == ':' )
+                        {
+                        if ( not Answer(sQuery, stream) ) stream << ": no result\n";
+                        }
+                else if ( sQuery[1] == '+' )
+                        {
+                        if ( not Insert(sQuery, stream) ) stream << ": not inserted\n";
+                        }
+                else
+                    {
+                    stream << ": did't understand";
+                    }
                 }
             stream << ".\n";
             }
