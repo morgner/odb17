@@ -18,3 +18,10 @@ docs/html
 *.gz
 *.json
 *.swp
+
+.cproject
+.project
+.settings/
+imdbJson.jpg
+raw-data/filter.sh
+
