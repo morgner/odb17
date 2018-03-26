@@ -2,6 +2,10 @@
 #include <string>
 #include <asio/ts/internet.hpp>
 
+extern "C" {
+#include <linenoise.h>
+}
+
 using asio::ip::tcp;
 
 int main(int argc, char* argv[])
@@ -15,6 +19,7 @@ int main(int argc, char* argv[])
             std::cout << "  " << argv[0] << " localhost 1025\n";
             return 1;
             }
+        linenoiseHistoryLoad(".odb_histoy");
         for (;;)
             {
             asio::ip::tcp::iostream oStream;
@@ -26,16 +31,23 @@ int main(int argc, char* argv[])
                 return 1;
                 }
 
-            std::cout << "> ";
-            std::string sInput;
-            std::getline(std::cin, sInput);
-            oStream << sInput + "\n";
+//            std::cout << "> ";
+//            std::string sInput;
+//            std::getline(std::cin, sInput);
+//            oStream << sInput + "\n";
+
+            char* line = linenoise("> ");
+            if ( !line || line[0] == 'q' ) { free(line); return 0; }
+            linenoiseHistoryAdd(line);
+            linenoiseHistorySave(".odb_histoy");
+            oStream << std::string(line) + "\n";
+            free(line);
 
             std::string sOutput;
             do
                 {
                 std::getline(oStream, sOutput);
-                if ( sOutput == "+" )
+                if ( sOutput == " " )
                     {
                     std::cout << "\n";
                     }

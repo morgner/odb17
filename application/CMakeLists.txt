@@ -57,7 +57,9 @@ add_executable(9-odbcli.test
   $<TARGET_OBJECTS:${PROJECT_NAME}>
   )
 
+find_library(LINE_NOISE linenoise)
 target_link_libraries(9-odbcli.test
+  ${LINE_NOISE}
   ${CMAKE_THREAD_LIBS_INIT}
   )
 
