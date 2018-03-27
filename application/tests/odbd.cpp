@@ -202,9 +202,16 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
 
     switch (c)
         {
-        case 't': ts = oOdb.Find(oOdb.Things(),std::string( sInput )); if (ts.size() == 0) ts = oOdb.Find(oOdb.Things(),std::regex( sInput ));
-                  for (auto const & a:ts) { ros << " \n:" << a->m_nId << ":"; if (d==':') ros << *a << " \n"; else ros << (*a).m_sName;  } 
-                                          if (d=='.') ros << " \n"; ros << " \n  total: " << ts.size() << " \n";
+        case 't': if ( (d=='p') || (d=='P') )
+                    {
+                    ts = oOdb.FindThingsByProperty(std::string( sInput )); if (ts.size() == 0) ts = oOdb.FindThingsByProperty(std::regex( sInput ));
+                    }
+                  else
+                    {
+                    ts = oOdb.Find(oOdb.Things(),std::string( sInput )); if (ts.size() == 0) ts = oOdb.Find(oOdb.Things(),std::regex( sInput ));
+                    }
+                  for (auto const & a:ts) { ros << " \n:" << a->m_nId << ":"; if ((d!='.')&&(d!='p')) ros << *a << " \n"; else ros << (*a).m_sName;  } 
+                                          if ((d=='.')||(d=='p')) ros << " \n"; ros << " \n  total: " << ts.size() << " \n";
                   break;
 
         case 'r': rs = oOdb.Find(oOdb.Reasons(),std::string( sInput )); if (rs.size() == 0) rs = oOdb.Find(oOdb.Reasons(),std::regex( sInput ));
@@ -264,19 +271,31 @@ int main(int argc, char* argv[])
             acceptor.accept(*stream.rdbuf(), ec);
             std::string sQuery;
             std::getline(stream, sQuery);
+            if ( sQuery == "stat" )
+                {
+                stream << "---------------- " <<  oOdb.Things().size()     << " things" << " \n";
+                stream << "---------------- " <<  oOdb.Properties().size() << " properties" << " \n";
+                stream << "---------------- " <<  oOdb.Reasons().size()    << " reasons" << " \n";
+                stream << "---------------- " <<  oOdb.Atoms().size()      << " atoms" << " \n";
+                }
+            else
             if ( sQuery == "help" )
                 {
                 stream << "help    - this help page\n";
+                stream << "stat    - db statistics\n";
                 stream << "save    . saves the DB to disk\n";
                 stream << " \n";
                 stream << "t:regex - search for a thing\n";
                 stream << "p:regex - search for a property\n";
                 stream << "r:regex - search for a reason\n";
                 stream << "a:regex - search for an atom\n";
+                stream << "tPregex - search for a thing having the given property\n";
+                stream << " \n";
                 stream << "t.regex - search for a thing (short result)\n";
                 stream << "p.regex - search for a property (short result)\n";
                 stream << "r.regex - search for a reason (short result)\n";
                 stream << "a.regex - search for an atom (short result)\n";
+                stream << "tpregex - search for a thing having the given property (short result)\n";
                 stream << " \n";
                 stream << "Example\n";
                 stream << " \n";
@@ -300,7 +319,7 @@ int main(int argc, char* argv[])
                         {
                         stream << "try: 'help' to get help\n";
                         }
-                else if ( (sQuery[1] == ':') || (sQuery[1] == '.') )
+                else if ( (sQuery[1] == ':') || (sQuery[1] == '.') || (sQuery.substr(0,2) == "tP") || (sQuery.substr(0,2) == "tp") )
                         {
                         if ( not Answer(sQuery, stream) ) stream << ": no result\n";
                         }

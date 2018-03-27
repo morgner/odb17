@@ -870,8 +870,6 @@ class COdb : public Identifiable<COdb>
         /// 
         CThings FindThingsByProperty( std::string const & crsProperty )
             {
-            PProperty poProperty;
-
 	    auto oRange = m_oProperties.get<name>().equal_range(crsProperty);
             // todo: preallocation
             CThings oResult;
@@ -884,6 +882,32 @@ class COdb : public Identifiable<COdb>
         	}
             return std::move(oResult);
             } // CThings FindThingsByProperty( std::string ...
+
+
+        /// @brief Finds PThing with a named Property only if it's one
+        /// 
+        /// @param crsRegex The name for the CProperty
+        /// 
+        CThings FindThingsByProperty( std::regex const & crsRegex)
+            {
+            CProperties oProperties;
+
+            for ( auto a:m_oProperties )
+                {
+                if ( std::regex_match(a->m_sName, crsRegex) ) oProperties.insert(a);
+                }
+
+            // todo: preallocation
+            CThings oResult;
+            for (auto const & b:oProperties)
+                {
+		for (auto const & a:b->m_oRelations)
+		    {
+        	    oResult.insert(a);
+		    }
+        	}
+            return std::move(oResult);
+            } // CThings FindThingsByProperty( std::regex ...
 
 
         /// @brief Finds or creates a PThing with a named Property, which also may be created and assigned
