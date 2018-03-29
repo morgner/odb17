@@ -18,6 +18,10 @@
 
 #include "generic.h"
 
+#include <fstream>     // Load'n'Save
+#include <json/json.h>
+#include <stdlib.h> // atol
+
 #include "atom.h"
 #include "thing.h"
 #include "property.h"
@@ -817,6 +821,102 @@ class COdb : public Identifiable<COdb>
 "Things":[{"id":0,"name":"Ulrich","properties":[],"atoms":[{"id":0}],"links":[{"thing-id":1,"reason-id":0}]},{"id":1,"name":"Fred","properties":[],"atoms":[{"id":1}],"links":[]}]}}
 */
 
+        /// @brief Saves an odb json file
+        /// @param crsFilename
+        void SaveDB(std::string const & crsFilename)
+            {
+            std::fstream imdb(crsFilename, std::ifstream::out);
+            print_json(imdb);
+        //  print_json_stream(imdb);
+            imdb.close();
+            }
+
+        /// @brief Loads an odb json file
+        /// @param crsFilename
+        bool LoadDB(std::string const & crsFilename)
+            {
+            Json::Value json;
+            try
+                {
+                std::ifstream db_dump(crsFilename, std::ifstream::binary);
+                db_dump >> json;
+                }
+            catch (...)
+                {
+                std::cerr << "db file not found or not readable";
+                return false;
+                }
+
+            const Json::Value & properties = json["Object Database Dump"]["Properties"];
+        //    std::cout << "odb read in " << properties.size() << " properties.\n";
+        //    m_oProperties.reserve(properties.size());
+            for ( size_t index = 0; index < properties.size(); ++index )
+                {
+                auto nId   = properties[(int)index].get("id",    0).asUInt();
+                auto sName = properties[(int)index].get("name", "").asString();
+                LoadProperty(nId, sName);
+                }
+
+            const Json::Value & atoms = json["Object Database Dump"]["Atoms"];
+        //    std::cout << "odb read in " << atoms.size() << " atoms.\n";
+            for ( size_t index = 0; index < atoms.size(); ++index )
+                {
+                auto nId     = atoms[(int)index].get("id",      0).asUInt();
+                auto sName   = atoms[(int)index].get("name",   "").asString();
+                auto sPrefix = atoms[(int)index].get("prefix", "").asString();
+                auto sSuffix = atoms[(int)index].get("suffix", "").asString();
+                auto sFormat = atoms[(int)index].get("format", "").asString();
+                auto sData   = atoms[(int)index].get("data",   "").asString();
+                LoadAtom(nId, sData, sName, sPrefix, sSuffix, sFormat);
+                }
+
+            const Json::Value & reasons = json["Object Database Dump"]["Reasons"];
+        //    std::cout << "odb read in " << reasons.size() << " reasons.\n";
+            for ( size_t index = 0; index < reasons.size(); ++index )
+                {
+                auto nId   = reasons[(int)index].get("id",    0).asUInt();
+                auto sName = reasons[(int)index].get("name", "").asString();
+                LoadReason(nId, sName);
+                }
+
+            const Json::Value & things = json["Object Database Dump"]["Things"];
+        //    std::cout << "odb read in " << things.size() << " things.\n";
+            for ( size_t index = 0; index < things.size(); ++index )
+                {
+                auto nId   = things[(int)index].get("id",    0).asUInt();
+                auto sName = things[(int)index].get("name", "").asString();
+                LoadThing(nId, sName);
+                }
+            for ( size_t index = 0; index < things.size(); ++index )
+                {
+                auto nId   = things[(int)index].get("id",    0).asUInt();
+
+                const Json::Value & p = things[(int)index]["properties"];
+                for ( size_t i = 0; i < p.size(); ++i )
+                    {
+                    auto nPId = p[(int)i].get("id", 0).asUInt();
+                    AppendProperty2Thing( nPId, nId );
+                    }
+
+                const Json::Value & a = things[(int)index]["atoms"];
+                for ( size_t i = 0; i < a.size(); ++i )
+                    {
+                    auto nAId = a[(int)i].get("id", 0).asUInt();
+                    AppendAtom2Thing( nAId, nId );
+                    }
+
+                const Json::Value & l = things[(int)index]["links"];
+                for ( size_t i = 0; i < l.size(); ++i )
+                    {
+                    auto nTId = l[(int)i].get("thing-id",  0).asUInt();
+                    auto nRId = l[(int)i].get("reason-id", 0).asUInt();
+                    LinkThing2Thing( nId, nTId, nRId );
+                    }
+                }
+            return true;
+            } // LoadDB(...)    
+
+
         /// @brief Has to return a thing with specified ID, if it does not exists, it is to make
         /// @param nId The id of the thing
         /// @param crsName The name of the thing if it has to be created
@@ -892,6 +992,10 @@ class COdb : public Identifiable<COdb>
             {
             CProperties oProperties;
 
+        //    std::copy_if(m_oProperties.begin(),
+        //                 m_oProperties.end(),
+        //                 std::back_inserter(oProperties), [&](PProperty const & e) {return std::regex_match(e->m_sName, crsRegex);});
+ 
             for ( auto a:m_oProperties )
                 {
                 if ( std::regex_match(a->m_sName, crsRegex) ) oProperties.insert(a);
@@ -1136,7 +1240,7 @@ class COdb : public Identifiable<COdb>
         auto FindAtoms     ( std::regex const & crsRegex ) { return Find(m_oAtoms, crsRegex); }
 
 
-
+/*
         /// Result container of collecting operations, collecting IDs
         using CAggregate = std::set<size_t>;
 
@@ -1161,7 +1265,7 @@ class COdb : public Identifiable<COdb>
                 }
             return std::move(result);
             }
-
+*/
         /// Access function to call then container of CThing's
         CThings      const & Things () const { return m_oThings;  }
         /// Access function to call then container of CProperties

@@ -25,10 +25,6 @@
 #include <iterator>
 
 #include <fstream>
-#include <stdlib.h> // atol
-#include <string>
-#include <regex>
-
 #include <json/json.h>
 
 #include "generic.h"
@@ -39,7 +35,7 @@
 using namespace std::string_literals;
 
 auto oOdb = odb::COdb();
-
+/*
 template<typename ...Args> void mkthings    (Args&&... args) { (oOdb.MakeThing   (args), ...); } 
 template<typename... Args> void mkproperties(Args&&... args) { (oOdb.MakeProperty(args), ...); }
 template<typename... Args> void mkreasons   (Args&&... args) { (oOdb.MakeReason  (args), ...); }
@@ -54,95 +50,7 @@ void ap2ts(std::string const & crsProperty, // name of the property
     {
     (oOdb.AppendProperty2Thing(crsProperty, cbForce, args), ...);
     }
-
-void LoadDB( )
-    {            
-    Json::Value json;
-    try
-        {
-        std::ifstream db_dump("wdb.json", std::ifstream::binary);
-        db_dump >> json;
-        }
-    catch (...)
-        {
-        std::cerr << "db file not found or not readable";
-        return;
-        }
-
-    const Json::Value & properties = json["Object Database Dump"]["Properties"];
-//    std::cout << "odb read in " << properties.size() << " properties.\n";
-    for ( size_t index = 0; index < properties.size(); ++index )
-        {
-        auto nId   = properties[(int)index].get("id",    0).asUInt();
-        auto sName = properties[(int)index].get("name", "").asString();
-        oOdb.LoadProperty(nId, sName);
-        }
-
-    const Json::Value & atoms = json["Object Database Dump"]["Atoms"];
-//    std::cout << "odb read in " << atoms.size() << " atoms.\n";
-    for ( size_t index = 0; index < atoms.size(); ++index )
-        {
-        auto nId     = atoms[(int)index].get("id",      0).asUInt();
-        auto sName   = atoms[(int)index].get("name",   "").asString();
-        auto sPrefix = atoms[(int)index].get("prefix", "").asString();
-        auto sSuffix = atoms[(int)index].get("suffix", "").asString();
-        auto sFormat = atoms[(int)index].get("format", "").asString();
-        auto sData   = atoms[(int)index].get("data",   "").asString();
-        oOdb.LoadAtom(nId, sData, sName, sPrefix, sSuffix, sFormat);
-        }
-
-    const Json::Value & reasons = json["Object Database Dump"]["Reasons"];
-//    std::cout << "odb read in " << reasons.size() << " reasons.\n";
-    for ( size_t index = 0; index < reasons.size(); ++index )
-        {
-        auto nId   = reasons[(int)index].get("id",    0).asUInt();
-        auto sName = reasons[(int)index].get("name", "").asString();
-        oOdb.LoadReason(nId, sName);
-        }
-
-    const Json::Value & things = json["Object Database Dump"]["Things"];
-//    std::cout << "odb read in " << things.size() << " things.\n";
-    for ( size_t index = 0; index < things.size(); ++index )
-        {
-        auto nId   = things[(int)index].get("id",    0).asUInt();
-        auto sName = things[(int)index].get("name", "").asString();
-        oOdb.LoadThing(nId, sName);
-        }
-    for ( size_t index = 0; index < things.size(); ++index )
-        {
-        auto nId   = things[(int)index].get("id",    0).asUInt();
-
-        const Json::Value & p = things[(int)index]["properties"];
-        for ( size_t i = 0; i < p.size(); ++i )
-            {
-            auto nPId = p[(int)i].get("id", 0).asUInt();
-            oOdb.AppendProperty2Thing( nPId, nId );
-            }
-
-        const Json::Value & a = things[(int)index]["atoms"];
-        for ( size_t i = 0; i < a.size(); ++i )
-            {
-            auto nAId = a[(int)i].get("id", 0).asUInt();
-            oOdb.AppendAtom2Thing( nAId, nId );
-            }
-
-        const Json::Value & l = things[(int)index]["links"];
-        for ( size_t i = 0; i < l.size(); ++i )
-            {
-            auto nTId = l[(int)i].get("thing-id",  0).asUInt();
-            auto nRId = l[(int)i].get("reason-id", 0).asUInt();
-            oOdb.LinkThing2Thing( nId, nTId, nRId );
-            }
-        }
-    } // LoadDB(...)    
-
-void SaveDB( )
-    {
-    std::fstream imdb("wdb.json", std::ifstream::out);
-    oOdb.print_json(imdb);
-//  oOdb.print_json_stream(imdb);
-    imdb.close();
-    }
+*/
             
 
 #include <asio/ip/tcp.hpp>
@@ -249,7 +157,9 @@ int main(int argc, char* argv[])
         return 1;
         }
 
-    LoadDB();
+    auto const sFilename = "wdb.json";
+
+    oOdb.LoadDB(sFilename);
 
     std::cout << '\n';
     std::cout << "---------------- " <<  oOdb.Things().size()     << " things" << '\n';
@@ -313,7 +223,7 @@ int main(int argc, char* argv[])
                 {
                 if ( sQuery == "save" )
                     {
-                    SaveDB();
+                    oOdb.SaveDB(sFilename);
                     }
                 else if ( sQuery.length() < 2 )
                         {
