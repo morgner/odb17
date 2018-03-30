@@ -990,12 +990,12 @@ class COdb : public Identifiable<COdb>
         /// 
         CThings FindThingsByProperty( std::regex const & crsRegex)
             {
-            CProperties oProperties;
-
+        //    std::vector<PProperty> oProperties;
         //    std::copy_if(m_oProperties.begin(),
         //                 m_oProperties.end(),
         //                 std::back_inserter(oProperties), [&](PProperty const & e) {return std::regex_match(e->m_sName, crsRegex);});
  
+            CProperties oProperties;
             for ( auto a:m_oProperties )
                 {
                 if ( std::regex_match(a->m_sName, crsRegex) ) oProperties.insert(a);
