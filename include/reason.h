@@ -41,18 +41,15 @@ class CReason : public IReason
                  CReason(CReason const &) = delete;
 
                  /// make_shared<T> moveconstructs
-                 CReason(CReason &&) = default;
+                 CReason(CReason &&) noexcept = default;
 
                  /// Normal constructor, receiving the name of the reason
-                 CReason(std::string const & crsName);
+	         explicit CReason(std::string const & crsName);
 
                  /// Load constructor, receiving the ID and name of the reason
                  CReason(size_t nId, std::string const & crsName);
 
-        virtual ~CReason() = default;
-
-        /// Assignment operator to assign a name to the instance
-        std::string const & operator = (std::string const & crsName);
+        virtual ~CReason() noexcept = default;
 
         /// Output operator to do an output of the instance
         friend std::ostream & operator << (std::ostream & ros, CReason const & croReason);

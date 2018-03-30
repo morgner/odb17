@@ -41,11 +41,6 @@ CProperty::CProperty(size_t nId, std::string const & crsName)
     {
     }
 
-std::string const & CProperty::operator = (std::string const & crsName)
-    {
-    return m_sName = crsName.length() ? crsName : s_csNameUnnamedProperty;
-    }
-
 CProperty::operator std::string const & ()
     {
     return m_sName;

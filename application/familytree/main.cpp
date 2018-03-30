@@ -220,7 +220,7 @@ int main()
         for ( auto const & a:g_oOdb.Properties() )
             {
             std::cout << *a << '\n';
-            for ( auto b:a->m_oRelations )
+            for ( auto b:a->Relations() )
                 std::cout << "  " << b->m_sName << '\n';
             }
 

@@ -41,11 +41,6 @@ CReason::CReason(size_t nId, std::string const & crsName)
     {
     }
 
-std::string const & CReason::operator = (std::string const & crsName)
-    {
-    return m_sName = crsName.length() ? crsName : s_csNameUnnamedReason;
-    }
-
 CReason::operator std::string const & ()
     {
     return m_sName;

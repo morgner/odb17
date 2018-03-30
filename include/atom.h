@@ -298,7 +298,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
             }
 
              /// Destruction as usual (=default)
-    virtual ~CAtom() = default;
+    virtual ~CAtom() noexcept = default;
 
     /**
         @brief Remove all links between all objects

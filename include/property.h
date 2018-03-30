@@ -28,6 +28,7 @@ class COdb;
 class CProperty : public IProperty
     {
     friend COdb;
+    friend CThing;
 
     public:
         /// The name of an unnamed property
@@ -40,15 +41,12 @@ class CProperty : public IProperty
                  CProperty(CProperty const & src) = delete;
 
                  /// Normal constructor, receiving the name of the property
-                 CProperty(std::string const & crsName);
+                 explicit CProperty(std::string const & crsName);
 
                  /// Load constructor, receiving the id and the name of the property
                  CProperty(size_t nId, std::string const & crsName);
 
-        virtual ~CProperty() = default;
-
-        /// Assignment operator to assign a name to the instance
-        std::string const & operator = (std::string const & crsName);
+        virtual ~CProperty() noexcept = default;
 
         /// Output operator to do an output of the instance
         friend std::ostream & operator << (std::ostream & ros, CProperty const & croProperty);
@@ -72,8 +70,9 @@ class CProperty : public IProperty
         /// Prints an informational output to std::cout
         void print();
 
-    public:
-//  ? protected:
+        /// Access function to call then container of PThings's
+        SThings const & Relations() const { return m_oRelations; }
+    protected:
         /// A set containing backlinks from things
         std::set<PThing> m_oRelations;
 

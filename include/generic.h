@@ -77,11 +77,11 @@ class Identifiable
         
 	/// @brief Default copy constructor
         /// @param "" The Source
-                 Identifiable(Identifiable const &) = default;
+        explicit Identifiable(Identifiable const &) = default;
         
         /// @brief Default move constructor
         /// @param "" The Source
-                 Identifiable(Identifiable &&) = default;
+        explicit Identifiable(Identifiable &&) noexcept = default;
         
         /// @brief Constructor initializing predefined ID (load operation)
         /// @param nId A predefined ID, for loading data sets with IDs
@@ -236,6 +236,8 @@ using PThing  = PT<CThing>;
 using IThing  = IT<CThing>;
 /// A return value for 'optional' returns
 using OThing = std::optional<PThing>;
+/// A set of PThing's
+using SThings = std::set<PThing>;
 /// A container for the shared_ptr's of the entity
 using CThings = CT<CThing>; 
 

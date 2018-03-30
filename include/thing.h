@@ -49,19 +49,28 @@ class CThing : public std::enable_shared_from_this<CThing>,
         static constexpr bool s_bDebug{false};
     public:
                  /// We never construct without a name for the thing
-                 CThing() = delete;
+	         CThing() = delete;
 
                  /// and we don't make copies
                  CThing(CThing const &) = delete;
 
                  /// make_shared<T> moveconstructs
-                 CThing(CThing &&) = default;
+                 CThing(CThing&&) noexcept = default;
 
                  /// Normal constructor, receiving the name of the reason
                  explicit CThing(std::string const & crsName);
                  
                  /// Load constructor, receiving the ID and name of the reason
                  CThing(size_t nId, std::string const & crsName);
+
+        /// Nothings special here
+	virtual ~CThing() noexcept = default;
+
+        /**
+         * @brief We need to unbind all relations in the odb before destructing
+         */
+        void clear();
+
 
         /// Compares the name with an input string
         friend bool operator == (PThing const & croThing, std::string const & crsInput)
@@ -74,14 +83,6 @@ class CThing : public std::enable_shared_from_this<CThing>,
             {
             return croThing->m_sName < crsInput;
             }
-
-        /// Nothings special here
-        virtual ~CThing() = default;
-
-        /**
-         * @brief We need to unbind all relations in the odb before destructing
-         */
-        void clear();
 
         /**
          * @brief The free output operator for CThing
@@ -112,26 +113,11 @@ class CThing : public std::enable_shared_from_this<CThing>,
         PAtom Append (PAtom poAtom);
 
         /**
-         * @brief The free Append function for CAtoms to CThing
-         * @param poThing A Thing to receive an Atom
-         * @param poAtom An Atom to bind into the Thing
-         */
-        friend PAtom & Append (PThing & poThing, PAtom & poAtom);
-
-        /**
          * @brief Links this CThing to another CThing for a CReason
          * @param po2Thing A Thing to Link to
          * @param po4Reason The Reason we link for
          */
         PThing Link(PThing po2Thing, PReason po4Reason);
-
-        /**
-         * @brief The free Link function for CThing to CThing
-         * @param poThing The Thing to create a link from
-         * @param po2Thing A Thing to Link to
-         * @param po4Reason The Reason we link for
-         */
-        friend PThing & Link(PThing & poThing, PReason & po4Reason, PThing & po2Thing);
 
         /**
          * @brief Removes a link to a specific CThing with a specific CReason

@@ -31,11 +31,6 @@ CStrand::CStrand(std::string const & crsName)
     {
     }
 
-std::string const & CStrand::operator = (std::string const & crsName)
-    {
-    return m_sName = crsName.length() ? crsName : s_csNameUnnamedStrand;
-    }
-
 CStrand::operator std::string const & ()
     {
     return m_sName;

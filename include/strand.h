@@ -34,11 +34,11 @@ class CStrand : public IStrand
     public:
 
                  /// forbidden
-                 CStrand() = delete;
+                          CStrand() = delete;
                  /// Normal constructor requesting a name for the strand
-                 CStrand(std::string const & crsName);
+	         explicit CStrand(std::string const & crsName);
                  /// Nothings special
-        virtual ~CStrand() = default;
+        virtual ~CStrand() noexcept = default;
 
         /// Appending another atom to the strand
         PAtom Append(PAtom poAtom)
@@ -47,9 +47,6 @@ class CStrand : public IStrand
             m_poAtoms.insert(poAtom);
             return poAtom;
             }
-
-        /// Assign a new name to the strand
-        std::string const & operator = (std::string const & crsName);
 
         /// friend function to send the atoms of the strand to the given stream
         friend std::ostream & operator << (std::ostream & ros, CStrand const & croStrand);

@@ -339,31 +339,13 @@ class COdb : public Identifiable<COdb>
             } // void print(CAtoms const & crContainer)
 
         /**
-         * @brief Print out container of identifiable objects
-         *
-         * @tparam T A shared_ptr of an 'Identifiable' type, enriched with
-         *         a memberm_sName
-         * @param  crContainer The forward iterable container, containing
-         *         all T instances
-         */
-        template<typename T>
-        void print(std::deque<T> const & crContainer)
-            {
-            for (auto const & e:crContainer)
-                {
-                std::cout << e->m_sType << '\t' << " id: " << e->m_nId << '\t'
-                          << " name: " << e->m_sName << '\t'
-                          << '(' << e.use_count() << ')' << '\n';
-                }
-            } // void print(std::deque<T> const & crContainer)
-
-        /**
          * @brief Print out container of CThing's
          *
          * @param crContainer The forward iterable container, containing
          *        all CThing instances
          */
-        void print(CThings const & crContainer)
+        template<typename T>
+        void print(CT<T> const & crContainer)
             {
             for (auto const & e:crContainer)
                 {
@@ -373,54 +355,6 @@ class COdb : public Identifiable<COdb>
                 }
             } // void print(CThings const & crContainer)
 
-        /**
-         * @brief Print out container of CProperty's
-         *
-         * @param crContainer The forward iterable container, containing
-         *        all CProperty instances
-         */
-        void print(CProperties const & crContainer)
-            {
-            for (auto const & e:crContainer)
-                {
-                std::cout << e->m_sType << '\t' << " id: " << e->m_nId << '\t'
-                          << " name: " << e->m_sName << '\t'
-                          << '(' << e.use_count() << ')' << '\n';
-                }
-            } // void print(CProperties const & crContainer)
-
-        /**
-         * @brief Print out container of CReason's
-         *
-         * @param crContainer The forward iterable container, containing
-         *        all CReason instances
-         */
-        void print(CReasons const & crContainer)
-            {
-            for (auto const & e:crContainer)
-                {
-                std::cout << e->m_sType << '\t' << " id: " << e->m_nId << '\t'
-                          << " name: " << e->m_sName << '\t'
-                          << '(' << e.use_count() << ')' << '\n';
-                }
-            } // void print(CReasons const & crContainer)
-
-        /**
-         * @brief Print out container of T's
-         *
-         * @param crContainer The forward iterable container, containing
-         *        all T instances
-         */
-        template<typename T>
-        void print(std::set<T, lessIdentifiableName<T>> const & crContainer)
-            {
-            for (auto const & e:crContainer)
-                {
-                std::cout << e->m_sType << '\t' << " id: " << e->m_nId << '\t'
-                          << " name: " << e->m_sName << '\t'
-                          << '(' << e.use_count() << ')' << '\n';
-                }
-            } // void print(std::set<T> const & crContainer)
 
         /// @brief Replaces 2 with \" and \ with \\
 	/// @param crsInput The string to be escaped
@@ -1154,7 +1088,6 @@ class COdb : public Identifiable<COdb>
 //          Link( *itThingFrom, *itReason, *itThingTo );
             return true;
             }
-
 
         /**
          * @brief Finds the T with ID nId
