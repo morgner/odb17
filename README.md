@@ -3,7 +3,11 @@
 odb started as an Object Database. The planned functionaliy forced the
 development into the ***Graph Database*** direction, where it finaly arrived.
 
-The ***17*** stands for the C++ version vecessary ti have a compiler to compile it.
+The ***17*** stands for the C++ version necessary to have a compiler to compile it.
+
+**odb17** is a memory based database, it is able to dump its complete content
+to disk and load it from there, but it is not planned to let it use a disk to
+deal with data.
 
 Here some simple samples
 
@@ -62,4 +66,8 @@ int main()
         }
      }
 ```
+The odb depends on boost-containers for boost::multi_index for indexing and 
+libjson for data import. Test- and Samplecode depends partiall on non-boot-asio
+and linenoise
+
 
