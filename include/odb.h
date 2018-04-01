@@ -51,7 +51,7 @@ class COdb : public Identifiable<COdb>
                  * no copy of the database at all. It is not known, what copying
                  * the database means.
                  */
-                 COdb() = default;
+	         COdb() = default;
                  /**
                    * @brief deleted: copy constructor
                    *
@@ -59,6 +59,12 @@ class COdb : public Identifiable<COdb>
                    * as soon as we find out what it means.
                    */
                  COdb(COdb const & src) = delete;
+                 /**
+                   * @brief deleted: move constructor
+                   *
+                   * Moving a databse is not supported yet.
+                   */
+                 COdb(COdb const && src) = delete;
                  /**
                    * @brief deleted: Assignment operator
                    *
@@ -72,7 +78,7 @@ class COdb : public Identifiable<COdb>
                   * we have to free all links to other objects before leaving
                   * the show.
                   */
-        virtual ~COdb()
+	virtual ~COdb() noexcept
                     {
                     clear();
                     }
@@ -313,7 +319,7 @@ class COdb : public Identifiable<COdb>
         /**
          * @brief Print out the database (Informative format)
          */
-        void print()
+        void print() const
             {
             print(m_oThings);
             print(m_oAtoms);
@@ -327,7 +333,7 @@ class COdb : public Identifiable<COdb>
          * @param crContainer The forward iterable container, containing
          *        PAtom's
          */
-        void print(CAtoms const & crContainer)
+        void print(const CAtoms& crContainer) const
             {
             for (auto && e : crContainer)
                 {
@@ -345,7 +351,7 @@ class COdb : public Identifiable<COdb>
          *        all CThing instances
          */
         template<typename T>
-        void print(CT<T> const & crContainer)
+        void print(const CT<T>& crContainer) const
             {
             for (auto const & e:crContainer)
                 {
@@ -922,7 +928,7 @@ class COdb : public Identifiable<COdb>
         /// 
         /// @param crsRegex The name for the CProperty
         /// 
-        CThings FindThingsByProperty( std::regex const & crsRegex)
+        CThings FindThingsByProperty( std::regex const & crsRegex )
             {
         //    std::vector<PProperty> oProperties;
         //    std::copy_if(m_oProperties.begin(),

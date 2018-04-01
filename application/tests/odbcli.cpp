@@ -19,7 +19,8 @@ int main(int argc, char* argv[])
             std::cout << "  " << argv[0] << " localhost 1025\n";
             return 1;
             }
-        linenoiseHistoryLoad(".odb_histoy");
+        std::string sHistoryFilename{".odbcli_history"};
+        linenoiseHistoryLoad(sHistoryFilename.c_str());
         for (;;)
             {
             asio::ip::tcp::iostream oStream;
@@ -39,7 +40,7 @@ int main(int argc, char* argv[])
             char* line = linenoise("> ");
             if ( !line || line[0] == 'q' ) { free(line); return 0; }
             linenoiseHistoryAdd(line);
-            linenoiseHistorySave(".odb_histoy");
+            linenoiseHistorySave(sHistoryFilename.c_str());
             oStream << std::string(line) + "\n";
             free(line);
 
