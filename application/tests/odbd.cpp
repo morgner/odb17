@@ -118,8 +118,15 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
                     {
                     ts = oOdb.Find(oOdb.Things(),std::string( sInput )); if (ts.size() == 0) ts = oOdb.Find(oOdb.Things(),std::regex( sInput ));
                     }
-                  for (auto const & a:ts) { ros << " \n:" << a->m_nId << ":"; if ((d!='.')&&(d!='p')) ros << *a << " \n"; else ros << (*a).m_sName;  } 
-                                          if ((d=='.')||(d=='p')) ros << " \n"; ros << " \n  total: " << ts.size() << " \n";
+                  if ( d=='s' )
+                    {
+                    ros << "  total: " << ts.size() << " \n";
+                    }
+                  else
+                    {
+                    for (auto const & a:ts) { ros << " \n:" << a->m_nId << ":"; if ((d!='.')&&(d!='p')) ros << *a << " \n"; else ros << (*a).m_sName;  } 
+                                            if ((d=='.')||(d=='p')) ros << " \n"; ros << " \n  total: " << ts.size() << " \n";
+                    }
                   break;
 
         case 'r': rs = oOdb.Find(oOdb.Reasons(),std::string( sInput )); if (rs.size() == 0) rs = oOdb.Find(oOdb.Reasons(),std::regex( sInput ));
@@ -229,7 +236,7 @@ int main(int argc, char* argv[])
                         {
                         stream << "try: 'help' to get help\n";
                         }
-                else if ( (sQuery[1] == ':') || (sQuery[1] == '.') || (sQuery.substr(0,2) == "tP") || (sQuery.substr(0,2) == "tp") )
+                else if ( (sQuery[1] == ':') || (sQuery[1] == '.') || (sQuery[1] == 's') || (sQuery.substr(0,2) == "tP") || (sQuery.substr(0,2) == "tp") )
                         {
                         if ( not Answer(sQuery, stream) ) stream << ": no result\n";
                         }

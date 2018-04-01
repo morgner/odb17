@@ -37,8 +37,11 @@ class CProperty : public IProperty
                  /// @brief deleted: default constructor
                  CProperty() = delete;
 
-                 /// There is no reason to copy a CProperty
-                 CProperty(CProperty const & src) = delete;
+                 /// There  is no reason to copy a CProperty
+                 CProperty(CProperty const &) = delete;
+
+                 /// There is no reason to moveconstruct a CProperty
+                 CProperty(CProperty &&) noexcept = default;
 
                  /// Normal constructor, receiving the name of the property
                  explicit CProperty(std::string const & crsName);

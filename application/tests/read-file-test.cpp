@@ -215,7 +215,7 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
     imdb_nb.close();
 /*
  * title.principals.tsv
-tconst	ordering	nconst	category	job	characters
+tconst	    ordering	nconst	        category	job	characters
 tt0000001	1	nm1588970	self	\N	["Herself"]
 tt0000001	2	nm0005690	director	\N	\N
 tt0000001	3	nm0374658	cinematographer	director of photography	\N
@@ -228,7 +228,8 @@ tt0000003	2	nm5442194	producer	producer	\N
     std::fstream imdb_pp("../raw-data/title.principals.tsv", std::ifstream::in);
     std::getline(imdb_pp, sLine);
     nId = 0;
-    while ( std::getline(imdb_pp, sLine) && (nId++ < nReadLimit /*DEBUG*/) )
+    while ( std::getline(imdb_pp, sLine) )
+//  while ( std::getline(imdb_pp, sLine) && (nId++ < nReadLimit /*DEBUG*/) )
         {
 //      if ( nId % 1000 == 0) { std::cout << nId << '\n'; }
 
@@ -246,7 +247,7 @@ tt0000003	2	nm5442194	producer	producer	\N
         odb::PThing nm;
         std::regex_token_iterator<std::string::iterator> it(sLine.begin(), sLine.end(), r, -1);
 //	0=tid		1=ordering	2=nid		3=category	4=job	5=characters
-//	tt0000001	1		nm1588970	self		\N	["Herself"]
+//	tt0000001	1		nm1588970	self		\N	plays ["Smithson","Man at Broker's"]
         while ( (it != end) && !brk )
             {
             sItem = *it++;
@@ -285,15 +286,201 @@ tt0000003	2	nm5442194	producer	producer	\N
                 case 5: sCharacters  = sItem;
                         if ( (""s != sItem) && ("\\N"s != sItem) )
 			    {
-//                          std::cout << "CHR: oOdb.LinkThing2Thing( " << nm->m_sName << ", " << tt->m_sName << ", " << sItem << " );\n";
-                            nm->Link( tt, oOdb.FindOrMakeReason( sItem ) );
-//                          nm->Append( oOdb.FindOrMakeProperty( sItem ) );
+//                          echo "plays [\"Smithson\",\"Man at Broker's\"]" | sed -e 's/[^\[]*\[.\(.*\).\]/\1/' -e 's/","/\t/g'
+//                          => Smithson
+//                          => Man at Broker's
+//
+//                          std::cout << sCharacters << ":";
+                            std::string sStep1 = std::regex_replace( sCharacters,
+                                                                     std::regex("[\\[]*\\[.(.*).\\]"),
+                                                                     "$1");
+//                          std::cout << sStep1 << ":";
+                                   sCharacters = std::regex_replace( sStep1,
+                                                                     std::regex("\",\""),
+                                                                     "\t");
+//                          std::cout << sCharacters << ":\n";
+                            std::regex_token_iterator<std::string::iterator> itC(sCharacters.begin(), sCharacters.end(), r, -1);
+                            while (itC != end)
+                                {
+                                sItem = *itC++;
+//                              std::cout << "  " << sItem << "\n";
+
+//                              std::cout << "CHR: oOdb.LinkThing2Thing( " << nm->m_sName << ", " << tt->m_sName << ", " << sItem << " );\n";
+                                nm->Link( tt, oOdb.FindOrMakeReason( "role:" + sItem ) );
+//                              nm->Append( oOdb.FindOrMakeProperty( sItem ) );
+                                }
                             }
                         break;
                 } // switch(e)
             } // while ( it != end )
         } // while ( std::getline(imdb_pp, sLine) ...)
     imdb_pp.close();
+
+/*
+ * title.crew.tsv
+tconst          directors                       writers
+tt0000245       \N                              \N
+tt0000246       nm0617588                       \N
+tt0000247       nm2156608,nm0005690,nm0002504   nm0000636,nm0002504
+0=id            1=directors                     2=writers
+*/
+
+    std::fstream imdb_cr("../raw-data/title.crew.tsv", std::ifstream::in);
+    std::getline(imdb_cr, sLine);
+    nId = 0;
+    while ( std::getline(imdb_cr, sLine)  )
+//  while ( std::getline(imdb_ak, sLine) && (nId++ < nReadLimit /*DEBUG*/) )
+        {
+//      if ( nId % 1000 == 0) { std::cout << nId << '\n'; }
+
+        std::string sTId;
+        std::string sDirectors;
+        std::string sWriters;
+
+        std::string sItem;
+        e = 0;
+	brk = false;
+        odb::PThing tt;
+        odb::PThing nm;
+        std::regex_token_iterator<std::string::iterator> it(sLine.begin(), sLine.end(), r, -1);
+//      tconst     directors                       writers
+//      tt0000247  nm2156608,nm0005690,nm0002504   nm0000636,nm0002504
+//      0=id       1=directors                     2=writers
+
+        while ( (it != end) && !brk )
+            {
+            sItem = *it++;
+            switch ( e++ )
+                {
+                case 0: sTId         = sItem; 
+//                      std::cout << sId << '\n';
+                        tt = oOdb.FindThingByProperty( sTId ).value_or(nullptr);
+			if ( tt == nullptr ) { brk = true; continue; }
+			break;
+                case 1: if ( "\\N"s == sItem ) continue;
+                        sDirectors = sItem;
+                        {
+                        std::regex_token_iterator<std::string::iterator> itD(sDirectors.begin(), sDirectors.end(), k, -1);
+                        while (itD != end)
+                            {
+                            sItem = *itD++;
+//                          std::cout << "  " << sItem << "\n";
+                            nm = oOdb.FindThingByProperty( sItem ).value_or(nullptr);
+                            if ( nullptr != nm )
+                                {
+//                              std::cout << "DIR: oOdb.LinkThing2Thing( " << nm->m_sName << ", " << tt->m_sName << ", " << sItem << " );\n";
+                                nm->Link( tt, oOdb.FindOrMakeReason( "director" ) );
+                                }
+                            }
+                        }
+                        break;
+                case 2: if ( "\\N"s == sItem ) continue;
+                        sWriters = sItem;
+                        {
+                        std::regex_token_iterator<std::string::iterator> itW(sWriters.begin(), sWriters.end(), k, -1);
+                        while (itW != end)
+                            {
+                            sItem = *itW++;
+//                          std::cout << "  " << sItem << "\n";
+                            nm = oOdb.FindThingByProperty( sItem ).value_or(nullptr);
+                            if ( nullptr != nm )
+                                {
+//                              std::cout << "WRT: oOdb.LinkThing2Thing( " << nm->m_sName << ", " << tt->m_sName << ", " << sItem << " );\n";
+                                nm->Link( tt, oOdb.FindOrMakeReason( "writer" ) );
+                                }
+                            }
+                        }
+                        break;
+                } // switch(e)
+            } // while ( it != end )
+        } // while ( std::getline(imdb_pp, sLine) ...)
+    imdb_cr.close();
+
+
+/*
+ * title.akas.tsv
+titleId ordering        title                           region  language        types           attributes      isOriginalTitle
+tt0000001       1       Carmencita - spanyol tánc       HU      \N              imdbDisplay     \N                      0
+tt0000001       2       Карменсита                      RU      \N              \N              \N                      0
+tt0000001       3       Carmencita                      US      \N              \N              \N                      0
+tt0000001       4       Carmencita                      \N      \N              original        \N                      1
+tt0000002       1       Le clown et ses chiens          \N      \N              original        \N                      1
+tt0000002       2       A bohóc és kutyái               HU      \N              imdbDisplay     \N                      0
+tt0000002       3       Le clown et ses chiens          FR      \N              \N              \N                      0
+tt0000002       4       The Clown and His Dogs          US      \N              \N              literal English title   0
+tt0000002       5       Клоун и его собаки              RU      \N              \N              \N                      0
+tt0000003       1       Szegény Pierrot                 HU      \N              imdbDisplay     \N                      0
+0=id            1=Ord   2=title                         3=reg   4=L             5=type          6=attr                  7=isOrgTitle
+*/
+
+    std::fstream imdb_ak("../raw-data/title.akas.tsv", std::ifstream::in);
+    std::getline(imdb_ak, sLine);
+    nId = 0;
+    while ( std::getline(imdb_ak, sLine)  )
+//  while ( std::getline(imdb_ak, sLine) && (nId++ < nReadLimit /*DEBUG*/) )
+        {
+//      if ( nId % 1000 == 0) { std::cout << nId << '\n'; }
+
+        std::string sTId;
+        std::string sProperty;
+
+        std::string sItem;
+        e = 0;
+	brk = false;
+        odb::PThing tt;
+        odb::PThing nm;
+        std::regex_token_iterator<std::string::iterator> it(sLine.begin(), sLine.end(), r, -1);
+//      tt0000001  4      Carmencita  \N     \N   original  \N      1
+//	0=id       1=Ord  2=title     3=reg  4=L  5=type    6=attr  7=isOrgTitle
+
+//      4:Carmencita:::original::1
+        while ( (it != end) && !brk )
+            {
+            sItem = *it++;
+            switch ( e++ )
+                {
+                case 0: sTId         = sItem; 
+//                      std::cout << sId << '\n';
+                        tt = oOdb.FindThingByProperty( sTId ).value_or(nullptr);
+			if ( tt == nullptr ) { brk = true; continue; }
+			break;
+                case 1: if ( "\\N"s == sItem ) sItem = ""s; sProperty += sItem + ":"s; break;
+                case 2: if ( "\\N"s == sItem ) sItem = ""s; sProperty += sItem + ":"s; break; 
+                case 3: if ( "\\N"s == sItem ) sItem = ""s; sProperty += sItem + ":"s; break;
+                case 4: if ( "\\N"s == sItem ) sItem = ""s; sProperty += sItem + ":"s; break;
+                case 5: if ( "\\N"s == sItem ) sItem = ""s; sProperty += sItem + ":"s; break;
+                case 6: if ( "\\N"s == sItem ) sItem = ""s; sProperty += sItem + ":"s; break;
+                case 7: if ( "\\N"s == sItem ) sItem = ""s; sProperty += sItem + ":"s;
+//                      std::cout << "CHR: oOdb.LinkThing2Thing( " << nm->m_sName << ", " << tt->m_sName << ", " << sItem << " );\n";
+//                      nm->Link( tt, oOdb.FindOrMakeReason( sItem ) );
+                        tt->Append( oOdb.FindOrMakeProperty( sProperty ) );
+//                      std::cout << sTId << " " << sProperty << '\n';
+                        break;
+                } // switch(e)
+            } // while ( it != end )
+        } // while ( std::getline(imdb_pp, sLine) ...)
+    imdb_ak.close();
+
+
+
+/*
+ * title.ratins.tsv
+tconst  averageRating   numVotes
+tt0000001       5.8     1350
+tt0000002       6.5     157
+tt0000003       6.6     933
+tt0000004       6.4     93
+tt0000005       6.2     1621
+tt0000006       5.7     80
+tt0000007       5.5     543
+tt0000008       5.6     1441
+tt0000009       5.4     62
+tt0000010       6.9     4845
+tt0000011       5.4     192
+tt0000012       7.4     8000
+0=id            1=rat   2=numVotes
+0=id  1=rating  2=numVotes
+*/
 
 
 //  auto ts = oOdb.FindThing("Cyrus Townsend Brady"); // ...

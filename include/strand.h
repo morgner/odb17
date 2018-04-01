@@ -34,10 +34,17 @@ class CStrand : public IStrand
     public:
 
                  /// forbidden
-                          CStrand() = delete;
+                 CStrand() = delete;
                  /// Normal constructor requesting a name for the strand
 	         explicit CStrand(std::string const & crsName);
-                 /// Nothings special
+
+	         /// Nothings special
+                 /// and we don't make copies
+	         CStrand(CStrand const &) = delete;
+
+                 /// make_shared<T> moveconstructs
+	         CStrand(CStrand &&) noexcept = default;
+
         virtual ~CStrand() noexcept = default;
 
         /// Appending another atom to the strand

@@ -40,7 +40,7 @@ class CReason : public IReason
                  /// There is no reason to copy a CReason
                  CReason(CReason const &) = delete;
 
-                 /// make_shared<T> moveconstructs
+                 /// make_shared<T> moveconstruct
                  CReason(CReason &&) noexcept = default;
 
                  /// Normal constructor, receiving the name of the reason

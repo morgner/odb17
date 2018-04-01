@@ -20,7 +20,8 @@
 
 #include <fstream>     // Load'n'Save
 #include <json/json.h>
-#include <stdlib.h> // atol
+//#include <json.hpp>  // nlohmann
+#include <stdlib.h>    // atol
 
 #include "atom.h"
 #include "thing.h"
@@ -765,21 +766,21 @@ class COdb : public Identifiable<COdb>
         /// @param crsFilename
         void SaveDB(std::string const & crsFilename)
             {
-            std::fstream imdb(crsFilename, std::ifstream::out);
-            print_json(imdb);
-        //  print_json_stream(imdb);
-            imdb.close();
+            std::fstream db(crsFilename, std::ifstream::out);
+            print_json(db);
+        //  print_json_stream(db);
+            db.close();
             }
 
         /// @brief Loads an odb json file
         /// @param crsFilename
         bool LoadDB(std::string const & crsFilename)
             {
-            Json::Value json;
+          Json::Value oJson;
             try
                 {
                 std::ifstream db_dump(crsFilename, std::ifstream::binary);
-                db_dump >> json;
+                db_dump >> oJson;
                 }
             catch (...)
                 {
@@ -787,18 +788,15 @@ class COdb : public Identifiable<COdb>
                 return false;
                 }
 
-            const Json::Value & properties = json["Object Database Dump"]["Properties"];
-        //    std::cout << "odb read in " << properties.size() << " properties.\n";
-        //    m_oProperties.reserve(properties.size());
+            auto const & properties = oJson["Object Database Dump"]["Properties"];
             for ( size_t index = 0; index < properties.size(); ++index )
                 {
-                auto nId   = properties[(int)index].get("id",    0).asUInt();
+                auto nId   = properties[(int)index].get("id",      0).asUInt();
                 auto sName = properties[(int)index].get("name", "").asString();
                 LoadProperty(nId, sName);
                 }
 
-            const Json::Value & atoms = json["Object Database Dump"]["Atoms"];
-        //    std::cout << "odb read in " << atoms.size() << " atoms.\n";
+            auto const & atoms = oJson["Object Database Dump"]["Atoms"];
             for ( size_t index = 0; index < atoms.size(); ++index )
                 {
                 auto nId     = atoms[(int)index].get("id",      0).asUInt();
@@ -810,8 +808,7 @@ class COdb : public Identifiable<COdb>
                 LoadAtom(nId, sData, sName, sPrefix, sSuffix, sFormat);
                 }
 
-            const Json::Value & reasons = json["Object Database Dump"]["Reasons"];
-        //    std::cout << "odb read in " << reasons.size() << " reasons.\n";
+            auto const & reasons = oJson["Object Database Dump"]["Reasons"];
             for ( size_t index = 0; index < reasons.size(); ++index )
                 {
                 auto nId   = reasons[(int)index].get("id",    0).asUInt();
@@ -819,8 +816,7 @@ class COdb : public Identifiable<COdb>
                 LoadReason(nId, sName);
                 }
 
-            const Json::Value & things = json["Object Database Dump"]["Things"];
-        //    std::cout << "odb read in " << things.size() << " things.\n";
+            auto const & things = oJson["Object Database Dump"]["Things"];
             for ( size_t index = 0; index < things.size(); ++index )
                 {
                 auto nId   = things[(int)index].get("id",    0).asUInt();
@@ -831,21 +827,21 @@ class COdb : public Identifiable<COdb>
                 {
                 auto nId   = things[(int)index].get("id",    0).asUInt();
 
-                const Json::Value & p = things[(int)index]["properties"];
+                auto const & p = things[(int)index]["properties"];
                 for ( size_t i = 0; i < p.size(); ++i )
                     {
                     auto nPId = p[(int)i].get("id", 0).asUInt();
                     AppendProperty2Thing( nPId, nId );
                     }
 
-                const Json::Value & a = things[(int)index]["atoms"];
+                auto const & a = things[(int)index]["atoms"];
                 for ( size_t i = 0; i < a.size(); ++i )
                     {
                     auto nAId = a[(int)i].get("id", 0).asUInt();
                     AppendAtom2Thing( nAId, nId );
                     }
 
-                const Json::Value & l = things[(int)index]["links"];
+                auto const & l = things[(int)index]["links"];
                 for ( size_t i = 0; i < l.size(); ++i )
                     {
                     auto nTId = l[(int)i].get("thing-id",  0).asUInt();
@@ -856,6 +852,85 @@ class COdb : public Identifiable<COdb>
             return true;
             } // LoadDB(...)    
 
+/*
+        /// @brief Loads an odb json file
+        /// @param crsFilename
+        //  mit Lohmann-Header
+        bool LoadDB(std::string const & crsFilename)
+            {
+            nlohmann::json oJson;
+            try
+                {
+                std::ifstream db_dump(crsFilename);
+                db_dump >> oJson;
+                }
+            catch (...)
+                {
+                std::cerr << "db file not found or not readable";
+                return false;
+                }
+
+            auto const & properties = oJson["Object Database Dump"]["Properties"];
+            for ( size_t index = 0; index < properties.size(); ++index )
+                {
+                size_t nId   = properties[index].at("id"   );
+                auto   sName = properties[index].at("name" );
+                LoadProperty(nId, sName);
+                }
+
+            auto const & atoms = oJson["Object Database Dump"]["Atoms"];
+            for ( size_t index = 0; index < atoms.size(); ++index )
+                {
+                size_t nId     = atoms[index].at("id"     );
+                auto   sName   = atoms[index].at("name"   );
+                auto   sPrefix = atoms[index].at("prefix" );
+                auto   sSuffix = atoms[index].at("suffix" );
+                auto   sFormat = atoms[index].at("format" );
+                auto   sData   = atoms[index].at("data"   );
+                LoadAtom(nId, sData, sName, sPrefix, sSuffix, sFormat);
+                }
+
+            auto const & reasons = oJson["Object Database Dump"]["Reasons"];
+            for ( size_t index = 0; index < reasons.size(); ++index )
+                {
+                size_t nId   = reasons[index].at("id"   );
+                auto   sName = reasons[index].at("name" );
+                LoadReason(nId, sName);
+                }
+
+            auto const & things = oJson["Object Database Dump"]["Things"];
+            for ( size_t index = 0; index < things.size(); ++index )
+                {
+                size_t nId   = things[index].at("id"   );
+                auto   sName = things[index].at("name" );
+                LoadThing(nId, sName);
+                }
+            for ( size_t index = 0; index < things.size(); ++index )
+                {
+                size_t nId   = things[index].at("id"   );
+                auto const & p = things[index]["properties"];
+                for ( size_t i = 0; i < p.size(); ++i )
+                    {
+                    size_t nPId = p[i].at("id");
+                    AppendProperty2Thing( nPId, nId );
+                    }
+                auto const & a = things[index]["atoms"];
+                for ( size_t i = 0; i < a.size(); ++i )
+                    {
+                    size_t nAId = a[i].at("id");
+                    AppendAtom2Thing( nAId, nId );
+                    }
+                auto const & l = things[index]["links"];
+                for ( size_t i = 0; i < l.size(); ++i )
+                    {
+                    size_t nTId = l[i].at("thing-id" );
+                    size_t nRId = l[i].at("reason-id");
+                    LinkThing2Thing( nId, nTId, nRId );
+                    }
+                }
+            return true;
+            } // LoadDB_LM(...)    
+*/
 
         /// @brief Has to return a thing with specified ID, if it does not exists, it is to make
         /// @param nId The id of the thing
@@ -1151,7 +1226,7 @@ class COdb : public Identifiable<COdb>
             }
 
         /// API Adapter
-        auto FindThing     ( size_t                  nId ) { return Find(m_oThings, nId     ); }
+        auto FindThing     ( size_t                  nId )  {return Find(m_oThings, nId );}
         /// API Adapter
         auto FindThings    ( std::string const & crsName ) { return Find(m_oThings, crsName ); }
         /// API Adapter
