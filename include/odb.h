@@ -776,7 +776,7 @@ class COdb : public Identifiable<COdb>
         /// @param crsFilename
         bool LoadDB(std::string const & crsFilename)
             {
-          Json::Value oJson;
+            Json::Value oJson;
             try
                 {
                 std::ifstream db_dump(crsFilename, std::ifstream::binary);
