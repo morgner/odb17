@@ -1,9 +1,13 @@
 Building with the documentation
 ===============================
 
-required: boost-containers
-          asio
-          linenoise
+(Docu is already here: http://odb17.readthedocs.io/en/latest/classes/odb.html)
+
+required: 
+  boost-containers
+  asio (non-boost) https://github.com/chriskohlhoff/asio
+  linenoise        https://github.com/antirez/linenoise
+
 ```
 cd <project_root>
 virtualenv env
@@ -14,15 +18,17 @@ cd build
 cmake ..
 cmake --build .
 or:
-cmake --build . --target all -- -j4
+cmake --build . --target all -- -j4 (amount of cpu's to use)
 ```
 
 Building **WITHOUT** the documentation
 ======================================
 
-required: boost-containers
-          asio
-          linenoise
+required:
+  boost-containers
+  asio (non-boost) https://github.com/chriskohlhoff/asio
+  linenoise        https://github.com/antirez/linenoise
+
 ```
 cd <project_root>
 mkdir -p build
@@ -30,7 +36,7 @@ cd build
 cmake .. -DBUILD_DOCS=Off
 cmake --build .
 or
-cmake --build . --target all -- -j4
+cmake --build . --target all -- -j4 (amount of cpu's to use)
 ```
 
 ------------------- OR (e.g.)
