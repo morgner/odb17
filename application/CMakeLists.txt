@@ -33,8 +33,9 @@ add_executable(6-json-read.test
   $<TARGET_OBJECTS:${PROJECT_NAME}>
   )
 
+find_library(JSON_CPP linjsoncpp.a jsoncpp)
 target_link_libraries(6-json-read.test
-  jsoncpp
+  ${JSON_CPP}
   )
 
 add_executable(7-read-imdb.test
@@ -48,7 +49,7 @@ add_executable(8-odbd.test
   )
 
 target_link_libraries(8-odbd.test
-  jsoncpp
+  ${JSON_CPP}
   ${CMAKE_THREAD_LIBS_INIT}
   )
 
@@ -57,7 +58,7 @@ add_executable(9-odbcli.test
   $<TARGET_OBJECTS:${PROJECT_NAME}>
   )
 
-find_library(LINE_NOISE linenoise)
+find_library(LINE_NOISE liblinenoise.a linenoise)
 target_link_libraries(9-odbcli.test
   ${LINE_NOISE}
   ${CMAKE_THREAD_LIBS_INIT}
