@@ -4,9 +4,9 @@ Building with the documentation
 (Docu is already here: http://odb17.readthedocs.io/en/latest/classes/odb.html)
 
 required: 
-  boost-containers
-  asio (non-boost) https://github.com/chriskohlhoff/asio
-  linenoise        https://github.com/antirez/linenoise
+ * boost-containers
+ * asio (non-boost) https://github.com/chriskohlhoff/asio
+ * linenoise        https://github.com/antirez/linenoise
 
 ```
 cd <project_root>
@@ -25,9 +25,9 @@ Building **WITHOUT** the documentation
 ======================================
 
 required:
-  boost-containers
-  asio (non-boost) https://github.com/chriskohlhoff/asio
-  linenoise        https://github.com/antirez/linenoise
+ * boost-containers
+ * asio (non-boost) https://github.com/chriskohlhoff/asio
+ * linenoise        https://github.com/antirez/linenoise
 
 ```
 cd <project_root>
