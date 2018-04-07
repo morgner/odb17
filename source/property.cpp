@@ -41,7 +41,7 @@ CProperty::CProperty(size_t nId, std::string const & crsName)
     {
     }
 
-CProperty::operator std::string const & ()
+CProperty::operator std::string const & () noexcept
     {
     return m_sName;
     }

@@ -83,18 +83,6 @@ class CThing : public std::enable_shared_from_this<CThing>,
         /// destruct
         void clear();
 
-        /// Compares the name of a thing with an input string for 'equal'
-        friend bool operator == (PThing const & croThing, std::string const & crsInput)
-            {
-            return croThing->m_sName == crsInput;
-            }
-
-        /// Compares the name of a thing with an input string for 'lesser'
-        friend bool operator <  (PThing const & croThing, std::string const & crsInput)
-            {
-            return croThing->m_sName < crsInput;
-            }
-
         /**
          * @brief The free output operator for CThing
          * 
@@ -159,35 +147,35 @@ class CThing : public std::enable_shared_from_this<CThing>,
          */
         PThing RelatingThingSub(PThing poThing);
 
-        protected:
-            /**
-             * @brief Holds the links to another CThing for CReason
-             * @param PThing The PThing we link to
-             * @param PReason The PReason we link for
-             * @param Compare Function to compare two CThings
-             */
-            std::multimap<PThing, PReason, lessIdentifiableId<PThing>> m_mLink;
+    protected:
+        /**
+         * @brief Holds the links to another CThing for CReason
+         * @param PThing The PThing we link to
+         * @param PReason The PReason we link for
+         * @param Compare Function to compare two CThings
+         */
+        std::multimap<PThing, PReason, lessIdentifiableId<PThing>> m_mLink;
 
-            /**
-             * @brief Registers PThings relating to itself
-             * @param PThing The PThing we are linked from
-             * @param Compare Function to compare two CThing's
-             */
-            std::set<PThing, lessIdentifiableId<PThing>>               m_spoThingsRelating;
+        /**
+         * @brief Registers PThings relating to 'this' instance
+         * @param PThing The PThing we are linked from
+         * @param Compare Function to compare two CThing's
+         */
+        SThings               m_spoThingsRelating;
 
-            /**
-             * @brief Registers PProperties of this CThing
-             * @param PProperty PProperties we have
-             * @param Compare Function to compare two PAtom's
-             */
-            std::set<PProperty, lessIdentifiableName<PProperty>>       m_spoProperties;
+        /**
+         * @brief Registers PProperties of this CThing
+         * @param PProperty PProperties we have
+         * @param Compare Function to compare two PAtom's
+         */
+        SProperties           m_spoProperties;
 
-            /**
-             * @brief Registers PAtoms of this CThing
-             * @param PAtom PAtom's we own
-             * @param Compare Function to compare two PAtom's
-             */
-            std::set<PAtom, lessIdentifiableId<PAtom>>                 m_spoAtoms;
+        /**
+         * @brief Registers PAtoms of this CThing
+         * @param PAtom PAtom's we own
+         * @param Compare Function to compare two PAtom's
+         */
+        SAtoms                m_spoAtoms;
 
     }; // class CThing
 

@@ -34,13 +34,13 @@ class CProperty : public IProperty
         /// The name of an unnamed property
         static constexpr auto s_csNameUnnamedProperty{"unnamedProperty"};
     public:
-                 /// @brief deleted: default constructor
+                 /// DELETED: default constructor
                  CProperty() = delete;
 
-                 /// There  is no reason to copy a CProperty
+                 /// DELETED: There is no reason to copy a CProperty
                  CProperty(CProperty const &) = delete;
 
-                 /// There is no reason to moveconstruct a CProperty
+                 /// DEFAULT, NOEXCEP: There is no reason to move-construct a CProperty
                  CProperty(CProperty &&) noexcept = default;
 
                  /// Normal constructor, receiving the name of the property
@@ -49,19 +49,14 @@ class CProperty : public IProperty
                  /// Load constructor, receiving the id and the name of the property
                  CProperty(size_t nId, std::string const & crsName);
 
+                 /// DEFAULT, NOEXCEPT: destructor
         virtual ~CProperty() noexcept = default;
 
         /// Output operator to do an output of the instance
         friend std::ostream & operator << (std::ostream & ros, CProperty const & croProperty);
 
         /// Conversion operator will return the name of the instance
-        operator std::string const & ();
-        
-	/// Compares the name with an input string
-	friend bool operator == (PProperty const & croProperty, std::string const & crsInput)
-	    {
-            return croProperty->m_sName == crsInput;
-	    }
+        operator std::string const & () noexcept;
 
         /// Add the information about a link from a CThing
         void RelationAdd( PThing poThing );
@@ -77,7 +72,7 @@ class CProperty : public IProperty
         SThings const & Relations() const { return m_oRelations; }
     protected:
         /// A set containing backlinks from things
-        std::set<PThing> m_oRelations;
+        SThings m_oRelations;
 
     }; // class CProperty
 

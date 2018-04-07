@@ -34,13 +34,15 @@ class CReason : public IReason
         /// The name of an unnamed reason
         static constexpr auto s_csNameUnnamedReason{"unnamedReason"};
     public:
-                 /// Forbidden
+                 /// DELETED: Default constructor
                  CReason() = delete;
 
-                 /// There is no reason to copy a CReason
+                 /// DELETED: There is no reason to copy a CReason
                  CReason(CReason const &) = delete;
 
-                 /// make_shared<T> moveconstruct
+                 /// DEFAULT, NOEXCEPT: move constructor, 
+                 /// make_shared<T> move-constructs returning objects
+                 /// has to move too, we don't want copies!
                  CReason(CReason &&) noexcept = default;
 
                  /// Normal constructor, receiving the name of the reason
@@ -49,6 +51,7 @@ class CReason : public IReason
                  /// Load constructor, receiving the ID and name of the reason
                  CReason(size_t nId, std::string const & crsName);
 
+                 /// DEFAULT, NOEXCEPT: destructor
         virtual ~CReason() noexcept = default;
 
         /// Output operator to do an output of the instance
@@ -57,7 +60,8 @@ class CReason : public IReason
         /// Conversion operator will return the name of the instance
         operator std::string const & ();
 
-        /// Add the information about a link from one CThing to another regarding 'this' reason
+        /// Add the information about linking from one CThing to another
+        /// regarding 'this' CReason
         void RelationAdd( PThing & poThingFrom, PThing & poThingTo );
 
         /**
@@ -75,7 +79,8 @@ class CReason : public IReason
         void print();
 
     protected:
-        /// A map containing links from  one thing to another
+        /// A map containing all links from one thing to another using
+        /// 'this' CReason
         std::multimap<PThing, PThing> m_mRelations;
 
     }; // class CReason

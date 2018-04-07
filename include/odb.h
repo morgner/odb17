@@ -1243,16 +1243,18 @@ class COdb : public Identifiable<COdb>
             if ( (itThingFrom == m_oThings .end()) || (itThingTo == m_oThings.end()) || (itReason == m_oReasons.end()) )
                 {
 //              std::cout << "0 " << (*itThingFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itThingTo)->m_sName << '\n';
+/*
                 std::cout << "0 ";
                 if (itThingFrom == m_oThings. end()) std::cout << "E:" << nThingFrom << " "; else std::cout << (*itThingFrom)->m_sName << " ";
                 if (itReason    == m_oReasons.end()) std::cout << "E:" << nReason    << " "; else std::cout << (*itReason)->m_sName    << " ";
                 if (itThingTo   == m_oThings. end()) std::cout << "E:" << nThingTo   << " "; else std::cout << (*itThingTo)->m_sName   << " ";
                 std::cout << '\n';
+*/
                 return false;
                 }
-//	    std::cout << "true LinkThing2Thing( size_t " << nThingFrom << ", size_t " << nThingTo << ", size_t " << nReason << " )\n";
+//          std::cout << "true LinkThing2Thing( size_t " << nThingFrom << ", size_t " << nThingTo << ", size_t " << nReason << " )\n";
 //          std::cout << "+ " << (*itThingFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itThingTo)->m_sName << '\n';
-	    (*itThingFrom)->Link( const_cast<PThing&>(*itThingTo), const_cast<PReason&>(*itReason) );
+            (*itThingFrom)->Link( const_cast<PThing&>(*itThingTo), const_cast<PReason&>(*itReason) );
 //          Link( *itThingFrom, *itReason, *itThingTo );
             return true;
             }
@@ -1265,16 +1267,18 @@ class COdb : public Identifiable<COdb>
             auto itReason     =  m_oReasons.get<name>().find( crsReason );
             if ( (itThingFrom == m_oThings.get<name>().end()) || (itThingTo == m_oThings.get<name>().end()) || (itReason == m_oReasons.get<name>().end()) )
                 {
+/*
                 std::cout << "0 ";
                 if (itThingFrom == m_oThings. get<name>().end()) std::cout << "E:" << crsThingFrom << " "; else std::cout << (*itThingFrom)->m_sName << " ";
                 if (itReason    == m_oReasons.get<name>().end()) std::cout << "E:" << crsReason    << " "; else std::cout << (*itReason)->m_sName    << " ";
                 if (itThingTo   == m_oThings. get<name>().end()) std::cout << "E:" << crsThingTo   << " "; else std::cout << (*itThingTo)->m_sName   << " ";
                 std::cout << '\n';
+*/
                 return false;
                 }
-//	    std::cout << "true LinkThing2Thing( size_t " << nThingFrom << ", size_t " << nThingTo << ", size_t " << nReason << " )\n";
+//          std::cout << "true LinkThing2Thing( size_t " << nThingFrom << ", size_t " << nThingTo << ", size_t " << nReason << " )\n";
 //          std::cout << "+ " << (*itThingFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itThingTo)->m_sName << '\n';
-	    (*itThingFrom)->Link( const_cast<PThing&>(*itThingTo), const_cast<PReason&>(*itReason) );
+            (*itThingFrom)->Link( const_cast<PThing&>(*itThingTo), const_cast<PReason&>(*itReason) );
 //          Link( *itThingFrom, *itReason, *itThingTo );
             return true;
             }
@@ -1289,9 +1293,9 @@ class COdb : public Identifiable<COdb>
         template<typename T>
         std::optional<PT<T>> Find( CT<T> const & croContainer, size_t nId )
             {
-	    auto oResult =  croContainer.find(nId);
-	    if ( oResult == croContainer.end() ) return std::nullopt;
-	    return std::move( *oResult );
+            auto oResult =  croContainer.find(nId);
+            if ( oResult == croContainer.end() ) return std::nullopt;
+            return std::move( *oResult );
             }
 
         /**
@@ -1310,8 +1314,8 @@ class COdb : public Identifiable<COdb>
             CT<T> oResult;
             for ( auto it = oRange.first; it != oRange.second; ++it )
                 {
-        	oResult.insert(*it);
-        	}
+                oResult.insert(*it);
+                }
             return std::move(oResult);
             }
 
@@ -1323,7 +1327,7 @@ class COdb : public Identifiable<COdb>
          * @param crsRegex The NAME of the Ts in Regex
          */
         template<typename T>
-        CT<T> Find( CT<T> const & croContainer, std::regex const & crsRegex )
+        auto Find( CT<T> const & croContainer, std::regex const & crsRegex )
             {
             // todo: preallocation
             CT<T> oResult;
@@ -1341,21 +1345,21 @@ class COdb : public Identifiable<COdb>
         /// API Adapter
         auto FindThings    ( std::regex const & crsRegex ) { return Find(m_oThings, crsRegex); }
 
-	/// API Adapter
+        /// API Adapter
         auto FindProperty  ( size_t                  nId ) { return Find(m_oProperties, nId     ); }
         /// API Adapter
         auto FindProperties( std::string const & crsName ) { return Find(m_oProperties, crsName ); }
         /// API Adapter
         auto FindProperties( std::regex const & crsRegex ) { return Find(m_oProperties, crsRegex); }
 
-	/// API Adapter
+        /// API Adapter
         auto FindReason    ( size_t                  nId ) { return Find(m_oReasons, nId     ); }
         /// API Adapter
         auto FindReasons   ( std::string const & crsName ) { return Find(m_oReasons, crsName ); }
         /// API Adapter
         auto FindReasons   ( std::regex const & crsRegex ) { return Find(m_oReasons, crsRegex); }
 
-	/// API Adapter
+        /// API Adapter
         auto FindAtoms     ( size_t                  nId ) { return Find(m_oAtoms, nId     ); }
         /// API Adapter
         auto FindAtoms     ( std::string const & crsName ) { return Find(m_oAtoms, crsName ); }

@@ -228,7 +228,7 @@ using IThing  = IT<CThing>;
 /// A return value for 'optional' returns
 using OThing = std::optional<PThing>;
 /// A set of PThing's
-using SThings = std::set<PThing>;
+using SThings = std::set<PThing, lessIdentifiableName<PThing>>;
 /// A container for the shared_ptr's of the entity
 using CThings = CT<CThing>; 
 
@@ -238,6 +238,8 @@ class CProperty;
 using PProperty   = PT<CProperty>;
 /// The type to inherite from (Identifiable<>)
 using IProperty   = IT<CProperty>;
+/// A set of PProperty's
+using SProperties = std::set<PProperty, lessIdentifiableName<PProperty>>;
 /// A container for the shared_ptr's of the entity
 using CProperties = CT<CProperty>;
 
@@ -256,6 +258,8 @@ class CAtom;
 using PAtom  = PT<CAtom>;
 /// The type to inherite from (Identifiable<>)
 using IAtom  = IT<CAtom>;
+/// A set of PAtom's
+using SAtoms = std::set<PAtom, lessIdentifiableId<PAtom>>;
 /// A container for the shared_ptr's of the entity
 using CAtoms = CT<CAtom>;
 
