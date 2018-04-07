@@ -160,7 +160,7 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
         std::string sItem;
         e = 0;
         odb::PThing m; m = nullptr;
-	odb::PThing movie; movie = nullptr;
+        odb::PThing movie; movie = nullptr;
         std::regex_token_iterator<std::string::iterator> it(sLine.begin(), sLine.end(), r, -1);
 //	0=id	1=name	2=Ybirth	3=Ydeath	4=profession	5=movies	
         while ( (it != end) && (!brk) )

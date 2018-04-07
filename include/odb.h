@@ -1201,6 +1201,12 @@ class COdb : public Identifiable<COdb>
         /// todo: optimize / Appends a Property to a Thing by given names
         bool AppendProperty2Thing( std::string const & crsProperty, bool bForce, std::string const & crsThing )
             {
+            auto itThings =  m_oThings.get<name>().find( crsThing );
+            if ( itThings == m_oThings.get<name>().end() )
+                {
+                return false;
+                }
+
             PProperty poProperty;
 
             auto itProperty =  m_oProperties.get<name>().find( crsProperty );
@@ -1214,10 +1220,13 @@ class COdb : public Identifiable<COdb>
                 poProperty = *itProperty;
                 }
 
-            for ( auto & a:m_oThings )
+            (*itThings)->Append( poProperty );
+/*
+            for ( auto & a:poThings )
                 {
                 if ( a->m_sName == crsThing ) a->Append( poProperty );
                 }
+*/
             return true;
             }
 

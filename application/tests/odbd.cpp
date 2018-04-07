@@ -116,7 +116,92 @@ void FillInSomeData()
 using asio::ip::tcp;
 
 
-bool Insert(std::string const & crsQuery, tcp::iostream & ros)
+bool LinkNAppend(std::string const & crsQuery, std::ostream & ros)
+    {
+    /*
+    stream << "ltidT:idT:idR        - links two Things by ID\n";
+    stream << "lTnameT:nameT:nameR  - links two Things by Name\n";
+    stream << "lpidP:idT            - links Property to Thing\n";
+    stream << "lPnameP:nameT        - links Property to Thing\n";
+    stream << "laidA:idT            - links Atom to Thing\n";
+    stream << "lAnameA:nameT        - links Atom to Thing\n";
+    */
+    ros << "L " + crsQuery;
+
+    if ( crsQuery.length() < 2 ) return false;
+
+    char d = crsQuery[1];
+    std::string sInput = crsQuery.substr(2);
+    
+    bool  bNumeric = (d > 'Z');
+    short nArgs    = ( (d == 't') || (d == 'T') ) ? 3 : 2;
+    
+    std::regex r(":");
+    std::regex_token_iterator<std::string::iterator> end;
+    std::regex_token_iterator<std::string::iterator> it(sInput.begin(), sInput.end(), r, -1);
+
+    std::string sVal1;
+    std::string sVal2;
+    std::string sVal3;
+    short       nVals{0};
+    if (it != end) { sVal1 = *it++; nVals++; }
+    if (it != end) { sVal2 = *it++; nVals++; }
+    if (it != end) { sVal3 = *it;   nVals++; }
+
+    size_t nVal1{0};
+    size_t nVal2{0};
+    size_t nVal3{0};
+    if (nVals != nArgs)
+        {
+        ros << " \nE invalid count of parameters\n";
+        return false;
+        }
+    if (bNumeric)
+        {
+        try
+            {
+            nVal1 = stoull(sVal1);
+            nVal2 = stoull(sVal2);
+            if (nVals==3) nVal3 = stoull(sVal3);
+            }
+        catch (...)
+            {
+            ros << " \nE invalid type of parameters\n";
+            return false;
+            }
+        }
+    /*
+    stream << "ltidT:idT:idR        - links two Things by ID\n";
+    stream << "lTnameT:nameT:nameR  - links two Things by Name\n";
+    stream << "lpidP:idT            - links Property to Thing\n";
+    stream << "lPnameP:nameT        - links Property to Thing\n";
+    stream << "laidA:idT            - links Atom to Thing\n";
+    stream << "lAnameA:nameT        - links Atom to Thing\n";
+    */
+    bool b{false};
+    switch (d)
+        {
+        case 't': b = poOdb->LinkThing2Thing(nVal1, nVal2, nVal3);
+                  break;
+        case 'T': b = poOdb->LinkThing2Thing(sVal1, sVal2, sVal3);
+                  break;
+        case 'p': b = poOdb->AppendProperty2Thing(nVal1, nVal2);
+                  break;
+        case 'P': b = poOdb->AppendProperty2Thing(sVal1, false, sVal2);
+                  break;
+        case 'a': b = poOdb->AppendAtom2Thing(nVal2, nVal1);
+                  break;
+        case 'A': ros << " \n! Not implemented\n";
+                  break;
+        }
+    if (b)
+        ros << " \n! Linked\n";
+    else
+        ros << " \nE could not assign objects\n";
+    return b;
+    }
+
+bool Insert(std::string const & crsQuery, std::ostream & ros)
     {
     ros << "+ " + crsQuery;
 
@@ -337,6 +422,13 @@ int main(int argc, char* argv[])
                 stream << "p+name  - insert a property\n";
                 stream << "r+name  - insert a reason\n";
                 stream << "a+name  - insert an atom\n";
+                stream << " \n";
+                stream << "ltidT:idT:idR        - links two Things by ID\n";
+                stream << "lTnameT:nameT:nameR  - links two Things by Name\n";
+                stream << "lpidP:idT            - links Property to Thing\n";
+                stream << "lPnameP:nameT        - links Property to Thing\n";
+                stream << "laidA:idT            - links Atom to Thing\n";
+                stream << "lAnameA:nameT        - links Atom to Thing\n";
                 }
             else
                 {
@@ -351,6 +443,10 @@ int main(int argc, char* argv[])
                 else if ( sQuery[1] == '+' )
                         {
                         if ( not Insert(sQuery, stream) ) stream << ": not inserted\n";
+                        }
+                else if ( sQuery[0] == 'l' )
+                        {
+                        if ( not LinkNAppend(sQuery, stream) ) stream << ": not bound\n";
                         }
                 else
                     {
