@@ -1,5 +1,5 @@
 /**
-    @file main.cpp
+    @file atom2thing-test.cpp
  
     @author Manfred Morgner
     @date 21.01.2018

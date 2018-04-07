@@ -31,9 +31,20 @@ class CReason;
 using IThing = Identifiable<CThing>;
 
 /**
-    @brief A Thing as there are many
-    @author Manfred Morgner
-    @since  0.1.17
+ * @brief A Thing as there are many
+ * 
+ * A CThing, or Node, is a main structure element in a GrapDB like
+ * odb. The counterpart is a CReason. CThing's will be linked
+ * unidirectional to another CThing. There may be an arbitrary amount
+ * of Links between CThings e.g.
+ * 
+ *  - Node, (Link-)Reason, Node
+ *  - Mary, wrote, Sandberg
+ *  - Mary, read,  Sandberg
+ *  - Mary, loves, Jack
+ * 
+ * @author Manfred Morgner
+ * @since  0.1.17
  */
 class CThing : public std::enable_shared_from_this<CThing>,
                public IThing
@@ -48,37 +59,37 @@ class CThing : public std::enable_shared_from_this<CThing>,
         /// Do we generate debug output?
         static constexpr bool s_bDebug{false};
     public:
-                 /// We never construct without a name for the thing
+                 /// DELETED: We never construct without a name for the thing
 	         CThing() = delete;
 
-                 /// and we don't make copies
+                 /// DELETED: and we don't make copies
                  CThing(CThing const &) = delete;
 
-                 /// make_shared<T> moveconstructs
+                 /// Move-Contructor, noexcept and default.
+                 /// make_shared<T> move-constructs.
+                 /// Function return of CThing's moves too.
                  CThing(CThing&&) noexcept = default;
 
-                 /// Normal constructor, receiving the name of the reason
+                 /// Normal constructor, receiving the name of the Thing
                  explicit CThing(std::string const & crsName);
                  
-                 /// Load constructor, receiving the ID and name of the reason
+                 /// Load constructor, receiving the ID and name of the Thing
                  CThing(size_t nId, std::string const & crsName);
 
-        /// Nothings special here
-	virtual ~CThing() noexcept = default;
+        /// Destructor (default). Nothings special here
+        virtual ~CThing() noexcept = default;
 
-        /**
-         * @brief We need to unbind all relations in the odb before destructing
-         */
+        /// We need to unbind all relations in the COdb before letting us
+        /// destruct
         void clear();
 
-
-        /// Compares the name with an input string
+        /// Compares the name of a thing with an input string for 'equal'
         friend bool operator == (PThing const & croThing, std::string const & crsInput)
             {
             return croThing->m_sName == crsInput;
             }
 
-        /// Compares the name with an input string
+        /// Compares the name of a thing with an input string for 'lesser'
         friend bool operator <  (PThing const & croThing, std::string const & crsInput)
             {
             return croThing->m_sName < crsInput;
@@ -86,6 +97,16 @@ class CThing : public std::enable_shared_from_this<CThing>,
 
         /**
          * @brief The free output operator for CThing
+         * 
+         * The ouput operator prints all information about the CThing
+         * instance to the given output stream. This is:
+         * 
+         *  - Name
+         *  - CProperty's
+         *  - CAtom's
+         *  - Link destinations + CReason
+         *  - Backlinks
+         * 
          * @param ros The output stream to send the Thing to
          * @param crThing The Thing to output
          */
@@ -94,8 +115,8 @@ class CThing : public std::enable_shared_from_this<CThing>,
         /**
          * @brief Appends an CProperty to its property list
          *
-         * Appending an CProperty to this CThing requires the thing to
-         * inform the appended Property about this CThing is linking to
+         * Appending an CProperty to this CThing includes the Thing to
+         * inform the appended Property about this Thing is linking to
          * it
          *
          * @param poProperty A Property to bind with the Thing
@@ -105,7 +126,7 @@ class CThing : public std::enable_shared_from_this<CThing>,
         /**
          * @brief Appends an CAtom to its atom list
          *
-         * Appending an CAtom to this CThing requires the thing to
+         * Appending an CAtom to this CThing includes the Thing to
          * inform the appended Atom about this CThing is linking to it
          *
          * @param poAtom An Atom to bind into the Thing

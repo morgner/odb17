@@ -1,5 +1,5 @@
 /**
- *  @file main.cpp
+ *  @file link2things-test.cpp
  *
  *  @author Manfred Morgner
  *  @date 21.01.2018

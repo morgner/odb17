@@ -16,12 +16,6 @@
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/member.hpp>
 #include <boost/multi_index/ordered_index.hpp>
-/*
-#include <algorithm>
-#include <iostream>
-#include <iterator>
-#include <string>
-*/
 
 #include <cxxabi.h> // __cxa_demangle
 
@@ -49,13 +43,14 @@ inline auto demangle(std::type_info const & type)
  * Recognizes given ID to prevent ID collition
  *
  * @tparam T The type with which to associate the ID counter
- * @tparam S The starting ID
+ * @tparam S The starting ID (per T)
  */
 template<typename T, size_t S = 0>
-static auto idForObjectOf(size_t nLoad = 0)
+static auto idForObjectOf(size_t const nLoad = 0, bool const bLoadNull = false)
     {
     static auto s_nId = S;
-    if (nLoad > 0) // if nLoad is given > 0, 'return s_nId++' must not be done
+    // if nLoad is given > 0, 'return s_nId++' must not be done
+    if ((nLoad > 0) || ((nLoad == 0)&&(bLoadNull)))
       {
       if (nLoad >= s_nId) s_nId = nLoad+1;
       return nLoad;
@@ -72,10 +67,10 @@ template<typename T>
 class Identifiable
     {
     public:
-        /// Default constructor to let m_nId counting
+        /// @brief Default constructor to let m_nId counting
                  Identifiable() = default;
         
-	/// @brief Default copy constructor
+        /// @brief Default copy constructor
         /// @param "" The Source
         explicit Identifiable(Identifiable const &) = default;
         
@@ -85,25 +80,24 @@ class Identifiable
         
         /// @brief Constructor initializing predefined ID (load operation)
         /// @param nId A predefined ID, for loading data sets with IDs
-        explicit Identifiable(size_t nId)                              : m_nId(nId)                   { idForObjectOf<T>(nId); }
+        explicit Identifiable(size_t nId)                              : m_nId(nId)                   { idForObjectOf<T>(nId, nId == 0); }
         
-	/// @brief Constructor initializing predefined ID (load operation) with NAME
+        /// @brief Constructor initializing predefined ID (load operation) with NAME
         /// @param nId A predefined ID, for loading data sets with IDs
         /// @param crsName The name for the object
-                 Identifiable(size_t nId, std::string const & crsName) : m_nId(nId), m_sName(crsName) { idForObjectOf<T>(nId); }
+                 Identifiable(size_t nId, std::string const & crsName) : m_nId(nId), m_sName(crsName) { idForObjectOf<T>(nId, nId == 0); }
         
-	/// @brief Constructor initializing NAME, let ID autocount
+        /// @brief Constructor initializing NAME, let ID autocount
         /// @param crsName The name for the object
+        explicit Identifiable(            std::string const & crsName) :             m_sName(crsName) { }
+
+        /// The unique ID of the instance (counter per type)
+        size_t m_nId { idForObjectOf<T>() };
         
-	explicit Identifiable(            std::string const & crsName) :             m_sName(crsName) {                        }
-        /// The ID of the instance (per type)
-        
-	size_t m_nId { idForObjectOf<T>() };
         /// The type of the instance
+        std::string const m_sType { demangle(typeid(T)) };
         
-	std::string const m_sType { demangle(typeid(T)) };
-        
-	/// The name of the instance
+        /// The human interpretable name of the instance
         std::string m_sName {""};
     }; // class Identifiable
 
@@ -212,15 +206,12 @@ using boost::multi_index_container;
 /// namespace for boost multi-index
 using namespace boost::multi_index;
 
-/// Shared pointer of T
-template<typename T>
-using PT = std::shared_ptr<T>;
-/// From Identifiable derived class
-template<typename T>
-using IT = Identifiable<T>;
-/// Multi indexed container of PT<T>
-template<typename T>
-using CT = multi_index_container<
+/// Shared pointer of T (PT = Pointer to T)
+template<typename T> using PT = std::shared_ptr<T>;
+/// From Identifiable derived class (IT = Inherited for T)
+template<typename T> using IT = Identifiable<T>;
+/// Multi indexed container of PT<T> (CT = Container of T)
+template<typename T> using CT = multi_index_container<
   PT<T>,
   indexed_by<
     /// sort by less<int> on ID
@@ -242,15 +233,6 @@ using SThings = std::set<PThing>;
 using CThings = CT<CThing>; 
 
 /// Forward decleration to befriend with it in other classes
-class CAtom;
-/// The shared_ptr of the entity
-using PAtom  = PT<CAtom>;
-/// The type to inherite from (Identifiable<>)
-using IAtom  = IT<CAtom>;
-/// A container for the shared_ptr's of the entity
-using CAtoms = CT<CAtom>;
-
-/// Forward decleration to befriend with it in other classes
 class CProperty;
 /// The shared_ptr of the entity
 using PProperty   = PT<CProperty>;
@@ -269,6 +251,15 @@ using IReason  = IT<CReason>;
 using CReasons = CT<CReason>;
 
 /// Forward decleration to befriend with it in other classes
+class CAtom;
+/// The shared_ptr of the entity
+using PAtom  = PT<CAtom>;
+/// The type to inherite from (Identifiable<>)
+using IAtom  = IT<CAtom>;
+/// A container for the shared_ptr's of the entity
+using CAtoms = CT<CAtom>;
+
+/// Forward decleration to befriend with it in other classes
 class CStrand;
 /// The shared_ptr of the entity
 using PStrand  = std::shared_ptr<CStrand>;
@@ -281,6 +272,8 @@ using CStrands = std::deque<PStrand>;
 
 
 /**
+ * @brief A zero cost spacer
+ * 
  * zero cost indentation like: cout << spcr<3> << "indented line";
  * indentation depth is N*g_cnIndent;
  *
@@ -301,18 +294,18 @@ constexpr auto make_char_array(std::index_sequence<I...>)
     return CIndentWrapper<char, sizeof...(I)>{((void)I, C)...};
     }
 
-/// our spaces
+/// OUR spaces
 template<std::size_t N>
 constexpr auto spcr = make_char_array<' '>(std::make_index_sequence<N * g_cnIndent>{});
 
-/// print our spaces
+/// print OUR spaces
 template<typename T, std::size_t ...I>
 std::ostream & print_array(std::ostream & out, std::array<T, sizeof...(I)> const & arr, std::index_sequence<I...>)
     {
     return (out << ... << arr[I]);
     }
 
-/// send our spaces to cout
+/// send OUR spaces to std::cout
 template<std::size_t N>
 std::ostream & operator<<(std::ostream & out, CIndentWrapper<char, N> const & arr)
     {

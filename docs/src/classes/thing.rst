@@ -3,14 +3,17 @@ CThing
 
 The Thing, formerly known as Object in the Object Database, renamed for the
 practicle reason of having a unique starting letter amongst the other code
-units.
+units. Should be renamed again, to "CNode" and so on.
 
-It may contain an arbitrary amount of arbitrary Atoms (equivalents to Data
-Fields), Links to other CThing's for specified CReason's as well as Backlinks
-to Reason'ed Link sources.
+It may contain an arbitrary amount of arbitrary
 
-The linking CThing is responsible for ressource management. It
-manages connections
+ - CAtom's (equivalent to Data Fields)
+ - CProperty's (minimal data units, multiusable)
+ - Links to other CThing's for specified CReason's
+ - as well as Backlinks to Reason'ed Link sources.
+
+The linking CThing is responsible for resource management. It manages
+connections
 
  - from thing to thing
  - the backlink for links from itself to another thing
@@ -28,7 +31,7 @@ Output 1: The CThing's explaining there content
 
    thing: Ulrich
      Role: Leader
-      => linked to: "Fred" for reason: "pays" = Ulrich pays Fred
+      => linked to: "Fred" for reason: "pays"
    thing: Fred
      Role: Member
       <= linked from: Ulrich

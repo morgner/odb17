@@ -1,3 +1,10 @@
+/**
+    @file json-read-test.cpp
+ 
+    @author Manfred Morgner
+    @date 21.02.2018
+ */
+
 #include <iostream>
 #include <fstream>
 
@@ -21,13 +28,13 @@ int main()
     odb::CThings p;
     {auto t1 = std::clock(); p = oOdb.FindThingsByProperty (std::regex("actor"));
                              p = oOdb.FindThingsByProperty (std::regex("actor"));
-                             p = oOdb.FindThingsByProperty (std::regex("actor"));
+                             p = oOdb.FindThingsByProperty (std::regex("actor")); auto t2 = std::clock(); std::cout << "A: " << t2-t1 << " - " << p.size() << '\n';}
+
+    {auto t1 = std::clock(); p = oOdb.FindThingsByProperty (std::regex("actor"));
                              p = oOdb.FindThingsByProperty (std::regex("actor"));
                              p = oOdb.FindThingsByProperty (std::regex("actor")); auto t2 = std::clock(); std::cout << "A: " << t2-t1 << " - " << p.size() << '\n';}
 /*
     {auto t1 = std::clock(); p = oOdb.FindThingsByPropertyX(std::regex("actor"));
-                             p = oOdb.FindThingsByPropertyX(std::regex("actor"));
-                             p = oOdb.FindThingsByPropertyX(std::regex("actor"));
                              p = oOdb.FindThingsByPropertyX(std::regex("actor"));
                              p = oOdb.FindThingsByPropertyX(std::regex("actor")); auto t2 = std::clock(); std::cout << "B: " << t2-t1 <<  " - " << p.size() <<'\n';}
 */
@@ -36,7 +43,7 @@ int main()
 {
     "Object Database Dump": 
         {
-	"Sizes": [ {"P": 1089},{"A": 3000},{"R": 10},{"T": 1000} ]
+        "Sizes": [ {"P": 1089},{"A": 3000},{"R": 10},{"T": 1000} ]
         "Properties": [ { "id": 0, "name": "Person" } ]
         "Atoms": [ { "id": 0, "name": "round", "suffix": "%", "data": "100.2" } ]
         "Reasons": [ { "id": 0, "name": "made" } ]

@@ -19,12 +19,12 @@ void print(odb::CReasons const & crContainer);
 
 namespace odb {
 
-/// forward declarations to befriend with
+/// forward declarations of COdb to befriend with
 class COdb;
 
 
 /**
-    @brief A Reason to link two Things (Unidirectional)
+ *  @brief A Reason to link two Things (Unidirectional)
  */
 class CReason : public IReason
     {
@@ -44,7 +44,7 @@ class CReason : public IReason
                  CReason(CReason &&) noexcept = default;
 
                  /// Normal constructor, receiving the name of the reason
-	         explicit CReason(std::string const & crsName);
+                 explicit CReason(std::string const & crsName);
 
                  /// Load constructor, receiving the ID and name of the reason
                  CReason(size_t nId, std::string const & crsName);
