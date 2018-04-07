@@ -5,6 +5,7 @@ Building with the documentation
 
 required: 
  * boost-containers
+ * libjsoncpp       https://github.com/nlohmann/json
  * asio (non-boost) https://github.com/chriskohlhoff/asio
  * linenoise        https://github.com/antirez/linenoise
 
@@ -26,6 +27,7 @@ Building **WITHOUT** the documentation
 
 required:
  * boost-containers
+ * libjsoncpp       https://github.com/nlohmann/json
  * asio (non-boost) https://github.com/chriskohlhoff/asio
  * linenoise        https://github.com/antirez/linenoise
 
