@@ -35,16 +35,38 @@ void ap2ts(std::string const & crsProperty, // name of the property
     (oOdb.AppendProperty2Thing(crsProperty, cbForce, args), ...);
     }
 
+template<typename... Args>
+void lt2t(std::string const & crsNameTo, // name of the property
+          std::string const & crsReason, // create it if not existent?
+                    Args&&... args)      // pack of names of 'things'
+    {
+    (oOdb.LinkThing2Thing(args, crsNameTo, crsReason), ...);
+    }
+
 // Demo main program
 int main()
     {
     // filling in some data
     // ==========================================================================================
-    mkthings    ("Ulli", "Nora", "Peter", "Paula", "Rudi", "Marta", "Arnold", "Bertha", "Elise");
+    mkthings    ("Ulli", "Nora", "Peter", "Paula", "Rudi", "Marta", "Arnold", "Bertha", "Elise", "Jack");
+    mkthings    ("Emerald woods", "Madix", "Skoda", "Trombone", "Lecho", "SilentOS", "Insurance");
     mkproperties("person", "male", "female", "driver", "consumer", "contractor");
-    mkreasons   ("wrote", "read", "bought", "left", "foundet", "loves", "sells", "works at");
+    mkreasons   ("wrote", "read", "bought", "left", "foundet", "loves", "sells", "works at", "uses", "plays");
     mkatoms     ( 2.5, "done", 7, std::array{2,1,3}, "go", 89, "sold", "percent");
     // ==========================================================================================
+
+    // ================================================================================================
+    lt2t("Emerald woods", "wrote",    "Ulli"                                                         );
+    lt2t("Emerald woods", "read",     "Nora",   "Peter", "Paula", "Rudi", "Marta", "Arnold", "Bertha");
+    lt2t("Trombone",      "bought",   "Peter"                                                        );
+    lt2t("Rudi",          "left",     "Paula",  "Elise", "Marta"                                     );
+    lt2t("Lecho",         "foundet",  "Rudi"                                                         );
+    lt2t("Peter",         "loves",    "Marta",  "Jack"                                               );
+    lt2t("Insurance",     "sells",    "Arnold"                                                       );
+    lt2t("Skoda",         "works at", "Bertha", "Ulli", "Nora", "Arnold"                             );
+    lt2t("SilentOS",      "uses",     "Elise"                                                        );
+    lt2t("Trombone",      "plays",    "Jack",  "Peter"                                               );
+    // ================================================================================================
 
     // give all 'things' the property 'person'
     for ( size_t n = 0; n < oOdb.Things().size(); ++n )

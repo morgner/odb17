@@ -776,6 +776,88 @@ class COdb : public Identifiable<COdb>
         /// @param crsFilename
         bool LoadDB(std::string const & crsFilename)
             {
+            auto poJson = std::make_unique<Json::Value>();
+            try
+                {
+                std::ifstream db_dump(crsFilename, std::ifstream::binary);
+                db_dump >> *poJson;
+                }
+            catch (...)
+                {
+                std::cerr << "db file not found or not readable";
+                return false;
+                }
+
+            auto const & properties = (*poJson)["Object Database Dump"]["Properties"];
+            for ( size_t index = 0; index < properties.size(); ++index )
+                {
+                auto nId   = properties[(int)index].get("id",      0).asUInt();
+                auto sName = properties[(int)index].get("name", "").asString();
+                LoadProperty(nId, sName);
+                }
+
+            auto const & atoms = (*poJson)["Object Database Dump"]["Atoms"];
+            for ( size_t index = 0; index < atoms.size(); ++index )
+                {
+                auto nId     = atoms[(int)index].get("id",      0).asUInt();
+                auto sName   = atoms[(int)index].get("name",   "").asString();
+                auto sPrefix = atoms[(int)index].get("prefix", "").asString();
+                auto sSuffix = atoms[(int)index].get("suffix", "").asString();
+                auto sFormat = atoms[(int)index].get("format", "").asString();
+                auto sData   = atoms[(int)index].get("data",   "").asString();
+                LoadAtom(nId, sData, sName, sPrefix, sSuffix, sFormat);
+                }
+
+            auto const & reasons = (*poJson)["Object Database Dump"]["Reasons"];
+            for ( size_t index = 0; index < reasons.size(); ++index )
+                {
+                auto nId   = reasons[(int)index].get("id",    0).asUInt();
+                auto sName = reasons[(int)index].get("name", "").asString();
+                LoadReason(nId, sName);
+                }
+
+            auto const & things = (*poJson)["Object Database Dump"]["Things"];
+            for ( size_t index = 0; index < things.size(); ++index )
+                {
+                auto nId   = things[(int)index].get("id",    0).asUInt();
+                auto sName = things[(int)index].get("name", "").asString();
+                LoadThing(nId, sName);
+                }
+            for ( size_t index = 0; index < things.size(); ++index )
+                {
+                auto nId   = things[(int)index].get("id",    0).asUInt();
+
+                auto const & p = things[(int)index]["properties"];
+                for ( size_t i = 0; i < p.size(); ++i )
+                    {
+                    auto nPId = p[(int)i].get("id", 0).asUInt();
+                    AppendProperty2Thing( nPId, nId );
+                    }
+
+                auto const & a = things[(int)index]["atoms"];
+                for ( size_t i = 0; i < a.size(); ++i )
+                    {
+                    auto nAId = a[(int)i].get("id", 0).asUInt();
+                    AppendAtom2Thing( nAId, nId );
+                    }
+
+                auto const & l = things[(int)index]["links"];
+                for ( size_t i = 0; i < l.size(); ++i )
+                    {
+                    auto nTId = l[(int)i].get("thing-id",  0).asUInt();
+                    auto nRId = l[(int)i].get("reason-id", 0).asUInt();
+                    LinkThing2Thing( nId, nTId, nRId );
+                    }
+                }
+            poJson = std::make_unique<Json::Value>();
+            return true;
+            } // LoadDB(...)    
+
+/*
+        /// @brief Loads an odb json file
+        /// @param crsFilename
+        bool LoadDB(std::string const & crsFilename)
+            {
             Json::Value oJson;
             try
                 {
@@ -850,8 +932,8 @@ class COdb : public Identifiable<COdb>
                     }
                 }
             return true;
-            } // LoadDB(...)    
-
+            } // LoadDB(...)
+*/
 /*
         /// @brief Loads an odb json file
         /// @param crsFilename
@@ -1160,7 +1242,34 @@ class COdb : public Identifiable<COdb>
             auto itReason     =  m_oReasons.get<id>().find( nReason );
             if ( (itThingFrom == m_oThings .end()) || (itThingTo == m_oThings.end()) || (itReason == m_oReasons.end()) )
                 {
-                std::cout << "0 " << (*itThingFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itThingTo)->m_sName << '\n';
+//              std::cout << "0 " << (*itThingFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itThingTo)->m_sName << '\n';
+                std::cout << "0 ";
+                if (itThingFrom == m_oThings. end()) std::cout << "E:" << nThingFrom << " "; else std::cout << (*itThingFrom)->m_sName << " ";
+                if (itReason    == m_oReasons.end()) std::cout << "E:" << nReason    << " "; else std::cout << (*itReason)->m_sName    << " ";
+                if (itThingTo   == m_oThings. end()) std::cout << "E:" << nThingTo   << " "; else std::cout << (*itThingTo)->m_sName   << " ";
+                std::cout << '\n';
+                return false;
+                }
+//	    std::cout << "true LinkThing2Thing( size_t " << nThingFrom << ", size_t " << nThingTo << ", size_t " << nReason << " )\n";
+//          std::cout << "+ " << (*itThingFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itThingTo)->m_sName << '\n';
+	    (*itThingFrom)->Link( const_cast<PThing&>(*itThingTo), const_cast<PReason&>(*itReason) );
+//          Link( *itThingFrom, *itReason, *itThingTo );
+            return true;
+            }
+
+        /// todo: optimize / Links a Thing to a Thing for a Reason by given names
+        bool LinkThing2Thing( std::string const & crsThingFrom, std::string const & crsThingTo, std::string const & crsReason )
+            {
+            auto itThingFrom  =  m_oThings .get<name>().find( crsThingFrom );
+            auto itThingTo    =  m_oThings .get<name>().find( crsThingTo );
+            auto itReason     =  m_oReasons.get<name>().find( crsReason );
+            if ( (itThingFrom == m_oThings.get<name>().end()) || (itThingTo == m_oThings.get<name>().end()) || (itReason == m_oReasons.get<name>().end()) )
+                {
+                std::cout << "0 ";
+                if (itThingFrom == m_oThings. get<name>().end()) std::cout << "E:" << crsThingFrom << " "; else std::cout << (*itThingFrom)->m_sName << " ";
+                if (itReason    == m_oReasons.get<name>().end()) std::cout << "E:" << crsReason    << " "; else std::cout << (*itReason)->m_sName    << " ";
+                if (itThingTo   == m_oThings. get<name>().end()) std::cout << "E:" << crsThingTo   << " "; else std::cout << (*itThingTo)->m_sName   << " ";
+                std::cout << '\n';
                 return false;
                 }
 //	    std::cout << "true LinkThing2Thing( size_t " << nThingFrom << ", size_t " << nThingTo << ", size_t " << nReason << " )\n";

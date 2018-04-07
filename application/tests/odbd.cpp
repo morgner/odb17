@@ -12,7 +12,7 @@
         ./odbd 1025 &
 
     After loading the database a statistic will be print to the console and
-    the tcp server starts listening for client conections.
+    the tcp server starts listening for client connections.
 
  */
 
@@ -34,12 +34,12 @@
 
 using namespace std::string_literals;
 
-auto oOdb = odb::COdb();
-/*
-template<typename ...Args> void mkthings    (Args&&... args) { (oOdb.MakeThing   (args), ...); } 
-template<typename... Args> void mkproperties(Args&&... args) { (oOdb.MakeProperty(args), ...); }
-template<typename... Args> void mkreasons   (Args&&... args) { (oOdb.MakeReason  (args), ...); }
-template<typename... Args> void mkatoms     (Args&&... args) { (oOdb.MakeAtom    (args, "fold" ), ...); }
+auto poOdb = std::make_unique<odb::COdb>();
+
+template<typename ...Args> void mkthings    (Args&&... args) { (poOdb->MakeThing   (args), ...); } 
+template<typename... Args> void mkproperties(Args&&... args) { (poOdb->MakeProperty(args), ...); }
+template<typename... Args> void mkreasons   (Args&&... args) { (poOdb->MakeReason  (args), ...); }
+template<typename... Args> void mkatoms     (Args&&... args) { (poOdb->MakeAtom    (args, "fold" ), ...); }
 
 // append a property to a group of things, if property does not exists and
 // 'cbForce' is 'true', the property will be added to the DB
@@ -48,10 +48,67 @@ void ap2ts(std::string const & crsProperty, // name of the property
                   bool const   cbForce,     // create it if not existent?
                      Args&&... args)        // pack of names of 'things'
     {
-    (oOdb.AppendProperty2Thing(crsProperty, cbForce, args), ...);
+    (poOdb->AppendProperty2Thing(crsProperty, cbForce, args), ...);
     }
-*/
-            
+        
+template<typename... Args>
+void lt2t(std::string const & crsNameTo, // name of the property
+          std::string const & crsReason, // create it if not existent?
+                    Args&&... args)      // pack of names of 'things'
+    {
+    (poOdb->LinkThing2Thing(args, crsNameTo, crsReason), ...);
+    }
+
+void FillInSomeData()
+    {
+    // filling in some data
+    // ================================================================================================
+    mkthings    ("Ulli", "Nora", "Peter", "Paula", "Rudi", "Marta", "Arnold", "Bertha", "Elise", "Jack");
+    mkthings    ("Emerald woods", "Madix", "Skoda", "Trombone", "Lecho", "SilentOS", "Insurance");
+    mkproperties("person", "male", "female", "driver", "consumer", "contractor");
+    mkreasons   ("wrote", "read", "bought", "left", "foundet", "loves", "sells", "works at", "uses", "plays");
+    mkatoms     ( 2.5, "done", 7, std::array{2,1,3}, "go", 89, "sold", "percent");
+    // ================================================================================================
+
+    // ================================================================================================
+    lt2t("Emerald woods", "wrote",    "Ulli"                                                         );
+    lt2t("Emerald woods", "read",     "Nora",   "Peter", "Paula", "Rudi", "Marta", "Arnold", "Bertha");
+    lt2t("Trombone",      "bought",   "Peter"                                                        );
+    lt2t("Rudi",          "left",     "Paula",  "Elise", "Marta"                                     );
+    lt2t("Lecho",         "foundet",  "Rudi"                                                         );
+    lt2t("Peter",         "loves",    "Marta",  "Jack"                                               );
+    lt2t("Insurance",     "sells",    "Arnold"                                                       );
+    lt2t("Skoda",         "works at", "Bertha", "Ulli", "Nora", "Arnold"                             );
+    lt2t("SilentOS",      "uses",     "Elise"                                                        );
+    lt2t("Trombone",      "plays",    "Jack",   "Peter"                                              );
+    // ================================================================================================
+
+
+    // give all 'things' the property 'person'
+    for ( size_t n = 0; n < poOdb->Things().size(); ++n )
+        {
+        poOdb->AppendProperty2Thing( 0, n );
+        }
+
+    // assign 'properties' to groups of 'things' (supported by fold expressions)
+    // ========================================================================================================
+    ap2ts( "person",     false, "Ulli", "Nora", "Peter", "Paula", "Rudi", "Marta", "Arnold", "Bertha", "Elise");
+    ap2ts( "male",       false, "Ulli",         "Peter",          "Rudi",          "Arnold"                   );
+    ap2ts( "female",     false,         "Nora",          "Paula",         "Marta",           "Bertha", "Elise");
+    ap2ts( "driver",     false, "Ulli",                  "Paula", "Rudi", "Marta",           "Bertha"         );
+    ap2ts( "consumer",   false, "Ulli", "Nora", "Peter",                                               "Elise");
+    ap2ts( "contractor", false,                 "Peter", "Paula", "Rudi",                              "Elise");
+    ap2ts( "artist",     true,  "Ulli",                                            "Arnold", "Bertha", "Elise");
+    ap2ts( "builder",    true,                  "Peter", "Paula",                  "Arnold"                   );
+    // ========================================================================================================
+
+    auto px = poOdb->MakeThing("Ulli");
+    poOdb->AppendProperty2Thing( 0, px->m_nId );
+    poOdb->AppendProperty2Thing( 6, px->m_nId );
+    poOdb->AppendProperty2Thing( 7, px->m_nId );
+
+    } // void FillInSomeData()
+
 
 #include <asio/ip/tcp.hpp>
 #include <asio/io_service.hpp>
@@ -75,22 +132,55 @@ bool Insert(std::string const & crsQuery, tcp::iostream & ros)
 
     switch (c)
         {
-        case 't': t = oOdb.MakeThing(sInput);    ros << " \n" << ":" << t->m_nId << ":" << *t << " \n";
-                  break;
-
-        case 'r': r = oOdb.MakeReason(sInput);   ros << " \n" << ":" << r->m_nId << ":" << *r << " \n";
-                  break;
-
-        case 'p': p = oOdb.MakeProperty(sInput); ros << " \n" << ":" << p->m_nId << ":" << *p << " \n";
-                  break;
-
-        case 'a': a = oOdb.MakeAtom(sInput);     ros << " \n" << ":" << a->m_nId << ":" << *a << " \n";
-                  break;
+        case 't': t = poOdb->MakeThing(sInput);    ros << " \n" << ":" << t->m_nId << ":" << *t << " \n"; break;
+        case 'r': r = poOdb->MakeReason(sInput);   ros << " \n" << ":" << r->m_nId << ":" << *r << " \n"; break;
+        case 'p': p = poOdb->MakeProperty(sInput); ros << " \n" << ":" << p->m_nId << ":" << *p << " \n"; break;
+        case 'a': a = poOdb->MakeAtom(sInput);     ros << " \n" << ":" << a->m_nId << ":" << *a << " \n"; break;
 
         default : ros << ": no insert";
         }
 
     return true;
+    }
+
+template<typename T>
+void SendResult(T const & croData, std::iostream & ros, char const ccSwitch)
+    {
+    if (ccSwitch == 'j') 
+        {
+        ros << " \n { \n";
+        poOdb->print_json(croData, ros);
+        ros << " \n } \n";
+        return;
+        }
+
+    if (ccSwitch == 'c') 
+        {
+        ros << " \n";
+        }
+    else
+        {
+        for (auto const & a:croData) 
+            {
+            ros << " \n" << ":" << a->m_nId << ":";
+            if ( (ccSwitch == ':') || ((ccSwitch >= 'A')&&(ccSwitch <= 'Z')) )
+                {
+                ros << *a << " \n";
+                }
+            else
+                {
+                ros << (*a).m_sName;
+                }
+            }
+
+        }
+
+    if (ccSwitch == '.')
+        {
+        ros << " \n";
+        }
+
+    ros << " \n  total: " << croData.size() << " \n";
     }
 
 bool Answer(std::string const & crsQuery, tcp::iostream & ros)
@@ -110,49 +200,32 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
 
     switch (c)
         {
-        case 't': if ( (d=='p') || (d=='P') )
-                    {
-                    ts = oOdb.FindThingsByProperty(std::string( sInput )); if (ts.size() == 0) ts = oOdb.FindThingsByProperty(std::regex( sInput ));
-                    }
-                  else
-                    {
-                    ts = oOdb.Find(oOdb.Things(),std::string( sInput )); if (ts.size() == 0) ts = oOdb.Find(oOdb.Things(),std::regex( sInput ));
-                    }
-                  if ( d=='s' )
-                    {
-                    ros << "  total: " << ts.size() << " \n";
-                    }
-                  else
-                    {
-                    for (auto const & a:ts) { ros << " \n:" << a->m_nId << ":"; if ((d!='.')&&(d!='p')) ros << *a << " \n"; else ros << (*a).m_sName;  } 
-                                            if ((d=='.')||(d=='p')) ros << " \n"; ros << " \n  total: " << ts.size() << " \n";
-                    }
+        case 't': ts = poOdb->Find(poOdb->Things(),std::string( sInput )); if (ts.size() == 0) ts = poOdb->Find(poOdb->Things(),std::regex( sInput ));
+                  SendResult(ts, ros, d);
                   break;
-
-        case 'r': rs = oOdb.Find(oOdb.Reasons(),std::string( sInput )); if (rs.size() == 0) rs = oOdb.Find(oOdb.Reasons(),std::regex( sInput ));
-//                for (auto const & a:rs) { ros << " \n" << ":" << a->m_nId << ":" << *a << " \n"; } ros << "  total: " << rs.size() << " \n";
-                  for (auto const & a:rs) { ros << " \n" << ":" << a->m_nId << ":"; if (d==':') ros << *a << " \n"; else ros << (*a).m_sName;  }
-                                          if (d=='.') ros << " \n"; ros << " \n  total: " << rs.size() << " \n";
+        case 'r': rs = poOdb->Find(poOdb->Reasons(),std::string( sInput )); if (rs.size() == 0) rs = poOdb->Find(poOdb->Reasons(),std::regex( sInput ));
+                  SendResult(rs, ros, d);
                   break;
-
-        case 'p': ps = oOdb.Find(oOdb.Properties(),std::string( sInput )); if (ps.size() == 0) ps = oOdb.Find(oOdb.Properties(),std::regex( sInput ));
-//                for (auto const & a:ps) { ros << " \n" << ":" << a->m_nId << ":" << *a << " \n"; } ros << "  total: " << ps.size() << " \n";
-                  for (auto const & a:ps) { ros << " \n" << ":" << a->m_nId << ":"; if (d==':') ros << *a << " \n"; else ros << (*a).m_sName;  }
-                                          if (d=='.') ros << " \n"; ros << " \n  total: " << ps.size() << " \n";
+        case 'p': ps = poOdb->Find(poOdb->Properties(),std::string( sInput )); if (ps.size() == 0) ps = poOdb->Find(poOdb->Properties(),std::regex( sInput ));
+                  SendResult(ps, ros, d);
                   break;
-
-        case 'a': as = oOdb.Find(oOdb.Atoms(),std::string( sInput )); if (as.size() == 0) as = oOdb.Find(oOdb.Atoms(),std::regex( sInput ));
-//                for (auto const & a:as) { ros << " \n" << ":" << a->m_nId << ":" << *a << " \n"; } ros << "  total: " << as.size() << " \n";
-                  for (auto const & a:as) { ros << " \n" << ":" << a->m_nId << ":"; if (d==':') ros << *a << " \n"; else ros << (*a).m_sName;  }
-                                          if (d=='.') ros << " \n"; ros << " \n  total: " << as.size() << " \n";
+        case 'a': as = poOdb->Find(poOdb->Atoms(),std::string( sInput )); if (as.size() == 0) as = poOdb->Find(poOdb->Atoms(),std::regex( sInput ));
+                  SendResult(as, ros, d);
                   break;
-
         default : ros << ": no result";
+                  return false;
         }
 
     return true;
     } // bool Answer(std::string const & crsQuery, tcp::iostream & ros)
 
+void SendStatistics(std::ostream & ros)
+    {
+    ros << "---------------- " <<  poOdb->Things().size()     << " things" << " \n";
+    ros << "---------------- " <<  poOdb->Properties().size() << " properties" << " \n";
+    ros << "---------------- " <<  poOdb->Reasons().size()    << " reasons" << " \n";
+    ros << "---------------- " <<  poOdb->Atoms().size()      << " atoms" << " \n";
+    }
 
 int main(int argc, char* argv[])
     {
@@ -166,13 +239,10 @@ int main(int argc, char* argv[])
 
     auto const sFilename = "wdb.json";
 
-    oOdb.LoadDB(sFilename);
+    poOdb->LoadDB(sFilename);
 
     std::cout << '\n';
-    std::cout << "---------------- " <<  oOdb.Things().size()     << " things" << '\n';
-    std::cout << "---------------- " <<  oOdb.Properties().size() << " properties" << '\n';
-    std::cout << "---------------- " <<  oOdb.Reasons().size()    << " reasons" << '\n';
-    std::cout << "---------------- " <<  oOdb.Atoms().size()      << " atoms" << '\n';
+    SendStatistics(std::cout);
 
     try
         {
@@ -188,36 +258,78 @@ int main(int argc, char* argv[])
             acceptor.accept(*stream.rdbuf(), ec);
             std::string sQuery;
             std::getline(stream, sQuery);
+            std::cout << "> " << sQuery << '\n';
             if ( sQuery == "stat" )
                 {
-                stream << "---------------- " <<  oOdb.Things().size()     << " things" << " \n";
-                stream << "---------------- " <<  oOdb.Properties().size() << " properties" << " \n";
-                stream << "---------------- " <<  oOdb.Reasons().size()    << " reasons" << " \n";
-                stream << "---------------- " <<  oOdb.Atoms().size()      << " atoms" << " \n";
+                SendStatistics(stream);
+                SendStatistics(std::cout);
                 }
-            else
-            if ( sQuery == "help" )
+            else if ( sQuery == "clean" )
                 {
-                stream << "help    - this help page\n";
-                stream << "stat    - db statistics\n";
+                stream << "Emptying DB, old statistics:\n";
+                SendStatistics(stream);
+                stream << "Cleaning, please wait\n";
+                poOdb = std::make_unique<odb::COdb>();
+                SendStatistics(stream);
+                SendStatistics(std::cout);
+                stream << "Done\n";
+                }
+            else if ( sQuery == "fillr" )
+                {
+                stream << "Fill DB with small set of data, old statistics:\n";
+                SendStatistics(stream);
+                stream << "Cleaning, please wait\n";
+                poOdb = std::make_unique<odb::COdb>();
+                stream << "Filling, please wait\n";
+                FillInSomeData();
+                SendStatistics(stream);
+                SendStatistics(std::cout);
+                stream << "Done\n";
+                }
+            else if ( sQuery == "load" )
+                {
+                stream << "Replacing DB, old statistics:\n";
+                SendStatistics(stream);
+                poOdb = std::make_unique<odb::COdb>();
+                stream << "Loading, please wait\n";
+                poOdb->LoadDB(sFilename);
+                SendStatistics(stream);
+                SendStatistics(std::cout);
+                stream << "Done\n";
+                }
+            else if ( sQuery == "save" )
+                {
+                stream << "Saving DB, statistics:\n";
+                SendStatistics(stream);
+                poOdb->SaveDB(sFilename);
+                stream << "Done\n";
+                }
+            else if ( sQuery == "help" )
+                {
+                stream << "help    - shows this help page\n";
+                stream << "stat    - shows db statistics\n";
+                stream << "clean   . deletes all entries from DB\n";
+                stream << "fillr   . fills the DB with test data\n";
+                stream << "load    . loads the DB from disk\n";
                 stream << "save    . saves the DB to disk\n";
                 stream << " \n";
                 stream << "t:regex - search for a thing\n";
                 stream << "p:regex - search for a property\n";
                 stream << "r:regex - search for a reason\n";
                 stream << "a:regex - search for an atom\n";
-                stream << "tPregex - search for a thing having the given property\n";
                 stream << " \n";
                 stream << "t.regex - search for a thing (short result)\n";
                 stream << "p.regex - search for a property (short result)\n";
                 stream << "r.regex - search for a reason (short result)\n";
                 stream << "a.regex - search for an atom (short result)\n";
-                stream << "tpregex - search for a thing having the given property (short result)\n";
+                stream << "tcregex - search for things, returns only the result count\n";
+                stream << "tjregex - search for things, returns result in JSON format\n";
                 stream << " \n";
                 stream << "Example\n";
                 stream << " \n";
                 stream << "t:Star (Trek|Wars).*\n";
                 stream << "t.Star (Trek|Wars).*\n";
+                stream << "tcStar (Trek|Wars).*\n";
                 stream << " \n";
                 stream << "Searches for all 'things' named \"Star Trek\" or \"Star Wars\"\n";
                 stream << " \n";
@@ -228,15 +340,11 @@ int main(int argc, char* argv[])
                 }
             else
                 {
-                if ( sQuery == "save" )
-                    {
-                    oOdb.SaveDB(sFilename);
-                    }
-                else if ( sQuery.length() < 2 )
+                if ( sQuery.length() < 2 )
                         {
                         stream << "try: 'help' to get help\n";
                         }
-                else if ( (sQuery[1] == ':') || (sQuery[1] == '.') || (sQuery[1] == 's') || (sQuery.substr(0,2) == "tP") || (sQuery.substr(0,2) == "tp") )
+                else if ( (sQuery[1] == ':') || (sQuery[1] == '.') || (sQuery[1] == 'c') || (sQuery[1] == 'j') || (sQuery.substr(0,2) == "tP") || (sQuery.substr(0,2) == "tp") )
                         {
                         if ( not Answer(sQuery, stream) ) stream << ": no result\n";
                         }
