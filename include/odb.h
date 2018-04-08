@@ -1046,14 +1046,14 @@ class COdb : public Identifiable<COdb>
             {
             PProperty poProperty;
 
-	    auto itProperty =  m_oProperties.get<name>().find( crsProperty );
+            auto itProperty =  m_oProperties.get<name>().find( crsProperty );
             if ( itProperty == m_oProperties.get<name>().end() )
                 {
                 return std::nullopt;
                 }
-	    poProperty = *itProperty;
+            poProperty = *itProperty;
             if ( (0 == poProperty->m_oRelations.size()) && 
-		      (poProperty->m_oRelations.size() > 1) )
+                      (poProperty->m_oRelations.size() > 1) )
                 {
                 return std::nullopt;
                 }
@@ -1067,16 +1067,16 @@ class COdb : public Identifiable<COdb>
         /// 
         CThings FindThingsByProperty( std::string const & crsProperty )
             {
-	    auto oRange = m_oProperties.get<name>().equal_range(crsProperty);
+            auto oRange = m_oProperties.get<name>().equal_range(crsProperty);
             // todo: preallocation
             CThings oResult;
             for ( auto it = oRange.first; it != oRange.second; ++it )
                 {
-		for (auto const & a:(*it)->m_oRelations)
-		    {
-        	    oResult.insert(a);
-		    }
-        	}
+                for (auto const & a:(*it)->m_oRelations)
+                    {
+                    oResult.insert(a);
+                    }
+                }
             return std::move(oResult);
             } // CThings FindThingsByProperty( std::string ...
 
@@ -1102,11 +1102,11 @@ class COdb : public Identifiable<COdb>
             CThings oResult;
             for (auto const & b:oProperties)
                 {
-		for (auto const & a:b->m_oRelations)
-		    {
-        	    oResult.insert(a);
-		    }
-        	}
+                for (auto const & a:b->m_oRelations)
+                    {
+                    oResult.insert(a);
+                    }
+                }
             return std::move(oResult);
             } // CThings FindThingsByProperty( std::regex ...
 
@@ -1115,7 +1115,7 @@ class COdb : public Identifiable<COdb>
         ///
         /// @param crsThing The name for the CThing
         /// @param crsProperty The name for the CProperty
-	///
+        ///
         PThing FindOrMakeThingByProperty( std::string const & crsThing, std::string const & crsProperty )
             {
             PThing    poResult;

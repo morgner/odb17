@@ -1,9 +1,9 @@
 CThing
 ======
 
-The Thing, formerly known as Object in the Object Database, renamed for the
-practicle reason of having a unique starting letter amongst the other code
-units. Should be renamed again, to "CNode" and so on.
+The Thing, formerly known as Object in the Object Database, renamed for
+the practicle reason of having a unique starting letter amongst the other
+code units. Should be renamed again, to "CNode" and so on.
 
 It may contain an arbitrary amount of arbitrary
 

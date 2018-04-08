@@ -285,7 +285,15 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
 
     switch (c)
         {
-        case 't': ts = poOdb->Find(poOdb->Things(),std::string( sInput )); if (ts.size() == 0) ts = poOdb->Find(poOdb->Things(),std::regex( sInput ));
+        case 't': if ( (d=='p') || (d=='P') )
+                    {
+                    ts = poOdb->FindThingsByProperty(sInput); if (ts.size() == 0) ts = poOdb->FindThingsByProperty(std::regex(sInput));
+                    d = (d=='p') ? ':' : '.';
+                    }
+                  else
+                    {
+                    ts = poOdb->Find(poOdb->Things(), sInput); if (ts.size() == 0) ts = poOdb->Find(poOdb->Things(),std::regex( sInput ));
+                    }                    
                   SendResult(ts, ros, d);
                   break;
         case 'r': rs = poOdb->Find(poOdb->Reasons(),std::string( sInput )); if (rs.size() == 0) rs = poOdb->Find(poOdb->Reasons(),std::regex( sInput ));
@@ -402,6 +410,7 @@ int main(int argc, char* argv[])
                 stream << "p:regex - search for a property\n";
                 stream << "r:regex - search for a reason\n";
                 stream << "a:regex - search for an atom\n";
+                stream << "tpregex - search for a thing having a specific property\n";
                 stream << " \n";
                 stream << "t.regex - search for a thing (short result)\n";
                 stream << "p.regex - search for a property (short result)\n";
@@ -409,12 +418,14 @@ int main(int argc, char* argv[])
                 stream << "a.regex - search for an atom (short result)\n";
                 stream << "tcregex - search for things, returns only the result count\n";
                 stream << "tjregex - search for things, returns result in JSON format\n";
+                stream << "tPregex - search for a thing having a specific property (short result)\n";
                 stream << " \n";
                 stream << "Example\n";
                 stream << " \n";
                 stream << "t:Star (Trek|Wars).*\n";
                 stream << "t.Star (Trek|Wars).*\n";
                 stream << "tcStar (Trek|Wars).*\n";
+                stream << "tjStar (Trek|Wars).*\n";
                 stream << " \n";
                 stream << "Searches for all 'things' named \"Star Trek\" or \"Star Wars\"\n";
                 stream << " \n";

@@ -1,31 +1,40 @@
 CReason
 =======
 
-This class is necessary to link two CThing instances to give the link an
-explaination. This enables us to link the same CThing's multiple time.
+CReason is necessary to link two CThing instances to give the link an
+explaination. This enables to link the same CThing's multiple times.
 
-    - thing1 - reason - thing2
+.. code-block:: text
+
+    thing1 - reason - thing2
 
 For example:
 
-    - Heinz - wrote - 'Trees of Estonia'
-    - Heinz - signed - 'Trees of Estonia'
+.. code-block:: text
+
+    Heinz - wrote - 'Trees of Estonia'
+    Heinz - signed - 'Trees of Estonia'
 
 Links are unidirectional. Meaning if it's true that
 
-    - Heinz - wrote - 'Trees of Estonia'
+.. code-block:: text
+
+    Heinz - wrote - 'Trees of Estonia'
 
 it may not be true that
 
-    - 'Trees of Estonia' - wrote - Heinz
+.. code-block:: text
 
-But to ensure thing2 feels the link, it will be informed that a link to it
-became established. The linked thing registers which thing is linking to it only
-ones. In our example 'Trees of Estonia' registers, that Heinz links to it.
+    'Trees of Estonia' - wrote - Heinz
 
-If some process/entity needs to know how often and for which reasons, it has to
-go to Heinz and ask. The linking thing is resonsible for correct management of
-links, reasons and backlinks.
+To ensure thing2 feels the link, it will be informed that a link to it
+became established. The linked thing registers which thing is linking to
+it only ones. In our example 'Trees of Estonia' registers, that Heinz
+links to it.
+
+If some process/entity needs to know how often and for which reasons, it
+has to go to Heinz and ask. The linking thing cares about correct
+management of links, reasons and backlinks.
 
 CReason registers each link it is used for
 

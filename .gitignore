@@ -18,6 +18,7 @@ docs/html
 *.gz
 *.json
 *.swp
+*.bz2
 
 .cproject
 .project
