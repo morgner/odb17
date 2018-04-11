@@ -125,7 +125,7 @@ class CThing : public std::enable_shared_from_this<CThing>,
          * @brief Links this CThing to another CThing for a CReason
          * @param po2Thing A Thing to Link to
          * @param po4Reason The Reason we link for
-         */
+a         */
         PThing Link(PThing po2Thing, PReason po4Reason);
 
         /**

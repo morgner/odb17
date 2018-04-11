@@ -334,9 +334,9 @@ class COdb : public Identifiable<COdb>
          * @param crContainer The forward iterable container, containing
          *        PAtom's
          */
-        void print(const CAtoms& crContainer) const
+        void print(CAtoms const & crContainer) const
             {
-            for (auto && e : crContainer)
+            for (auto const & e:crContainer)
                 {
                 std::cout << e->m_sType << '\t' << " id: " << e->m_nId << '\t'
                           << " name: " << e->m_sName << '\t'
@@ -352,7 +352,7 @@ class COdb : public Identifiable<COdb>
          *        all CThing instances
          */
         template<typename T>
-        void print(const CT<T>& crContainer) const
+        void print(CT<T> const & crContainer) const
             {
             for (auto const & e:crContainer)
                 {
@@ -1025,7 +1025,7 @@ class COdb : public Identifiable<COdb>
             {
             PThing poThing;
 
-            auto itThing =  m_oThings.get<id>().find( nId );
+            auto const itThing =  m_oThings.get<id>().find( nId );
             if ( itThing == m_oThings.get<id>().end() )
                 {
                 poThing = ( ""s == crsName ) ? LoadThing(nId) : LoadThing(nId, crsName);
@@ -1044,20 +1044,18 @@ class COdb : public Identifiable<COdb>
         /// 
         OThing FindThingByProperty( std::string const & crsProperty )
             {
-            PProperty poProperty;
-
-            auto itProperty =  m_oProperties.get<name>().find( crsProperty );
+            auto const itProperty =  m_oProperties.get<name>().find( crsProperty );
             if ( itProperty == m_oProperties.get<name>().end() )
                 {
                 return std::nullopt;
                 }
-            poProperty = *itProperty;
+            PProperty poProperty = *itProperty;
             if ( (0 == poProperty->m_oRelations.size()) && 
                       (poProperty->m_oRelations.size() > 1) )
                 {
                 return std::nullopt;
                 }
-            return *poProperty->m_oRelations.begin();
+            return std::move(*poProperty->m_oRelations.begin());
             }
 
 
@@ -1118,10 +1116,9 @@ class COdb : public Identifiable<COdb>
         ///
         PThing FindOrMakeThingByProperty( std::string const & crsThing, std::string const & crsProperty )
             {
-            PThing    poResult;
             PProperty poProperty;
 
-            auto itProperty =  m_oProperties.get<name>().find( crsProperty );
+            auto const itProperty =  m_oProperties.get<name>().find( crsProperty );
             if ( itProperty == m_oProperties.get<name>().end() )
                 {
                 poProperty = MakeProperty(crsProperty);
@@ -1131,6 +1128,7 @@ class COdb : public Identifiable<COdb>
                 poProperty = *itProperty;
                 }
 
+            PThing poResult;
             if ( poProperty->m_oRelations.size() > 0 )
                 {
                 poResult = *poProperty->m_oRelations.begin();
@@ -1151,7 +1149,7 @@ class COdb : public Identifiable<COdb>
             {
             PProperty poProperty;
 
-            auto itProperty =  m_oProperties.get<name>().find(crsProperty);
+            auto const itProperty =  m_oProperties.get<name>().find(crsProperty);
             if ( itProperty == m_oProperties.get<name>().end() )
                 {
                 poProperty = std::move(MakeProperty(crsProperty));
@@ -1169,7 +1167,7 @@ class COdb : public Identifiable<COdb>
             {
             PReason poReason;
 
-            auto itReason =  m_oReasons.get<name>().find(crsReason);
+            auto const itReason =  m_oReasons.get<name>().find(crsReason);
             if ( itReason == m_oReasons.get<name>().end() )
                 {
                 poReason = std::move(MakeReason(crsReason));
@@ -1184,22 +1182,20 @@ class COdb : public Identifiable<COdb>
         /// todo: optimize / Appends a Property to a Thing by given index value
         bool AppendProperty2Thing( size_t nProperty, size_t nThing)
             {
-            auto itProperty = m_oProperties.get<id>().find( nProperty );
+            auto const itProperty = m_oProperties.get<id>().find( nProperty );
             auto itThing    = m_oThings.get<id>().find( nThing );
 
             if ( (itThing == m_oThings.end()) || (itProperty == m_oProperties.end()) )
                 {
-//              std::cout << "FALSE AppendProperty2Thing( size_t "<< nProperty <<", size_t " << nThing << " )" << '\n';
                 return false;
                 }
-//          std::cout << "true AppendProperty2Thing( size_t "<< nProperty <<", size_t " << nThing << " )" << '\n';
             PProperty poProperty = *itProperty;
             (*itThing)->Append( poProperty );
             return true;
             }
 
         /// todo: optimize / Appends a Property to a Thing by given names
-        bool AppendProperty2Thing( std::string const & crsProperty, bool bForce, std::string const & crsThing )
+        bool AppendProperty2Thing( std::string const & crsProperty, bool const bForce, std::string const & crsThing )
             {
             auto itThings =  m_oThings.get<name>().find( crsThing );
             if ( itThings == m_oThings.get<name>().end() )
@@ -1221,12 +1217,7 @@ class COdb : public Identifiable<COdb>
                 }
 
             (*itThings)->Append( poProperty );
-/*
-            for ( auto & a:poThings )
-                {
-                if ( a->m_sName == crsThing ) a->Append( poProperty );
-                }
-*/
+
             return true;
             }
 
@@ -1348,7 +1339,7 @@ class COdb : public Identifiable<COdb>
             }
 
         /// API Adapter
-        auto FindThing     ( size_t                  nId )  {return Find(m_oThings, nId );}
+        auto FindThing     ( size_t                  nId ) { return Find(m_oThings, nId );}
         /// API Adapter
         auto FindThings    ( std::string const & crsName ) { return Find(m_oThings, crsName ); }
         /// API Adapter

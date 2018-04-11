@@ -17,6 +17,7 @@
 #include <boost/multi_index/member.hpp>
 #include <boost/multi_index/ordered_index.hpp>
 
+#include <memory>
 #include <cxxabi.h> // __cxa_demangle
 
 #include <deque>
