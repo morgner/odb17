@@ -48,7 +48,7 @@ CReason::operator std::string const & ()
 
 void CReason::RelationAdd( PThing & poThingFrom, PThing & poThingTo )
     {
-    m_mRelations.insert( std::pair<PThing, PThing>( poThingFrom, poThingTo ) );
+    m_mRelations.emplace( std::pair<PThing, PThing>( poThingFrom, poThingTo ) );
     }
 
 void CReason::RelationSub( PThing & poThingFrom, PThing & poThingTo )

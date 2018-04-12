@@ -68,6 +68,11 @@ class CProperty : public IProperty
         /// Prints an informational output to std::cout
         void print();
 
+        auto IsUnUsed()
+	    {
+	    return (0 == m_oRelations.size());
+	    }
+
         /// Access function to call then container of PThings's
         SThings const & Relations() const { return m_oRelations; }
     protected:

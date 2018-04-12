@@ -48,7 +48,7 @@ CProperty::operator std::string const & () noexcept
 
 void CProperty::RelationAdd( PThing poThing )
     {
-    m_oRelations.insert( poThing );
+    m_oRelations.emplace( poThing );
     }
 
 void CProperty::RelationSub( PThing poThing )

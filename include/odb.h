@@ -1392,7 +1392,40 @@ class COdb : public Identifiable<COdb>
                 }
             return std::move(result);
             }
+
 */
+
+        template<typename T>
+        CT<T> FindUnUsed( CT<T> const & croContainer )
+            {
+            // todo: preallocation
+            CT<T> oResult;
+            for ( auto const & a:croContainer )
+                {
+                if ( a->IsUnUsed() ) oResult.insert(a);
+                }
+            return std::move(oResult);
+            }
+
+	auto FindNotConnectedThings()
+	    {
+	    return FindUnUsed( m_oThings );
+	    }
+	auto FindNotConnectedReasons()
+	    {
+	    return FindUnUsed( m_oReasons );
+	    }
+	auto FindNotConnectedProperties()
+	    {
+	    return FindUnUsed( m_oProperties );
+	    }
+	auto FindNotConnectedAtoms()
+	    {
+	    return FindUnUsed( m_oAtoms );
+	    }
+
+
+
         /// Access function to call then container of CThing's
         CThings      const & Things () const { return m_oThings;  }
         /// Access function to call then container of CProperties

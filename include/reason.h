@@ -78,6 +78,11 @@ class CReason : public IReason
         /// Prints an informational output to std::cout
         void print();
 
+        auto IsUnUsed()
+	    {
+	    return (0 == m_mRelations.size());
+	    }
+
     protected:
         /// A map containing all links from one thing to another using
         /// 'this' CReason

@@ -322,6 +322,33 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
     return true;
     } // bool Answer(std::string const & crsQuery, tcp::iostream & ros)
 
+bool FindUnuseds(std::string const & crsQuery, tcp::iostream & ros)
+    {
+    ros << "? " + crsQuery;
+
+    if ( crsQuery.length() < 2 ) return false;
+
+    char c = crsQuery[0];
+    char d = crsQuery[1];
+    std::string sInput = crsQuery.substr(2);
+
+    odb::CThings     ts;
+    odb::CReasons    rs;
+    odb::CProperties ps;
+    odb::CAtoms      as;
+    switch (d)
+        {
+        case 't': ts = poOdb->FindNotConnectedThings();     SendResult(ts, ros, d); break;
+        case 'r': rs = poOdb->FindNotConnectedReasons();    SendResult(rs, ros, d); break;
+        case 'p': ps = poOdb->FindNotConnectedProperties(); SendResult(ps, ros, d); break;
+        case 'a': as = poOdb->FindNotConnectedAtoms();      SendResult(as, ros, d); break;
+        default : ros << ": no result";
+                  return false;
+        }
+
+    return true;
+    } //
+
 void SendStatistics(std::ostream & ros)
     {
     ros << "---------------- " <<  poOdb->Things().size()     << " things" << " \n";
@@ -450,6 +477,12 @@ int main(int argc, char* argv[])
                 stream << "lPnameP:nameT        - links Property to Thing\n";
                 stream << "laidA:idT            - links Atom to Thing\n";
                 stream << "lAnameA:nameT        - links Atom to Thing\n";
+                stream << " \n";
+                stream << "et  - lists unused Things\n";
+                stream << "ep  - lists unused Properties\n";
+                stream << "er  - lists unused Reasons\n";
+                stream << "ea  - lists unused Atoms\n";
+                stream << "ee  - lists all unused elements\n";
                 }
             else
                 {
@@ -468,6 +501,10 @@ int main(int argc, char* argv[])
                 else if ( sQuery[0] == 'l' )
                         {
                         if ( not LinkNAppend(sQuery, stream) ) stream << ": not bound\n";
+                        }
+                else if ( sQuery[0] == 'e' )
+                        {
+                        if ( not FindUnuseds(sQuery, stream) ) stream << ": not bound\n";
                         }
                 else
                     {

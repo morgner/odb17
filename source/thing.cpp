@@ -66,7 +66,7 @@ CThing::CThing(size_t nId, std::string const & crsName)
 
 PProperty CThing::Append (PProperty poProperty)
     {
-    if ( m_spoProperties.insert(poProperty).second )
+    if ( m_spoProperties.emplace(poProperty).second )
         {
         poProperty->RelationAdd( shared_from_this() );
         }
@@ -75,7 +75,7 @@ PProperty CThing::Append (PProperty poProperty)
 
 PAtom CThing::Append (PAtom poAtom)
     {
-    if ( m_spoAtoms.insert(poAtom).second )
+    if ( m_spoAtoms.emplace(poAtom).second )
         {
         poAtom->RelatingThingAdd( shared_from_this() );
         }
@@ -162,7 +162,7 @@ PThing CThing::Unlink(PThing po2Thing, PReason po4Reason)
 PThing CThing::RelatingThingAdd(PThing poThing)
     {
     if (s_bDebug) std::cout << " ===> RelatingThingAdd : " << this->m_sName << " (" << poThing.use_count() << ") -> " << poThing->m_sName << " (" << poThing.use_count() << ")\n";
-    m_spoThingsRelating.insert(poThing);
+    m_spoThingsRelating.emplace(poThing);
     if (s_bDebug) std::cout << " <=== RelatingThingAdd : " << this->m_sName << " (" << poThing.use_count() << ") -> " << poThing->m_sName << " (" << poThing.use_count() << ")\n";
     return std::move(poThing);
     }

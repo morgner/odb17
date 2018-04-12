@@ -367,6 +367,11 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
         return m_spoThingsRelating.erase(poThing);
         }
 
+    auto IsUnUsed()
+	    {
+	    return (0 == m_spoThingsRelating.size());
+	    }
+
     protected:
         /// The UI output format for the atom
         std::string m_sFormat{""s};

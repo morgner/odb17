@@ -147,6 +147,15 @@ a         */
          */
         PThing RelatingThingSub(PThing poThing);
 
+        /// returns if the instance is 'free'
+        auto IsUnUsed()
+	    {
+	    return ( (0 == m_mLink.size()) &&
+		     (0 == m_spoThingsRelating.size()) &&
+		     (0 == m_spoProperties.size()) &&
+		     (0 == m_spoAtoms.size()) );
+	    }
+
     protected:
         /**
          * @brief Holds the links to another CThing for CReason
