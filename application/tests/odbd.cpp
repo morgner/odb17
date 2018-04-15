@@ -1,5 +1,5 @@
 /**
-    @file main.cpp
+    @file odbd.cpp
  
     @author Manfred Morgner
     @date 22.03.2018

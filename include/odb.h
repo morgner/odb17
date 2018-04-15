@@ -1400,7 +1400,12 @@ class COdb : public Identifiable<COdb>
             }
 
 */
-
+        /**
+         * @brief finds unused elements in the given collection
+         *
+         * @tparam T The type the container hels elements of T The type the container hels elements of
+         *
+         */
         template<typename T>
         CT<T> FindUnUsed( CT<T> const & croContainer )
             {
@@ -1413,18 +1418,22 @@ class COdb : public Identifiable<COdb>
             return std::move(oResult);
             }
 
-	auto FindUnUsedThings()
+	/// find all things not linked with anything
+        auto FindUnUsedThings()
 	    {
 	    return FindUnUsed( m_oThings );
 	    }
+	/// find all reasons not used with anything
 	auto FindUnUsedReasons()
 	    {
 	    return FindUnUsed( m_oReasons );
 	    }
+	/// find all properties not linked to anything
 	auto FindUnUsedProperties()
 	    {
 	    return FindUnUsed( m_oProperties );
 	    }
+	/// find all atoms not linked to anything
 	auto FindUnUsedAtoms()
 	    {
 	    return FindUnUsed( m_oAtoms );
@@ -1433,15 +1442,15 @@ class COdb : public Identifiable<COdb>
 
 
         /// Access function to call then container of CThing's
-        CThings      const & Things () const { return m_oThings;  }
+        auto const & Things() const { return m_oThings;  }
         /// Access function to call then container of CProperties
-        CProperties  const & Properties () const { return m_oProperties; }
+        auto const & Properties() const { return m_oProperties; }
         /// Access function to call then container of CAtom's
-        CAtoms       const & Atoms  () const { return m_oAtoms;   }
+        auto const & Atoms() const { return m_oAtoms;   }
         /// Access function to call then container of CReason's
-        CReasons     const & Reasons() const { return m_oReasons; }
+        auto const & Reasons() const { return m_oReasons; }
         /// Access function to call then container of CStrand's
-        CStrands     const & Strands() const { return m_oStrands; }
+        auto const & Strands() const { return m_oStrands; }
     protected:
         /// A container instance of CThing's
         CThings      m_oThings;

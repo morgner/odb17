@@ -1,8 +1,11 @@
 /**
-    @file things.cpp
+    @file unusedthings.cpp
  
     @author Manfred Morgner
     @date 15.04.2018
+
+    Demonstrates, that its possible to have orphan elements in the database
+    and how to find them.
  */
 
 #include <iostream>
@@ -21,8 +24,8 @@ int main()
     // 3 people
     oOdb.MakeThing("Udo");
     oOdb.MakeThing("Ina");
-    oOdb.MakeThing("Rob");
     oOdb.MakeThing("Book");
+    oOdb.MakeThing("Rob");
 
     // 3 kind of relation
     oOdb.MakeReason("is father of");

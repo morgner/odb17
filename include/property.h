@@ -68,6 +68,7 @@ class CProperty : public IProperty
         /// Prints an informational output to std::cout
         void print();
 
+        /// returns if the instance is 'free'
         auto IsUnUsed()
 	    {
 	    return (0 == m_oRelations.size());

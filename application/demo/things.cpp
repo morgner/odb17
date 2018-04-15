@@ -3,6 +3,9 @@
  
     @author Manfred Morgner
     @date 15.04.2018
+
+    Demonstration of how Things are made and how they can be connected to
+    each other using specific unidirectional reasons.
  */
 
 #include <iostream>

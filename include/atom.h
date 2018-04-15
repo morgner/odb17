@@ -367,6 +367,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
         return m_spoThingsRelating.erase(poThing);
         }
 
+    /// returns if the instance is 'free'
     auto IsUnUsed()
 	    {
 	    return (0 == m_spoThingsRelating.size());
