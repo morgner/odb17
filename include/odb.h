@@ -1195,6 +1195,12 @@ class COdb : public Identifiable<COdb>
             }
 
         /// todo: optimize / Appends a Property to a Thing by given names
+        bool AppendProperty2Thing( std::string const & crsProperty, std::string const & crsThing )
+            {
+            return AppendProperty2Thing( crsProperty, false, crsThing );
+            }
+
+        /// todo: optimize / Appends a Property to a Thing by given names
         bool AppendProperty2Thing( std::string const & crsProperty, bool const bForce, std::string const & crsThing )
             {
             auto itThings =  m_oThings.get<name>().find( crsThing );
@@ -1407,19 +1413,19 @@ class COdb : public Identifiable<COdb>
             return std::move(oResult);
             }
 
-	auto FindNotConnectedThings()
+	auto FindUnUsedThings()
 	    {
 	    return FindUnUsed( m_oThings );
 	    }
-	auto FindNotConnectedReasons()
+	auto FindUnUsedReasons()
 	    {
 	    return FindUnUsed( m_oReasons );
 	    }
-	auto FindNotConnectedProperties()
+	auto FindUnUsedProperties()
 	    {
 	    return FindUnUsed( m_oProperties );
 	    }
-	auto FindNotConnectedAtoms()
+	auto FindUnUsedAtoms()
 	    {
 	    return FindUnUsed( m_oAtoms );
 	    }

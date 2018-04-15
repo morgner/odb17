@@ -22,59 +22,23 @@ connections
 
 Sample code
 
-.. literalinclude:: ../../../application/tests/link2things-test.cpp
+.. literalinclude:: ../../../application/demo/things.cpp
    :language: cpp
 
-Output 1: The CThing's explaining there content
+Output
 
 .. code-block:: none
 
-   thing: Ulrich
-     Role: Leader
-      => linked to: "Fred" for reason: "pays"
-   thing: Fred
-     Role: Member
-      <= linked from: Ulrich
-
-Output 2: The whole database in list format
-
-.. code-block:: none
-
-   #    TYPE     ID      NAME          RefCnt    DATA
-   #=========================================================
-   odb::CThing	 id: 0	 name: Ulrich	(5)
-   odb::CThing	 id: 1	 name: Fred	(5)
-   odb::CAtom	 id: 0	 name: Role	(3)	 data: Leader
-   odb::CAtom	 id: 1	 name: Role	(3)	 data: Member
-   odb::CReason	 id: 0	 name: pays	(3)
-
-Output 3: The whole database in JSON format
-
-.. code-block:: none
-
-    {
-    "Object Database Dump": 
-        {
-        "Things": 
-            [
-                { "id": "0", "name": "Ulrich",
-                    "atoms": [ {"id": "0"} ],
-                    "links": [ {"thing-id": "1", "reason-id": "0"} ] },
-                { "id": "1", "name": "Fred",
-                    "atoms": [ {"id": "1"} ],
-                    "links": [  ] }
-            ],
-        "Atoms": 
-            [
-                { "id": "0", "name": "Role", "data": "Leader" },
-                { "id": "1", "name": "Role", "data": "Member" }
-            ],
-        "Reasons": 
-            [
-                { "id": "0", "name": "pays" }
-            ]
-        }
-    }
+    ---------------- all things
+    Udo
+       => linked to: "Ina" for reason: "is father of"
+       => linked to: "Rob" for reason: "knows"
+    Ina
+       => linked to: "Rob" for reason: "loves"
+       <= linked from: Udo
+    Rob
+       <= linked from: Ina
+       <= linked from: Udo
 
 
 .. doxygenclass:: odb::CThing

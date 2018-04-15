@@ -3,6 +3,21 @@ add_executable(odb.server
   $<TARGET_OBJECTS:${PROJECT_NAME}>
   )
 
+add_executable(a-things.demo
+  demo/things.cpp
+  $<TARGET_OBJECTS:${PROJECT_NAME}>
+  )
+
+add_executable(b-properties.demo
+  demo/properties.cpp
+  $<TARGET_OBJECTS:${PROJECT_NAME}>
+  )
+
+add_executable(c-unusedthings.demo
+  demo/unusedthings.cpp
+  $<TARGET_OBJECTS:${PROJECT_NAME}>
+  )
+
 add_executable(1-atom.test
   tests/atom-test.cpp
   $<TARGET_OBJECTS:${PROJECT_NAME}>

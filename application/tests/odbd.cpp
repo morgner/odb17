@@ -338,10 +338,10 @@ bool FindUnuseds(std::string const & crsQuery, tcp::iostream & ros)
     odb::CAtoms      as;
     switch (d)
         {
-        case 't': ts = poOdb->FindNotConnectedThings();     SendResult(ts, ros, d); break;
-        case 'r': rs = poOdb->FindNotConnectedReasons();    SendResult(rs, ros, d); break;
-        case 'p': ps = poOdb->FindNotConnectedProperties(); SendResult(ps, ros, d); break;
-        case 'a': as = poOdb->FindNotConnectedAtoms();      SendResult(as, ros, d); break;
+        case 't': ts = poOdb->FindUnUsedThings();     SendResult(ts, ros, d); break;
+        case 'r': rs = poOdb->FindUnUsedReasons();    SendResult(rs, ros, d); break;
+        case 'p': ps = poOdb->FindUnUsedProperties(); SendResult(ps, ros, d); break;
+        case 'a': as = poOdb->FindUnUsedAtoms();      SendResult(as, ros, d); break;
         default : ros << ": no result";
                   return false;
         }
