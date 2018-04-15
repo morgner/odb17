@@ -643,18 +643,18 @@ class COdb : public Identifiable<COdb>
 	 #include "thing.h"
 
 	 int main()
-		{
-		auto oOdb    = odb::COdb();
-		auto pThing1 = oOdb.MakeThing("Ulrich");
-		auto pThing2 = oOdb.MakeThing("Fred");
-		auto pAtom1  = oOdb.MakeAtom("Leader", "Role");
-		auto pAtom2  = oOdb.MakeAtom("Member", "Role");
-		auto pReason = oOdb.MakeReason("pays");
-		pThing1->Append(pAtom1);
-		pThing2->Append(pAtom2);
-		pThing1->Link(pThing2, pReason);
-		oOdb.print_json(std::cout);
-		}
+	     {
+	     auto oOdb    = odb::COdb();
+	     auto pThing1 = oOdb.MakeThing("Ulrich");
+	     auto pThing2 = oOdb.MakeThing("Fred");
+	     auto pAtom1  = oOdb.MakeAtom("Leader", "Role");
+	     auto pAtom2  = oOdb.MakeAtom("Member", "Role");
+	     auto pReason = oOdb.MakeReason("pays");
+	     pThing1->Append(pAtom1);
+	     pThing2->Append(pAtom2);
+	     pThing1->Link(pThing2, pReason);
+	     oOdb.print_json(std::cout);
+	     }
 
  Output
 
@@ -846,173 +846,13 @@ class COdb : public Identifiable<COdb>
                     {
                     auto nTId = l[(int)i].get("thing-id",  0).asUInt();
                     auto nRId = l[(int)i].get("reason-id", 0).asUInt();
-                    LinkThing2Thing( nId, nTId, nRId );
+                    LinkThing2Thing( nId, nRId, nTId );
                     }
                 }
             poJson = std::make_unique<Json::Value>();
             return true;
             } // LoadDB(...)    
 
-/*
-        /// @brief Loads an odb json file
-        /// @param crsFilename
-        bool LoadDB(std::string const & crsFilename)
-            {
-            Json::Value oJson;
-            try
-                {
-                std::ifstream db_dump(crsFilename, std::ifstream::binary);
-                db_dump >> oJson;
-                }
-            catch (...)
-                {
-                std::cerr << "db file not found or not readable";
-                return false;
-                }
-
-            auto const & properties = oJson["Object Database Dump"]["Properties"];
-            for ( size_t index = 0; index < properties.size(); ++index )
-                {
-                auto nId   = properties[(int)index].get("id",      0).asUInt();
-                auto sName = properties[(int)index].get("name", "").asString();
-                LoadProperty(nId, sName);
-                }
-
-            auto const & atoms = oJson["Object Database Dump"]["Atoms"];
-            for ( size_t index = 0; index < atoms.size(); ++index )
-                {
-                auto nId     = atoms[(int)index].get("id",      0).asUInt();
-                auto sName   = atoms[(int)index].get("name",   "").asString();
-                auto sPrefix = atoms[(int)index].get("prefix", "").asString();
-                auto sSuffix = atoms[(int)index].get("suffix", "").asString();
-                auto sFormat = atoms[(int)index].get("format", "").asString();
-                auto sData   = atoms[(int)index].get("data",   "").asString();
-                LoadAtom(nId, sData, sName, sPrefix, sSuffix, sFormat);
-                }
-
-            auto const & reasons = oJson["Object Database Dump"]["Reasons"];
-            for ( size_t index = 0; index < reasons.size(); ++index )
-                {
-                auto nId   = reasons[(int)index].get("id",    0).asUInt();
-                auto sName = reasons[(int)index].get("name", "").asString();
-                LoadReason(nId, sName);
-                }
-
-            auto const & things = oJson["Object Database Dump"]["Things"];
-            for ( size_t index = 0; index < things.size(); ++index )
-                {
-                auto nId   = things[(int)index].get("id",    0).asUInt();
-                auto sName = things[(int)index].get("name", "").asString();
-                LoadThing(nId, sName);
-                }
-            for ( size_t index = 0; index < things.size(); ++index )
-                {
-                auto nId   = things[(int)index].get("id",    0).asUInt();
-
-                auto const & p = things[(int)index]["properties"];
-                for ( size_t i = 0; i < p.size(); ++i )
-                    {
-                    auto nPId = p[(int)i].get("id", 0).asUInt();
-                    AppendProperty2Thing( nPId, nId );
-                    }
-
-                auto const & a = things[(int)index]["atoms"];
-                for ( size_t i = 0; i < a.size(); ++i )
-                    {
-                    auto nAId = a[(int)i].get("id", 0).asUInt();
-                    AppendAtom2Thing( nAId, nId );
-                    }
-
-                auto const & l = things[(int)index]["links"];
-                for ( size_t i = 0; i < l.size(); ++i )
-                    {
-                    auto nTId = l[(int)i].get("thing-id",  0).asUInt();
-                    auto nRId = l[(int)i].get("reason-id", 0).asUInt();
-                    LinkThing2Thing( nId, nTId, nRId );
-                    }
-                }
-            return true;
-            } // LoadDB(...)
-*/
-/*
-        /// @brief Loads an odb json file
-        /// @param crsFilename
-        //  mit Lohmann-Header
-        bool LoadDB(std::string const & crsFilename)
-            {
-            nlohmann::json oJson;
-            try
-                {
-                std::ifstream db_dump(crsFilename);
-                db_dump >> oJson;
-                }
-            catch (...)
-                {
-                std::cerr << "db file not found or not readable";
-                return false;
-                }
-
-            auto const & properties = oJson["Object Database Dump"]["Properties"];
-            for ( size_t index = 0; index < properties.size(); ++index )
-                {
-                size_t nId   = properties[index].at("id"   );
-                auto   sName = properties[index].at("name" );
-                LoadProperty(nId, sName);
-                }
-
-            auto const & atoms = oJson["Object Database Dump"]["Atoms"];
-            for ( size_t index = 0; index < atoms.size(); ++index )
-                {
-                size_t nId     = atoms[index].at("id"     );
-                auto   sName   = atoms[index].at("name"   );
-                auto   sPrefix = atoms[index].at("prefix" );
-                auto   sSuffix = atoms[index].at("suffix" );
-                auto   sFormat = atoms[index].at("format" );
-                auto   sData   = atoms[index].at("data"   );
-                LoadAtom(nId, sData, sName, sPrefix, sSuffix, sFormat);
-                }
-
-            auto const & reasons = oJson["Object Database Dump"]["Reasons"];
-            for ( size_t index = 0; index < reasons.size(); ++index )
-                {
-                size_t nId   = reasons[index].at("id"   );
-                auto   sName = reasons[index].at("name" );
-                LoadReason(nId, sName);
-                }
-
-            auto const & things = oJson["Object Database Dump"]["Things"];
-            for ( size_t index = 0; index < things.size(); ++index )
-                {
-                size_t nId   = things[index].at("id"   );
-                auto   sName = things[index].at("name" );
-                LoadThing(nId, sName);
-                }
-            for ( size_t index = 0; index < things.size(); ++index )
-                {
-                size_t nId   = things[index].at("id"   );
-                auto const & p = things[index]["properties"];
-                for ( size_t i = 0; i < p.size(); ++i )
-                    {
-                    size_t nPId = p[i].at("id");
-                    AppendProperty2Thing( nPId, nId );
-                    }
-                auto const & a = things[index]["atoms"];
-                for ( size_t i = 0; i < a.size(); ++i )
-                    {
-                    size_t nAId = a[i].at("id");
-                    AppendAtom2Thing( nAId, nId );
-                    }
-                auto const & l = things[index]["links"];
-                for ( size_t i = 0; i < l.size(); ++i )
-                    {
-                    size_t nTId = l[i].at("thing-id" );
-                    size_t nRId = l[i].at("reason-id");
-                    LinkThing2Thing( nId, nTId, nRId );
-                    }
-                }
-            return true;
-            } // LoadDB_LM(...)    
-*/
 
         /// @brief Has to return a thing with specified ID, if it does not exists, it is to make
         /// @param nId The id of the thing
@@ -1241,7 +1081,7 @@ class COdb : public Identifiable<COdb>
             }
 
         /// todo: optimize / Links a Thing to a Thing for a Reason by given index value
-        bool LinkThing2Thing( size_t nThingFrom, size_t nThingTo, size_t nReason )
+        bool LinkThing2Thing( size_t nThingFrom, size_t nReason, size_t nThingTo )
             {
             auto itThingFrom  =  m_oThings .get<id>().find( nThingFrom );
             auto itThingTo    =  m_oThings .get<id>().find( nThingTo );
@@ -1258,7 +1098,7 @@ class COdb : public Identifiable<COdb>
 */
                 return false;
                 }
-//          std::cout << "true LinkThing2Thing( size_t " << nThingFrom << ", size_t " << nThingTo << ", size_t " << nReason << " )\n";
+//          std::cout << "true LinkThing2Thing( size_t " << nThingFrom << ", size_t " << nReason << ", size_t " << nThingTo << " )\n";
 //          std::cout << "+ " << (*itThingFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itThingTo)->m_sName << '\n';
             (*itThingFrom)->Link( const_cast<PThing&>(*itThingTo), const_cast<PReason&>(*itReason) );
 //          Link( *itThingFrom, *itReason, *itThingTo );
@@ -1266,7 +1106,7 @@ class COdb : public Identifiable<COdb>
             }
 
         /// todo: optimize / Links a Thing to a Thing for a Reason by given names
-        bool LinkThing2Thing( std::string const & crsThingFrom, std::string const & crsThingTo, std::string const & crsReason )
+        bool LinkThing2Thing( std::string const & crsThingFrom, std::string const & crsReason, std::string const & crsThingTo )
             {
             auto itThingFrom  =  m_oThings .get<name>().find( crsThingFrom );
             auto itThingTo    =  m_oThings .get<name>().find( crsThingTo );
@@ -1282,7 +1122,7 @@ class COdb : public Identifiable<COdb>
 */
                 return false;
                 }
-//          std::cout << "true LinkThing2Thing( size_t " << nThingFrom << ", size_t " << nThingTo << ", size_t " << nReason << " )\n";
+//          std::cout << "true LinkThing2Thing( size_t " << nThingFrom << ", size_t " << nReason << ", size_t " << nThingTo << " )\n";
 //          std::cout << "+ " << (*itThingFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itThingTo)->m_sName << '\n';
             (*itThingFrom)->Link( const_cast<PThing&>(*itThingTo), const_cast<PReason&>(*itReason) );
 //          Link( *itThingFrom, *itReason, *itThingTo );

@@ -32,9 +32,9 @@ int main()
     oOdb.MakeReason("loves");
     
     // 3 bindings
-    oOdb.LinkThing2Thing("Udo", "Ina", "is father of");
-    oOdb.LinkThing2Thing("Udo", "Rob", "knows");
-    oOdb.LinkThing2Thing("Ina", "Rob", "loves");
+    oOdb.LinkThing2Thing("Udo", "is father of", "Ina");
+    oOdb.LinkThing2Thing("Udo", "knows"       , "Rob");
+    oOdb.LinkThing2Thing("Ina", "loves"       , "Rob");
 
     // show us
     std::cout << "---------------- all things" << '\n';

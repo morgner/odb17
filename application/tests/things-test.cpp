@@ -40,7 +40,7 @@ void lt2t(std::string const & crsNameTo, // name of the property
           std::string const & crsReason, // create it if not existent?
                     Args&&... args)      // pack of names of 'things'
     {
-    (oOdb.LinkThing2Thing(args, crsNameTo, crsReason), ...);
+    (oOdb.LinkThing2Thing(args, crsReason, crsNameTo), ...);
     }
 
 // Demo main program

@@ -56,7 +56,7 @@ void lt2t(std::string const & crsNameTo, // name of the property
           std::string const & crsReason, // create it if not existent?
                     Args&&... args)      // pack of names of 'things'
     {
-    (poOdb->LinkThing2Thing(args, crsNameTo, crsReason), ...);
+    (poOdb->LinkThing2Thing(args, crsReason, crsNameTo), ...);
     }
 
 void FillInSomeData()
@@ -471,8 +471,8 @@ int main(int argc, char* argv[])
                 stream << "r+name  - insert a reason\n";
                 stream << "a+name  - insert an atom\n";
                 stream << " \n";
-                stream << "ltidT:idT:idR        - links two Things by ID\n";
-                stream << "lTnameT:nameT:nameR  - links two Things by Name\n";
+                stream << "ltidT:idR:idT        - links two Things by ID\n";
+                stream << "lTnameT:nameR:nameT  - links two Things by Name\n";
                 stream << "lpidP:idT            - links Property to Thing\n";
                 stream << "lPnameP:nameT        - links Property to Thing\n";
                 stream << "laidA:idT            - links Atom to Thing\n";

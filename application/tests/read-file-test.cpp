@@ -65,8 +65,6 @@ int main( int argc, const char* argv[] )
 	nReadLimit = 1000;
 	}
       std::cout << nReadLimit << " lines per file\n";
-//    std::cout << "Read how many lines per file? : ";
-//    std::cin >> nReadLimit;
 
 
     int e = 0;
@@ -105,11 +103,9 @@ int main( int argc, const char* argv[] )
                 case 5: sYearF  = sItem; break;
                 case 7: sAtom   = sItem; break; // runtime
                 case 8: sGenres = sItem; // genres1...n = split(sItem, ",")
-//                      std::cout << sId << '\n';
                         if ( ""s    == sName ) sName = "Empty title";
                         if ( "\\N"s == sName ) sName = "No title";
                         m = oOdb.FindOrMakeThingByProperty( sName, sId );
-//                      std::cout << nId << " - " << m->m_nId << '\n';
 /* class */             m->Append( oOdb.FindOrMakeProperty( "class:movie"s ) );
                         if ( (""s != sType ) && ("\\N"s != sType ) ) m->Append( oOdb.FindOrMakeProperty( sType ) );
                         if ( (""s != sYearF) && ("\\N"s != sYearF) ) m->Append( oOdb.FindOrMakeProperty( sYearF ) );
@@ -126,7 +122,6 @@ int main( int argc, const char* argv[] )
             if ( (""s != sGenre) && ("\\N"s != sGenre) ) m->Append( oOdb.FindOrMakeProperty( sGenre ) );
             ptr = strtok(nullptr, ",");
             }
-//      std::cout << *m << '\n';
         }
     imdb_tb.close();
 
@@ -170,9 +165,6 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
                 {
                 case 0: sId          = sItem; break;
                 case 1: sName        = sItem;
-//                      std::cout << sId << '\n';
-//                      m = oOdb.FindOrMakeThingByProperty( sName, sId );
-//                      std::cout << "Thing(" << m->m_nId << ") name: " << sName << "\n";
                         break;
 
                 case 2: sYearB       = sItem; break;
@@ -183,17 +175,14 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
                         while (itM != end)
                             {
                             sItem = *itM++;
-//                          try { if ( std::stoull( sItem.substr(2) ) > nReadLimit /*DEBUG*/ ) continue; } catch(...) { continue; }
                             if ( ""s    == sItem ) continue;
                             if ( "\\N"s == sItem ) continue;
 
                             movie = oOdb.FindThingByProperty( sItem ).value_or(nullptr);
 			    if ( movie == nullptr ) continue;
                             if ( m     == nullptr ) m = oOdb.FindOrMakeThingByProperty( sName, sId );
-//                          odb::PThing movie = oOdb.FindOrMakeThingByProperty( "Linked Movie w/o title"s, sItem );
                             m->Link( movie, ReasonAI );
 /* class */                 m->Append( oOdb.FindOrMakeProperty( "class:person" ) );
-//                          std::cout << sItem << ": oOdb.LinkThing2Thing( " << m->m_sName << ", " << movie->m_sName << ", " << ReasonAI->m_nId << " );\n";
                             }
 
 			if ( movie != nullptr )
@@ -201,7 +190,6 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
                             std::regex_token_iterator<std::string::iterator> itP(sProfessions.begin(), sProfessions.end(), k, -1);
                             while (itP != end)
                                 {
-//                              std::cout << "m(" << m->m_nId << ")->Append( oOdb.FindOrMakeProperty( " << *itP << " ) );\n";
                                 sItem = *itP++;
                                 if ( ""s    == sItem ) continue;
                                 if ( "\\N"s == sItem ) continue;
@@ -254,60 +242,42 @@ tt0000003	2	nm5442194	producer	producer	\N
             switch ( e++ )
                 {
                 case 0: sTId         = sItem; 
-//                      std::cout << sId << '\n';
                         tt = oOdb.FindThingByProperty( sTId ).value_or(nullptr);
 			if ( tt == nullptr ) { brk = true; continue; }
-//                      std::cout << "Thing(" << m->m_nId << ") name: " << sName << "\n";
 			break;
                 case 1: sOrder       = sItem; break;
                 case 2: sNId         = sItem; 
-//                      std::cout << sId << '\n';
                         nm = oOdb.FindThingByProperty( sNId ).value_or(nullptr);
 			if ( nm == nullptr ) { brk = true; continue; }
 /* class */             nm->Append( oOdb.FindOrMakeProperty( "class:person" ) );
-//                      std::cout << "Thing(" << m->m_nId << ") name: " << sName << "\n";
 			break;
                 case 3: sCategory    = sItem;
                         if ( (""s != sItem) && ("\\N"s != sItem) )
 			    {
-//                          std::cout << "CAT: oOdb.LinkThing2Thing( " << nm->m_sName << ", " << tt->m_sName << ", " << sItem << " );\n";
                             nm->Link( tt, oOdb.FindOrMakeReason( sItem ) );
-//                          nm->Append( oOdb.FindOrMakeProperty( sItem ) );
                             }
 			break;
                 case 4: sJob         = sItem;
                         if ( (""s != sItem) && ("\\N"s != sItem) )
 			    {
-//                          std::cout << "JOB: oOdb.LinkThing2Thing( " << nm->m_sName << ", " << tt->m_sName << ", " << sItem << " );\n";
                             nm->Link( tt, oOdb.FindOrMakeReason( sItem ) );
-//                          nm->Append( oOdb.FindOrMakeProperty( sItem ) );
                             }
 			break;
                 case 5: sCharacters  = sItem;
                         if ( (""s != sItem) && ("\\N"s != sItem) )
 			    {
-//                          echo "plays [\"Smithson\",\"Man at Broker's\"]" | sed -e 's/[^\[]*\[.\(.*\).\]/\1/' -e 's/","/\t/g'
-//                          => Smithson
-//                          => Man at Broker's
-//
-//                          std::cout << sCharacters << ":";
                             std::string sStep1 = std::regex_replace( sCharacters,
                                                                      std::regex("[\\[]*\\[.(.*).\\]"),
                                                                      "$1");
-//                          std::cout << sStep1 << ":";
                                    sCharacters = std::regex_replace( sStep1,
                                                                      std::regex("\",\""),
                                                                      "\t");
-//                          std::cout << sCharacters << ":\n";
                             std::regex_token_iterator<std::string::iterator> itC(sCharacters.begin(), sCharacters.end(), r, -1);
                             while (itC != end)
                                 {
                                 sItem = *itC++;
-//                              std::cout << "  " << sItem << "\n";
 
-//                              std::cout << "CHR: oOdb.LinkThing2Thing( " << nm->m_sName << ", " << tt->m_sName << ", " << sItem << " );\n";
                                 nm->Link( tt, oOdb.FindOrMakeReason( "role:" + sItem ) );
-//                              nm->Append( oOdb.FindOrMakeProperty( sItem ) );
                                 }
                             }
                         break;
@@ -364,11 +334,9 @@ tt0000247       nm2156608,nm0005690,nm0002504   nm0000636,nm0002504
                         while (itD != end)
                             {
                             sItem = *itD++;
-//                          std::cout << "  " << sItem << "\n";
                             nm = oOdb.FindThingByProperty( sItem ).value_or(nullptr);
                             if ( nullptr != nm )
                                 {
-//                              std::cout << "DIR: oOdb.LinkThing2Thing( " << nm->m_sName << ", " << tt->m_sName << ", " << sItem << " );\n";
                                 nm->Link( tt, oOdb.FindOrMakeReason( "director" ) );
                                 }
                             }
@@ -381,11 +349,9 @@ tt0000247       nm2156608,nm0005690,nm0002504   nm0000636,nm0002504
                         while (itW != end)
                             {
                             sItem = *itW++;
-//                          std::cout << "  " << sItem << "\n";
                             nm = oOdb.FindThingByProperty( sItem ).value_or(nullptr);
                             if ( nullptr != nm )
                                 {
-//                              std::cout << "WRT: oOdb.LinkThing2Thing( " << nm->m_sName << ", " << tt->m_sName << ", " << sItem << " );\n";
                                 nm->Link( tt, oOdb.FindOrMakeReason( "writer" ) );
                                 }
                             }
@@ -451,10 +417,7 @@ tt0000003       1       Szegény Pierrot                 HU      \N             
                 case 5: if ( "\\N"s == sItem ) sItem = ""s; sProperty += sItem + ":"s; break;
                 case 6: if ( "\\N"s == sItem ) sItem = ""s; sProperty += sItem + ":"s; break;
                 case 7: if ( "\\N"s == sItem ) sItem = ""s; sProperty += sItem + ":"s;
-//                      std::cout << "CHR: oOdb.LinkThing2Thing( " << nm->m_sName << ", " << tt->m_sName << ", " << sItem << " );\n";
-//                      nm->Link( tt, oOdb.FindOrMakeReason( sItem ) );
                         tt->Append( oOdb.FindOrMakeProperty( sProperty ) );
-//                      std::cout << sTId << " " << sProperty << '\n';
                         break;
                 } // switch(e)
             } // while ( it != end )
