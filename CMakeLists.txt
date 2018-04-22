@@ -27,8 +27,6 @@ add_subdirectory(application)
 
 set(Boost_USE_STATIC_LIBS        ON) # only find static libs
 set(Boost_USE_MULTITHREADED      OFF)
-#set(Boost_USE_STATIC_RUNTIME    OFF)
-#find_package(Boost 1.64.0 REQUIRED COMPONENTS multi_index)
 find_package(Boost 1.64.0 REQUIRED COMPONENTS container)
 if(Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})

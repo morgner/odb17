@@ -8,13 +8,18 @@ add_executable(a-things.demo
   $<TARGET_OBJECTS:${PROJECT_NAME}>
   )
 
-add_executable(b-properties.demo
-  demo/properties.cpp
+add_executable(b-html-things.demo
+  demo/html-things.cpp
   $<TARGET_OBJECTS:${PROJECT_NAME}>
   )
 
 add_executable(c-unusedthings.demo
   demo/unusedthings.cpp
+  $<TARGET_OBJECTS:${PROJECT_NAME}>
+  )
+
+add_executable(d-properties.demo
+  demo/properties.cpp
   $<TARGET_OBJECTS:${PROJECT_NAME}>
   )
 
