@@ -1144,6 +1144,7 @@ class COdb : public Identifiable<COdb>
             return std::move( *oResult );
             }
 
+    protected:
         /**
          * @brief Finds all Ts with the given NAME
          *
@@ -1183,7 +1184,7 @@ class COdb : public Identifiable<COdb>
                 }
             return std::move(oResult);
             }
-
+    public:
         /// API Adapter
         auto FindThing     ( size_t                  nId ) { return Find(m_oThings, nId );}
         /// API Adapter
@@ -1240,6 +1241,7 @@ class COdb : public Identifiable<COdb>
             }
 
 */
+    protected:
         /**
          * @brief finds unused elements in the given collection
          *
@@ -1257,7 +1259,7 @@ class COdb : public Identifiable<COdb>
                 }
             return std::move(oResult);
             }
-
+    public:
 	/// find all things not linked with anything
         auto FindUnUsedThings()
 	    {

@@ -491,19 +491,19 @@ tt0000012       7.4     8000
 
 	switch (c)
             {
-            case 't': ts = oOdb.Find(oOdb.Things(),std::string( sInput )); if (ts.size() == 0) ts = oOdb.Find(oOdb.Things(),std::regex( sInput ));
+            case 't': ts = oOdb.FindThings(std::string( sInput )); if (ts.size() == 0) ts = oOdb.FindThings(std::regex( sInput ));
                       for (auto const & a:ts) { std::cout << '\n' << *a << '\n'; } std::cout << "  total: " << ts.size() << '\n'; 
                       break;
 
-	    case 'r': rs = oOdb.Find(oOdb.Reasons(),std::string( sInput )); if (ts.size() == 0) rs = oOdb.Find(oOdb.Reasons(),std::regex( sInput ));
+	    case 'r': rs = oOdb.FindReasons(std::string( sInput )); if (ts.size() == 0) rs = oOdb.FindReasons(std::regex( sInput ));
                       for (auto const & a:rs) { std::cout << '\n' << *a << '\n'; } std::cout << "  total: " << rs.size() << '\n'; 
                       break;
 
-            case 'p': ps = oOdb.Find(oOdb.Properties(),std::string( sInput )); if (ts.size() == 0) ps = oOdb.Find(oOdb.Properties(),std::regex( sInput ));
+            case 'p': ps = oOdb.FindProperties(std::string( sInput )); if (ts.size() == 0) ps = oOdb.FindProperties(std::regex( sInput ));
                       for (auto const & a:ps) { std::cout << '\n' << *a << '\n'; } std::cout << "  total: " << ps.size() << '\n'; 
                       break;
 
-            case 'a': as = oOdb.Find(oOdb.Atoms(),std::string( sInput )); if (ts.size() == 0) as = oOdb.Find(oOdb.Atoms(),std::regex( sInput ));
+            case 'a': as = oOdb.FindAtoms(std::string( sInput )); if (ts.size() == 0) as = oOdb.FindAtoms(std::regex( sInput ));
                       for (auto const & a:as) { std::cout << '\n' << *a << '\n'; } std::cout << "  total: " << as.size() << '\n'; 
                       break;
 

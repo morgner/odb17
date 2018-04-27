@@ -298,21 +298,21 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
                     }
                   else
                     {
-                    ts = poOdb->Find(poOdb->Things(), sInput);
-                    if (ts.size() == 0)  { try { ts = poOdb->Find(poOdb->Things(), std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
+                    ts = poOdb->FindThings(sInput);
+                    if (ts.size() == 0)  { try { ts = poOdb->FindThings(std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
                     }
                   SendResult(ts, ros, d, (b)?sInput:""s);
                   break;
-        case 'r': rs = poOdb->Find(poOdb->Reasons(),std::string( sInput ));
-		  if (rs.size() == 0) { try { rs = poOdb->Find(poOdb->Reasons(), std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
+        case 'r': rs = poOdb->FindReasons(std::string( sInput ));
+		  if (rs.size() == 0) { try { rs = poOdb->FindReasons(std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
                   SendResult(rs, ros, d, (b)?sInput:""s);
                   break;
-        case 'p': ps = poOdb->Find(poOdb->Properties(),std::string( sInput ));
-                  if (ps.size() == 0) { try { ps = poOdb->Find(poOdb->Properties(), std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
+        case 'p': ps = poOdb->FindProperties(std::string( sInput ));
+                  if (ps.size() == 0) { try { ps = poOdb->FindProperties(std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
                   SendResult(ps, ros, d, (b)?sInput:""s);
                   break;
-        case 'a': as = poOdb->Find(poOdb->Atoms(),std::string( sInput ));
-                  if (as.size() == 0) { try { as = poOdb->Find(poOdb->Atoms(), std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
+        case 'a': as = poOdb->FindAtoms(std::string( sInput ));
+                  if (as.size() == 0) { try { as = poOdb->FindAtoms(std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
                   SendResult(as, ros, d, (b)?sInput:""s);
                   break;
         default : ros << ": no result";
