@@ -20,27 +20,27 @@
 
 auto oOdb = odb::COdb();
 
-template<typename ...Args> void mkthings    (Args&&... args) { (oOdb.MakeThing   (args), ...); } 
+template<typename ...Args> void mknodes    (Args&&... args) { (oOdb.MakeNode   (args), ...); } 
 template<typename... Args> void mkproperties(Args&&... args) { (oOdb.MakeProperty(args), ...); }
 template<typename... Args> void mkreasons   (Args&&... args) { (oOdb.MakeReason  (args), ...); }
 template<typename... Args> void mkatoms     (Args&&... args) { (oOdb.MakeAtom    (args, "fold" ), ...); }
 
-// append a property to a group of things, if property does not exists and
+// append a property to a group of nodes, if property does not exists and
 // 'cbForce' is 'true', the property will be added to the DB
 template<typename... Args>
 void ap2ts(std::string const & crsProperty, // name of the property
 		  bool const   cbForce,     // create it if not existent?
-		     Args&&... args)        // pack of names of 'things'
+		     Args&&... args)        // pack of names of 'nodes'
     {
-    (oOdb.AppendProperty2Thing(crsProperty, cbForce, args), ...);
+    (oOdb.AppendProperty2Node(crsProperty, cbForce, args), ...);
     }
 
 template<typename... Args>
 void lt2t(std::string const & crsNameTo, // name of the property
           std::string const & crsReason, // create it if not existent?
-                    Args&&... args)      // pack of names of 'things'
+                    Args&&... args)      // pack of names of 'nodes'
     {
-    (oOdb.LinkThing2Thing(args, crsReason, crsNameTo), ...);
+    (oOdb.LinkNode2Node(args, crsReason, crsNameTo), ...);
     }
 
 // Demo main program
@@ -48,8 +48,8 @@ int main()
     {
     // filling in some data
     // ==========================================================================================
-    mkthings    ("Ulli", "Nora", "Peter", "Paula", "Rudi", "Marta", "Arnold", "Bertha", "Elise", "Jack");
-    mkthings    ("Emerald woods", "Madix", "Skoda", "Trombone", "Lecho", "SilentOS", "Insurance");
+    mknodes    ("Ulli", "Nora", "Peter", "Paula", "Rudi", "Marta", "Arnold", "Bertha", "Elise", "Jack");
+    mknodes    ("Emerald woods", "Madix", "Skoda", "Trombone", "Lecho", "SilentOS", "Insurance");
     mkproperties("person", "male", "female", "driver", "consumer", "contractor");
     mkreasons   ("wrote", "read", "bought", "left", "foundet", "loves", "sells", "works at", "uses", "plays");
     mkatoms     ( 2.5, "done", 7, std::array{2,1,3}, "go", 89, "sold", "percent");
@@ -68,13 +68,13 @@ int main()
     lt2t("Trombone",      "plays",    "Jack",  "Peter"                                               );
     // ================================================================================================
 
-    // give all 'things' the property 'person'
-    for ( size_t n = 0; n < oOdb.Things().size(); ++n )
+    // give all 'nodes' the property 'person'
+    for ( size_t n = 0; n < oOdb.Nodes().size(); ++n )
         {
-        oOdb.AppendProperty2Thing( 0, n );
+        oOdb.AppendProperty2Node( 0, n );
 	}
 
-    // assign 'properties' to groups of 'things' (supported by fold expressions)
+    // assign 'properties' to groups of 'nodes' (supported by fold expressions)
     // ========================================================================================================
     ap2ts( "person",     false, "Ulli", "Nora", "Peter", "Paula", "Rudi", "Marta", "Arnold", "Bertha", "Elise");
     ap2ts( "male",       false, "Ulli",         "Peter",          "Rudi",          "Arnold"                   );
@@ -86,16 +86,16 @@ int main()
     ap2ts( "builder",    true,                  "Peter", "Paula",                  "Arnold"                   );
     // ========================================================================================================
 
-    auto px = oOdb.MakeThing("Ulli");
-    oOdb.AppendProperty2Thing( 0, px->m_nId );
-    oOdb.AppendProperty2Thing( 6, px->m_nId );
-    oOdb.AppendProperty2Thing( 7, px->m_nId );
+    auto px = oOdb.MakeNode("Ulli");
+    oOdb.AppendProperty2Node( 0, px->m_nId );
+    oOdb.AppendProperty2Node( 6, px->m_nId );
+    oOdb.AppendProperty2Node( 7, px->m_nId );
 
     // INTERSECTION
     // collect all drivers
-    auto drivers = oOdb.FindThingsByProperty( "driver" );
+    auto drivers = oOdb.FindNodesByProperty( "driver" );
     // collect all females
-    auto females = oOdb.FindThingsByProperty( "female" );
+    auto females = oOdb.FindNodesByProperty( "female" );
     // intersect 'drivers' with 'females', resulting in an aggregate of 'female drivers'
     std::vector<odb::PNode> vFemaleDrivers;
     std::set_intersection(drivers.begin(), drivers.end(),
@@ -104,9 +104,9 @@ int main()
 
     // UNION
     // collect all artists
-    auto artists = oOdb.FindThingsByProperty( "artist" );
+    auto artists = oOdb.FindNodesByProperty( "artist" );
     // collect all builder
-    auto builder = oOdb.FindThingsByProperty( "builder" );
+    auto builder = oOdb.FindNodesByProperty( "builder" );
     // sum 'artists' and 'builder', resulting in an aggregate of 'artist or builder'
     odb::CNodes vArtistOrBuilder;
     for ( auto const & a:artists ) vArtistOrBuilder.insert(a);
@@ -114,21 +114,21 @@ int main()
 
 //    // REGEX
 //    // collect all having properties with names begining with 'con'
-//    auto vSelection = oOdb.FindThingsByProperty( "^con.*" );
+//    auto vSelection = oOdb.FindNodesByProperty( "^con.*" );
 
-    std::cout << "---------------- selected 'things' having properties 'driver' and 'female'" << '\n';
+    std::cout << "---------------- selected 'nodes' having properties 'driver' and 'female'" << '\n';
     for ( auto const & a:vFemaleDrivers )
         {
         std::cout << *a << "\tid: " << a->m_nId << '\n';
         }
 
-    std::cout << "---------------- selected 'things' having properties 'artist' or 'builder'" << '\n';
+    std::cout << "---------------- selected 'nodes' having properties 'artist' or 'builder'" << '\n';
     for ( auto const & a:vArtistOrBuilder )
         {
         std::cout << *a << "\tid: " << a->m_nId << '\n';
         }
 
-//    std::cout << "---------------- selected 'things' having properties with '^con'" << '\n';
+//    std::cout << "---------------- selected 'nodes' having properties with '^con'" << '\n';
 //    for ( auto const & a:vSelection )
 //        {
 //        std::cout << a << '\n';
@@ -142,8 +142,8 @@ int main()
             std::cout << "  " << b->m_sName << '\n';
         }
 
-    std::cout << "---------------- all things" << '\n';
-    for ( auto const & a:oOdb.Things() )
+    std::cout << "---------------- all nodes" << '\n';
+    for ( auto const & a:oOdb.Nodes() )
         {
         std::cout << *a << '\n';
         }

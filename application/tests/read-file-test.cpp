@@ -28,19 +28,19 @@ using namespace std::string_literals;
 
 auto oOdb = odb::COdb();
 
-template<typename ...Args> void mkthings    (Args&&... args) { (oOdb.MakeThing   (args), ...); } 
+template<typename ...Args> void mknodes    (Args&&... args) { (oOdb.MakeNode   (args), ...); } 
 template<typename... Args> void mkproperties(Args&&... args) { (oOdb.MakeProperty(args), ...); }
 template<typename... Args> void mkreasons   (Args&&... args) { (oOdb.MakeReason  (args), ...); }
 template<typename... Args> void mkatoms     (Args&&... args) { (oOdb.MakeAtom    (args, "fold" ), ...); }
 
-// append a property to a group of things, if property does not exists and
+// append a property to a group of nodes, if property does not exists and
 // 'cbForce' is 'true', the property will be added to the DB
 template<typename... Args>
 void ap2ts(std::string const & crsProperty, // name of the property
                   bool const   cbForce,     // create it if not existent?
-                     Args&&... args)        // pack of names of 'things'
+                     Args&&... args)        // pack of names of 'nodes'
     {
-    (oOdb.AppendProperty2Thing(crsProperty, cbForce, args), ...);
+    (oOdb.AppendProperty2Node(crsProperty, cbForce, args), ...);
     }
 
 /*
@@ -105,7 +105,7 @@ int main( int argc, const char* argv[] )
                 case 8: sGenres = sItem; // genres1...n = split(sItem, ",")
                         if ( ""s    == sName ) sName = "Empty title";
                         if ( "\\N"s == sName ) sName = "No title";
-                        m = oOdb.FindOrMakeThingByProperty( sName, sId );
+                        m = oOdb.FindOrMakeNodeByProperty( sName, sId );
 /* class */             m->Append( oOdb.FindOrMakeProperty( "class:movie"s ) );
                         if ( (""s != sType ) && ("\\N"s != sType ) ) m->Append( oOdb.FindOrMakeProperty( sType ) );
                         if ( (""s != sYearF) && ("\\N"s != sYearF) ) m->Append( oOdb.FindOrMakeProperty( sYearF ) );
@@ -178,9 +178,9 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
                             if ( ""s    == sItem ) continue;
                             if ( "\\N"s == sItem ) continue;
 
-                            movie = oOdb.FindThingByProperty( sItem ).value_or(nullptr);
+                            movie = oOdb.FindNodeByProperty( sItem ).value_or(nullptr);
 			    if ( movie == nullptr ) continue;
-                            if ( m     == nullptr ) m = oOdb.FindOrMakeThingByProperty( sName, sId );
+                            if ( m     == nullptr ) m = oOdb.FindOrMakeNodeByProperty( sName, sId );
                             m->Link( movie, ReasonAI );
 /* class */                 m->Append( oOdb.FindOrMakeProperty( "class:person" ) );
                             }
@@ -242,12 +242,12 @@ tt0000003	2	nm5442194	producer	producer	\N
             switch ( e++ )
                 {
                 case 0: sTId         = sItem; 
-                        tt = oOdb.FindThingByProperty( sTId ).value_or(nullptr);
+                        tt = oOdb.FindNodeByProperty( sTId ).value_or(nullptr);
 			if ( tt == nullptr ) { brk = true; continue; }
 			break;
                 case 1: sOrder       = sItem; break;
                 case 2: sNId         = sItem; 
-                        nm = oOdb.FindThingByProperty( sNId ).value_or(nullptr);
+                        nm = oOdb.FindNodeByProperty( sNId ).value_or(nullptr);
 			if ( nm == nullptr ) { brk = true; continue; }
 /* class */             nm->Append( oOdb.FindOrMakeProperty( "class:person" ) );
 			break;
@@ -324,7 +324,7 @@ tt0000247       nm2156608,nm0005690,nm0002504   nm0000636,nm0002504
                 {
                 case 0: sTId         = sItem; 
 //                      std::cout << sId << '\n';
-                        tt = oOdb.FindThingByProperty( sTId ).value_or(nullptr);
+                        tt = oOdb.FindNodeByProperty( sTId ).value_or(nullptr);
 			if ( tt == nullptr ) { brk = true; continue; }
 			break;
                 case 1: if ( "\\N"s == sItem ) continue;
@@ -334,7 +334,7 @@ tt0000247       nm2156608,nm0005690,nm0002504   nm0000636,nm0002504
                         while (itD != end)
                             {
                             sItem = *itD++;
-                            nm = oOdb.FindThingByProperty( sItem ).value_or(nullptr);
+                            nm = oOdb.FindNodeByProperty( sItem ).value_or(nullptr);
                             if ( nullptr != nm )
                                 {
                                 nm->Link( tt, oOdb.FindOrMakeReason( "director" ) );
@@ -349,7 +349,7 @@ tt0000247       nm2156608,nm0005690,nm0002504   nm0000636,nm0002504
                         while (itW != end)
                             {
                             sItem = *itW++;
-                            nm = oOdb.FindThingByProperty( sItem ).value_or(nullptr);
+                            nm = oOdb.FindNodeByProperty( sItem ).value_or(nullptr);
                             if ( nullptr != nm )
                                 {
                                 nm->Link( tt, oOdb.FindOrMakeReason( "writer" ) );
@@ -407,7 +407,7 @@ tt0000003       1       Szegény Pierrot                 HU      \N             
                 {
                 case 0: sTId         = sItem; 
 //                      std::cout << sId << '\n';
-                        tt = oOdb.FindThingByProperty( sTId ).value_or(nullptr);
+                        tt = oOdb.FindNodeByProperty( sTId ).value_or(nullptr);
 			if ( tt == nullptr ) { brk = true; continue; }
 			break;
                 case 1: if ( "\\N"s == sItem ) sItem = ""s; sProperty += sItem + ":"s; break;
@@ -446,20 +446,20 @@ tt0000012       7.4     8000
 */
 
 
-//  auto ts = oOdb.FindThing("Cyrus Townsend Brady"); // ...
-//  auto ts = oOdb.FindThings("Ed Brady");
-//  auto ts = oOdb.FindThings("Richard Adams");
-//  auto ts = oOdb.FindThings(std::regex("^.* Anderson$")); std::cout << "'^.* Anderson$' : " << ts.size() << '\n';
-//       ts = oOdb.FindThings(std::regex("^.* Adams$"));    std::cout << "'^.* Adams$'    : " << ts.size() << '\n';
-//       ts = oOdb.FindThings(std::regex("^Yolanda .*"));   std::cout << "'^Yolanda .*'   : " << ts.size() << '\n';
-//       ts = oOdb.FindThings(std::regex(".*Stahl.*"));     std::cout << "'.* Stahl .*'   : " << ts.size() << '\n';
+//  auto ts = oOdb.FindNode("Cyrus Townsend Brady"); // ...
+//  auto ts = oOdb.FindNodes("Ed Brady");
+//  auto ts = oOdb.FindNodes("Richard Adams");
+//  auto ts = oOdb.FindNodes(std::regex("^.* Anderson$")); std::cout << "'^.* Anderson$' : " << ts.size() << '\n';
+//       ts = oOdb.FindNodes(std::regex("^.* Adams$"));    std::cout << "'^.* Adams$'    : " << ts.size() << '\n';
+//       ts = oOdb.FindNodes(std::regex("^Yolanda .*"));   std::cout << "'^Yolanda .*'   : " << ts.size() << '\n';
+//       ts = oOdb.FindNodes(std::regex(".*Stahl.*"));     std::cout << "'.* Stahl .*'   : " << ts.size() << '\n';
 
 //  ===========================================================================
     std::string sInput;
     char c{'t'};
     do
         {
-        std::cout << "---------------- " <<  oOdb.Things().size()     << " things" << '\n';
+        std::cout << "---------------- " <<  oOdb.Nodes().size()     << " nodes" << '\n';
         std::cout << "---------------- " <<  oOdb.Properties().size() << " properties" << '\n';
         std::cout << "---------------- " <<  oOdb.Reasons().size()    << " reasons" << '\n';
         std::cout << "---------------- " <<  oOdb.Atoms().size()      << " atoms" << '\n';
@@ -469,7 +469,7 @@ tt0000012       7.4     8000
 	std::cin >> c;
 	switch (c)
             {
-            case 't': std::cout << "\n---------------- Search in Things: ";     break;
+            case 't': std::cout << "\n---------------- Search in Nodes: ";     break;
 	    case 'r': std::cout << "\n---------------- Search in Reasons: ";    break;
             case 'p': std::cout << "\n---------------- Search in Properties: "; break;
             case 'a': std::cout << "\n---------------- Search in Atoms: ";      break;
@@ -483,15 +483,15 @@ tt0000012       7.4     8000
 	odb::CProperties ps;
 	odb::CAtoms      as;
 
-//auto y = oOdb.Find(oOdb.Things(), sInput);
+//auto y = oOdb.Find(oOdb.Nodes(), sInput);
 //
 //size_t st = 379;
-//auto x = oOdb.Find(oOdb.Things(), st);
+//auto x = oOdb.Find(oOdb.Nodes(), st);
 //if ( x ) std::cout << "--" << '\n' << *x << '\n' << "--" << '\n'; 
 
 	switch (c)
             {
-            case 't': ts = oOdb.FindThings(std::string( sInput )); if (ts.size() == 0) ts = oOdb.FindThings(std::regex( sInput ));
+            case 't': ts = oOdb.FindNodes(std::string( sInput )); if (ts.size() == 0) ts = oOdb.FindNodes(std::regex( sInput ));
                       for (auto const & a:ts) { std::cout << '\n' << *a << '\n'; } std::cout << "  total: " << ts.size() << '\n'; 
                       break;
 
@@ -513,7 +513,7 @@ tt0000012       7.4     8000
 
 // sregex_token_iterator
 /*
-    auto x = oOdb.SelectThingsByProperty( ".ovi.*" );
+    auto x = oOdb.SelectNodesByProperty( ".ovi.*" );
     for (auto a:x) std::cout << a << '\n';
 */
 
@@ -533,8 +533,8 @@ tt0000012       7.4     8000
             std::cout << "  " << b->m_sName << '\n';
         }
 
-    std::cout << "---------------- all things" << '\n';
-    for ( auto const & a:oOdb.Things() )
+    std::cout << "---------------- all nodes" << '\n';
+    for ( auto const & a:oOdb.Nodes() )
         {
         std::cout << *a << '\n';
         }

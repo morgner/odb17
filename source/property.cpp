@@ -46,14 +46,14 @@ CProperty::operator std::string const & () noexcept
     return m_sName;
     }
 
-void CProperty::RelationAdd( PNode poThing )
+void CProperty::RelationAdd( PNode poNode )
     {
-    m_oRelations.emplace( poThing );
+    m_oRelations.emplace( poNode );
     }
 
-void CProperty::RelationSub( PNode poThing )
+void CProperty::RelationSub( PNode poNode )
     {
-    m_oRelations.erase( poThing );
+    m_oRelations.erase( poNode );
     }
 
 void CProperty::print()

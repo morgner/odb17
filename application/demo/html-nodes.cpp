@@ -4,7 +4,7 @@
     @author Manfred Morgner
     @date 15.04.2018
 
-    Demonstration of how Things are made and how they can be connected to
+    Demonstration of how Nodes are made and how they can be connected to
     each other using specific unidirectional reasons.
  */
 
@@ -28,9 +28,9 @@ auto oOdb = odb::COdb();
 int main()
     {
     // 3 people
-    oOdb.MakeThing("Udo");
-    oOdb.MakeThing("Ina");
-    oOdb.MakeThing("Rob");
+    oOdb.MakeNode("Udo");
+    oOdb.MakeNode("Ina");
+    oOdb.MakeNode("Rob");
 
     // 3 kind of relation
     oOdb.MakeReason("is father of");
@@ -38,14 +38,14 @@ int main()
     oOdb.MakeReason("loves");
     
     // 3 bindings
-    oOdb.LinkThing2Thing("Udo", "is father of", "Ina");
-    oOdb.LinkThing2Thing("Udo", "knows"       , "Rob");
-    oOdb.LinkThing2Thing("Ina", "loves"       , "Rob");
+    oOdb.LinkNode2Node("Udo", "is father of", "Ina");
+    oOdb.LinkNode2Node("Udo", "knows"       , "Rob");
+    oOdb.LinkNode2Node("Ina", "loves"       , "Rob");
 
     // show us
 /*
     std::stringstream ss;
-    std::cout << "---------------- all things" << '\n';
+    std::cout << "---------------- all nodes" << '\n';
     std::cout << "{" << '\n';
     oOdb.print_json(ss);
     std::cout << ss.str() << '\n';

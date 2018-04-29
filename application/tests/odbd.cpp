@@ -36,35 +36,35 @@ using namespace std::string_literals;
 
 auto poOdb = std::make_unique<odb::COdb>();
 
-template<typename ...Args> void mkthings    (Args&&... args) { (poOdb->MakeThing   (args), ...); } 
+template<typename ...Args> void mknodes    (Args&&... args) { (poOdb->MakeNode   (args), ...); } 
 template<typename... Args> void mkproperties(Args&&... args) { (poOdb->MakeProperty(args), ...); }
 template<typename... Args> void mkreasons   (Args&&... args) { (poOdb->MakeReason  (args), ...); }
 template<typename... Args> void mkatoms     (Args&&... args) { (poOdb->MakeAtom    (args, "fold" ), ...); }
 
-// append a property to a group of things, if property does not exists and
+// append a property to a group of nodes, if property does not exists and
 // 'cbForce' is 'true', the property will be added to the DB
 template<typename... Args>
 void ap2ts(std::string const & crsProperty, // name of the property
                   bool const   cbForce,     // create it if not existent?
-                     Args&&... args)        // pack of names of 'things'
+                     Args&&... args)        // pack of names of 'nodes'
     {
-    (poOdb->AppendProperty2Thing(crsProperty, cbForce, args), ...);
+    (poOdb->AppendProperty2Node(crsProperty, cbForce, args), ...);
     }
         
 template<typename... Args>
 void lt2t(std::string const & crsNameTo, // name of the property
           std::string const & crsReason, // create it if not existent?
-                    Args&&... args)      // pack of names of 'things'
+                    Args&&... args)      // pack of names of 'nodes'
     {
-    (poOdb->LinkThing2Thing(args, crsReason, crsNameTo), ...);
+    (poOdb->LinkNode2Node(args, crsReason, crsNameTo), ...);
     }
 
 void FillInSomeData()
     {
     // filling in some data
     // ================================================================================================
-    mkthings    ("Ulli", "Nora", "Peter", "Paula", "Rudi", "Marta", "Arnold", "Bertha", "Elise", "Jack");
-    mkthings    ("Emerald woods", "Madix", "Skoda", "Trombone", "Lecho", "SilentOS", "Insurance");
+    mknodes    ("Ulli", "Nora", "Peter", "Paula", "Rudi", "Marta", "Arnold", "Bertha", "Elise", "Jack");
+    mknodes    ("Emerald woods", "Madix", "Skoda", "Trombone", "Lecho", "SilentOS", "Insurance");
     mkproperties("person", "male", "female", "driver", "consumer", "contractor");
     mkreasons   ("wrote", "read", "bought", "left", "foundet", "loves", "sells", "works at", "uses", "plays");
     mkatoms     ( 2.5, "done", 7, std::array{2,1,3}, "go", 89, "sold", "percent");
@@ -84,13 +84,13 @@ void FillInSomeData()
     // ================================================================================================
 
 
-    // give all 'things' the property 'person'
-    for ( size_t n = 0; n < poOdb->Things().size(); ++n )
+    // give all 'nodes' the property 'person'
+    for ( size_t n = 0; n < poOdb->Nodes().size(); ++n )
         {
-        poOdb->AppendProperty2Thing( 0, n );
+        poOdb->AppendProperty2Node( 0, n );
         }
 
-    // assign 'properties' to groups of 'things' (supported by fold expressions)
+    // assign 'properties' to groups of 'nodes' (supported by fold expressions)
     // ========================================================================================================
     ap2ts( "person",     false, "Ulli", "Nora", "Peter", "Paula", "Rudi", "Marta", "Arnold", "Bertha", "Elise");
     ap2ts( "male",       false, "Ulli",         "Peter",          "Rudi",          "Arnold"                   );
@@ -102,10 +102,10 @@ void FillInSomeData()
     ap2ts( "builder",    true,                  "Peter", "Paula",                  "Arnold"                   );
     // ========================================================================================================
 
-    auto px = poOdb->MakeThing("Ulli");
-    poOdb->AppendProperty2Thing( 0, px->m_nId );
-    poOdb->AppendProperty2Thing( 6, px->m_nId );
-    poOdb->AppendProperty2Thing( 7, px->m_nId );
+    auto px = poOdb->MakeNode("Ulli");
+    poOdb->AppendProperty2Node( 0, px->m_nId );
+    poOdb->AppendProperty2Node( 6, px->m_nId );
+    poOdb->AppendProperty2Node( 7, px->m_nId );
 
     } // void FillInSomeData()
 
@@ -119,12 +119,12 @@ using asio::ip::tcp;
 bool LinkNAppend(std::string const & crsQuery, std::ostream & ros)
     {
     /*
-    stream << "ltidT:idT:idR        - links two Things by ID\n";
-    stream << "lTnameT:nameT:nameR  - links two Things by Name\n";
-    stream << "lpidP:idT            - links Property to Thing\n";
-    stream << "lPnameP:nameT        - links Property to Thing\n";
-    stream << "laidA:idT            - links Atom to Thing\n";
-    stream << "lAnameA:nameT        - links Atom to Thing\n";
+    stream << "ltidT:idT:idR        - links two Nodes by ID\n";
+    stream << "lTnameT:nameT:nameR  - links two Nodes by Name\n";
+    stream << "lpidP:idT            - links Property to Node\n";
+    stream << "lPnameP:nameT        - links Property to Node\n";
+    stream << "laidA:idT            - links Atom to Node\n";
+    stream << "lAnameA:nameT        - links Atom to Node\n";
     */
     ros << "L " + crsQuery;
 
@@ -171,25 +171,25 @@ bool LinkNAppend(std::string const & crsQuery, std::ostream & ros)
             }
         }
     /*
-    stream << "ltidT:idT:idR        - links two Things by ID\n";
-    stream << "lTnameT:nameT:nameR  - links two Things by Name\n";
-    stream << "lpidP:idT            - links Property to Thing\n";
-    stream << "lPnameP:nameT        - links Property to Thing\n";
-    stream << "laidA:idT            - links Atom to Thing\n";
-    stream << "lAnameA:nameT        - links Atom to Thing\n";
+    stream << "ltidT:idT:idR        - links two Nodes by ID\n";
+    stream << "lTnameT:nameT:nameR  - links two Nodes by Name\n";
+    stream << "lpidP:idT            - links Property to Node\n";
+    stream << "lPnameP:nameT        - links Property to Node\n";
+    stream << "laidA:idT            - links Atom to Node\n";
+    stream << "lAnameA:nameT        - links Atom to Node\n";
     */
     bool b{false};
     switch (d)
         {
-        case 't': b = poOdb->LinkThing2Thing(nVal1, nVal2, nVal3);
+        case 't': b = poOdb->LinkNode2Node(nVal1, nVal2, nVal3);
                   break;
-        case 'T': b = poOdb->LinkThing2Thing(sVal1, sVal2, sVal3);
+        case 'T': b = poOdb->LinkNode2Node(sVal1, sVal2, sVal3);
                   break;
-        case 'p': b = poOdb->AppendProperty2Thing(nVal1, nVal2);
+        case 'p': b = poOdb->AppendProperty2Node(nVal1, nVal2);
                   break;
-        case 'P': b = poOdb->AppendProperty2Thing(sVal1, false, sVal2);
+        case 'P': b = poOdb->AppendProperty2Node(sVal1, false, sVal2);
                   break;
-        case 'a': b = poOdb->AppendAtom2Thing(nVal2, nVal1);
+        case 'a': b = poOdb->AppendAtom2Node(nVal2, nVal1);
                   break;
         case 'A': ros << " \n! Not implemented\n";
                   break;
@@ -217,7 +217,7 @@ bool Insert(std::string const & crsQuery, std::ostream & ros)
 
     switch (c)
         {
-        case 't': t = poOdb->MakeThing(sInput);    ros << " \n" << ":" << t->m_nId << ":" << *t << " \n"; break;
+        case 't': t = poOdb->MakeNode(sInput);    ros << " \n" << ":" << t->m_nId << ":" << *t << " \n"; break;
         case 'r': r = poOdb->MakeReason(sInput);   ros << " \n" << ":" << r->m_nId << ":" << *r << " \n"; break;
         case 'p': p = poOdb->MakeProperty(sInput); ros << " \n" << ":" << p->m_nId << ":" << *p << " \n"; break;
         case 'a': a = poOdb->MakeAtom(sInput);     ros << " \n" << ":" << a->m_nId << ":" << *a << " \n"; break;
@@ -292,14 +292,14 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
         {
         case 't': if ( (d=='p') || (d=='P') )
                     {
-                    ts = poOdb->FindThingsByProperty(sInput);
-                    if (ts.size() == 0) { try { ts = poOdb->FindThingsByProperty(std::regex(sInput)); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
+                    ts = poOdb->FindNodesByProperty(sInput);
+                    if (ts.size() == 0) { try { ts = poOdb->FindNodesByProperty(std::regex(sInput)); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
                     d = (d=='p') ? ':' : '.';
                     }
                   else
                     {
-                    ts = poOdb->FindThings(sInput);
-                    if (ts.size() == 0)  { try { ts = poOdb->FindThings(std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
+                    ts = poOdb->FindNodes(sInput);
+                    if (ts.size() == 0)  { try { ts = poOdb->FindNodes(std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
                     }
                   SendResult(ts, ros, d, (b)?sInput:""s);
                   break;
@@ -338,7 +338,7 @@ bool FindUnuseds(std::string const & crsQuery, tcp::iostream & ros)
     odb::CAtoms      as;
     switch (d)
         {
-        case 't': ts = poOdb->FindUnUsedThings();     SendResult(ts, ros, d); break;
+        case 't': ts = poOdb->FindUnUsedNodes();     SendResult(ts, ros, d); break;
         case 'r': rs = poOdb->FindUnUsedReasons();    SendResult(rs, ros, d); break;
         case 'p': ps = poOdb->FindUnUsedProperties(); SendResult(ps, ros, d); break;
         case 'a': as = poOdb->FindUnUsedAtoms();      SendResult(as, ros, d); break;
@@ -351,7 +351,7 @@ bool FindUnuseds(std::string const & crsQuery, tcp::iostream & ros)
 
 void SendStatistics(std::ostream & ros)
     {
-    ros << "---------------- " <<  poOdb->Things().size()     << " things" << " \n";
+    ros << "---------------- " <<  poOdb->Nodes().size()     << " nodes" << " \n";
     ros << "---------------- " <<  poOdb->Properties().size() << " properties" << " \n";
     ros << "---------------- " <<  poOdb->Reasons().size()    << " reasons" << " \n";
     ros << "---------------- " <<  poOdb->Atoms().size()      << " atoms" << " \n";
@@ -443,19 +443,19 @@ int main(int argc, char* argv[])
                 stream << "load    . loads the DB from disk\n";
                 stream << "save    . saves the DB to disk\n";
                 stream << " \n";
-                stream << "t:regex - search for a thing\n";
+                stream << "t:regex - search for a node\n";
                 stream << "p:regex - search for a property\n";
                 stream << "r:regex - search for a reason\n";
                 stream << "a:regex - search for an atom\n";
-                stream << "tpregex - search for a thing having a specific property\n";
+                stream << "tpregex - search for a node having a specific property\n";
                 stream << " \n";
-                stream << "t.regex - search for a thing (short result)\n";
+                stream << "t.regex - search for a node (short result)\n";
                 stream << "p.regex - search for a property (short result)\n";
                 stream << "r.regex - search for a reason (short result)\n";
                 stream << "a.regex - search for an atom (short result)\n";
-                stream << "tcregex - search for things, returns only the result count\n";
-                stream << "tjregex - search for things, returns result in JSON format\n";
-                stream << "tPregex - search for a thing having a specific property (short result)\n";
+                stream << "tcregex - search for nodes, returns only the result count\n";
+                stream << "tjregex - search for nodes, returns result in JSON format\n";
+                stream << "tPregex - search for a node having a specific property (short result)\n";
                 stream << " \n";
                 stream << "Example\n";
                 stream << " \n";
@@ -464,21 +464,21 @@ int main(int argc, char* argv[])
                 stream << "tcStar (Trek|Wars).*\n";
                 stream << "tjStar (Trek|Wars).*\n";
                 stream << " \n";
-                stream << "Searches for all 'things' named \"Star Trek\" or \"Star Wars\"\n";
+                stream << "Searches for all 'nodes' named \"Star Trek\" or \"Star Wars\"\n";
                 stream << " \n";
-                stream << "t+name  - insert a thing\n";
+                stream << "t+name  - insert a node\n";
                 stream << "p+name  - insert a property\n";
                 stream << "r+name  - insert a reason\n";
                 stream << "a+name  - insert an atom\n";
                 stream << " \n";
-                stream << "ltidT:idR:idT        - links two Things by ID\n";
-                stream << "lTnameT:nameR:nameT  - links two Things by Name\n";
-                stream << "lpidP:idT            - links Property to Thing\n";
-                stream << "lPnameP:nameT        - links Property to Thing\n";
-                stream << "laidA:idT            - links Atom to Thing\n";
-                stream << "lAnameA:nameT        - links Atom to Thing\n";
+                stream << "ltidT:idR:idT        - links two Nodes by ID\n";
+                stream << "lTnameT:nameR:nameT  - links two Nodes by Name\n";
+                stream << "lpidP:idT            - links Property to Node\n";
+                stream << "lPnameP:nameT        - links Property to Node\n";
+                stream << "laidA:idT            - links Atom to Node\n";
+                stream << "lAnameA:nameT        - links Atom to Node\n";
                 stream << " \n";
-                stream << "et  - lists unused Things\n";
+                stream << "et  - lists unused Nodes\n";
                 stream << "ep  - lists unused Properties\n";
                 stream << "er  - lists unused Reasons\n";
                 stream << "ea  - lists unused Atoms\n";

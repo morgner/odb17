@@ -19,9 +19,9 @@ void print(CAtoms const & crContainer)
         e->print_atom_data_formated(std::cout);
         std::cout  << " (" << e.use_count() << ")\n";
 
-        for (auto const & a:e->m_spoThingsRelating)
+        for (auto const & a:e->m_spoNodesRelating)
             {
-            std::cout << " CThing: " << a->m_sName << '\n';
+            std::cout << " CNode: " << a->m_sName << '\n';
             }
 //          std::cout << e->type << '\t' << " id: " << e->id << '\t' << " name: " << e->NameGet() << '\t' << " data: " << *e << '\n';
         }

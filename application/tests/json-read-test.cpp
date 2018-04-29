@@ -26,17 +26,17 @@ int main()
     oOdb.print_json(std::cout);
 
     odb::CNodes p;
-    {auto t1 = std::clock(); p = oOdb.FindThingsByProperty (std::regex("actor"));
-                             p = oOdb.FindThingsByProperty (std::regex("actor"));
-                             p = oOdb.FindThingsByProperty (std::regex("actor")); auto t2 = std::clock(); std::cout << "A: " << t2-t1 << " - " << p.size() << '\n';}
+    {auto t1 = std::clock(); p = oOdb.FindNodesByProperty (std::regex("actor"));
+                             p = oOdb.FindNodesByProperty (std::regex("actor"));
+                             p = oOdb.FindNodesByProperty (std::regex("actor")); auto t2 = std::clock(); std::cout << "A: " << t2-t1 << " - " << p.size() << '\n';}
 
-    {auto t1 = std::clock(); p = oOdb.FindThingsByProperty (std::regex("actor"));
-                             p = oOdb.FindThingsByProperty (std::regex("actor"));
-                             p = oOdb.FindThingsByProperty (std::regex("actor")); auto t2 = std::clock(); std::cout << "A: " << t2-t1 << " - " << p.size() << '\n';}
+    {auto t1 = std::clock(); p = oOdb.FindNodesByProperty (std::regex("actor"));
+                             p = oOdb.FindNodesByProperty (std::regex("actor"));
+                             p = oOdb.FindNodesByProperty (std::regex("actor")); auto t2 = std::clock(); std::cout << "A: " << t2-t1 << " - " << p.size() << '\n';}
 /*
-    {auto t1 = std::clock(); p = oOdb.FindThingsByPropertyX(std::regex("actor"));
-                             p = oOdb.FindThingsByPropertyX(std::regex("actor"));
-                             p = oOdb.FindThingsByPropertyX(std::regex("actor")); auto t2 = std::clock(); std::cout << "B: " << t2-t1 <<  " - " << p.size() <<'\n';}
+    {auto t1 = std::clock(); p = oOdb.FindNodesByPropertyX(std::regex("actor"));
+                             p = oOdb.FindNodesByPropertyX(std::regex("actor"));
+                             p = oOdb.FindNodesByPropertyX(std::regex("actor")); auto t2 = std::clock(); std::cout << "B: " << t2-t1 <<  " - " << p.size() <<'\n';}
 */
     }
 /*
@@ -47,12 +47,12 @@ int main()
         "Properties": [ { "id": 0, "name": "Person" } ]
         "Atoms": [ { "id": 0, "name": "round", "suffix": "%", "data": "100.2" } ]
         "Reasons": [ { "id": 0, "name": "made" } ]
-        "Things": 
+        "Nodes": 
             [
                 { "id": 0, "name": "Wundertüte",
                     "properties": [ {"id": 0},{"id": 1} ],
                     "atoms": [ {"id": 13},{"id": 14} ],
-                    "links": [ {"thing-id": 6, "reason-id": 3} ] }
+                    "links": [ {"node-id": 6, "reason-id": 3} ] }
             ]
         }
 }

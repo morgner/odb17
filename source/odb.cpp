@@ -11,11 +11,11 @@ namespace odb {
 
 void COdb::clear()
     {
-    for ( auto & a:m_oThings )
+    for ( auto & a:m_oNodes )
         {
         a->clear();
         }
-    m_oThings.clear();
+    m_oNodes.clear();
 
     for ( auto & a:m_oAtoms )
         {

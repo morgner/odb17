@@ -11,13 +11,13 @@
 #include "node.h"
 #include "property.h"
 
-/// @brief Demo main program for "property in thing"
+/// @brief Demo main program for "property in node"
 int main()
    {
    auto oOdb = odb::COdb();
-   auto thing = oOdb.MakeThing( "Tree" );
+   auto node = oOdb.MakeNode( "Tree" );
    auto property = oOdb.MakeProperty( "Acorn" );
-   thing->Append(property);
-   std::cout << "thing: " << *thing;
+   node->Append(property);
+   std::cout << "node: " << *node;
    std::cout << '\n';
    }

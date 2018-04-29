@@ -46,17 +46,17 @@ CReason::operator std::string const & ()
     return m_sName;
     }
 
-void CReason::RelationAdd( PNode & poThingFrom, PNode & poThingTo )
+void CReason::RelationAdd( PNode & poNodeFrom, PNode & poNodeTo )
     {
-    m_mRelations.emplace( std::pair<PNode, PNode>( poThingFrom, poThingTo ) );
+    m_mRelations.emplace( std::pair<PNode, PNode>( poNodeFrom, poNodeTo ) );
     }
 
-void CReason::RelationSub( PNode & poThingFrom, PNode & poThingTo )
+void CReason::RelationSub( PNode & poNodeFrom, PNode & poNodeTo )
     {
-    for ( auto it = m_mRelations.find(poThingFrom); it != m_mRelations.end(); ++it )
+    for ( auto it = m_mRelations.find(poNodeFrom); it != m_mRelations.end(); ++it )
         {
-        if ( it->first  != poThingFrom ) break;
-        if ( it->second == poThingTo )
+        if ( it->first  != poNodeFrom ) break;
+        if ( it->second == poNodeTo )
             {
             m_mRelations.erase( it );
             break;

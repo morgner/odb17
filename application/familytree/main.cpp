@@ -39,12 +39,12 @@ using namespace std::string_literals;
 
 void test1()
     {
-    auto d1 = g_oOdb.MakeThing("Terry Pratchett"s);
-    auto d2 = g_oOdb.MakeThing("Neil Gaiman"s);
+    auto d1 = g_oOdb.MakeNode("Terry Pratchett"s);
+    auto d2 = g_oOdb.MakeNode("Neil Gaiman"s);
 
-    auto d3 = g_oOdb.MakeThing("'Good Omens'"s);
-    auto d4 = g_oOdb.MakeThing("'The Ligth Fantastic'"s);
-    auto d5 = g_oOdb.MakeThing("'The Thief of Time'"s);
+    auto d3 = g_oOdb.MakeNode("'Good Omens'"s);
+    auto d4 = g_oOdb.MakeNode("'The Ligth Fantastic'"s);
+    auto d5 = g_oOdb.MakeNode("'The Thief of Time'"s);
 
     auto r1 = g_oOdb.MakeReason("wrote"s);
     auto r2 = g_oOdb.MakeReason("read"s);
@@ -99,16 +99,16 @@ void test2()
     std::vector<int>    v{1, 2, 3};
     std::array<char, 7> w{'a','b','c'};
 
-    auto d1 = g_oOdb.MakeThing("Wundertüte"s);
-    auto d2 = g_oOdb.MakeThing();
-    auto d3 = g_oOdb.MakeThing("No Product"s);
-    auto d4 = g_oOdb.MakeThing("Thoughtless bucket"s);
-    auto d5 = g_oOdb.MakeThing("Terry Pratchett"s);
-    auto d6 = g_oOdb.MakeThing("Neil Gaiman"s);
-    auto d7 = g_oOdb.MakeThing("'Good Omens'"s);
-    auto d8 = g_oOdb.MakeThing("'The Colour of Magic'"s);
-    auto d9 = g_oOdb.MakeThing("'The Ligth Fantastic'"s);
-    auto da = g_oOdb.MakeThing("'The Thief of Time'"s);
+    auto d1 = g_oOdb.MakeNode("Wundertüte"s);
+    auto d2 = g_oOdb.MakeNode();
+    auto d3 = g_oOdb.MakeNode("No Product"s);
+    auto d4 = g_oOdb.MakeNode("Thoughtless bucket"s);
+    auto d5 = g_oOdb.MakeNode("Terry Pratchett"s);
+    auto d6 = g_oOdb.MakeNode("Neil Gaiman"s);
+    auto d7 = g_oOdb.MakeNode("'Good Omens'"s);
+    auto d8 = g_oOdb.MakeNode("'The Colour of Magic'"s);
+    auto d9 = g_oOdb.MakeNode("'The Ligth Fantastic'"s);
+    auto da = g_oOdb.MakeNode("'The Thief of Time'"s);
 
     auto r1 = g_oOdb.MakeReason("made"s);
     auto r2 = g_oOdb.MakeReason("delivers"s);
@@ -224,8 +224,8 @@ int main()
                 std::cout << "  " << b->m_sName << '\n';
             }
 
-        std::cout << "---------------- all things" << '\n';
-        for ( auto const & a:g_oOdb.Things() )
+        std::cout << "---------------- all nodes" << '\n';
+        for ( auto const & a:g_oOdb.Nodes() )
             {
             std::cout << *a << '\n';
             }

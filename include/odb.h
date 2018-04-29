@@ -42,7 +42,7 @@ namespace odb {
  *  @author Manfred Morgner
  *  @since  0.1.17
  */
-class COdb : public Identifiable<COdb>
+class COdb : public IOdb
     {
     public:
                 /**
@@ -89,47 +89,47 @@ class COdb : public Identifiable<COdb>
          *
          * Frees all known objects at last so far that freeing the
          * object collections releases all memory, bound to them.
-         * So valgrind will find nothing left on the table.
+         * So valgrind will find nonode left on the table.
          */
         void clear();
 
 
         /**
-         * @brief Creates a PThing
+         * @brief Creates a PNode
          *
-         * Creates a shared_ptr with a new CThing named as given in the
+         * Creates a shared_ptr with a new CNode named as given in the
          * call. If no name is given, the name will be the class default
          *
-         * @param crsName The name for the CThing
+         * @param crsName The name for the CNode
          */
 #ifdef __DOXYGEN__
-        PNode MakeThing(std::string const & crsName = "")
+        PNode MakeNode(std::string const & crsName = "")
 #else
-        auto MakeThing(std::string const & crsName = ""s)
+        auto MakeNode(std::string const & crsName = ""s)
 #endif
             {
             auto p = std::make_shared<CNode>(crsName);
-            m_oThings.insert( p );
+            m_oNodes.insert( p );
             return std::move( p );
             }
 
         /**
-         * @brief Creates a PThing with predefined ID
+         * @brief Creates a PNode with predefined ID
          *
-         * Creates a shared_ptr with a new CThing named as given in the
+         * Creates a shared_ptr with a new CNode named as given in the
          * call. If no name is given, the name will be the class default
          *
          * @param nId The predefined ID if loading given sets into odb
-         * @param crsName The name for the CThing
+         * @param crsName The name for the CNode
          */
 #ifdef __DOXYGEN__
-        PNode LoadThing(size_t nId, std::string const & crsName = "")
+        PNode LoadNode(size_t nId, std::string const & crsName = "")
 #else
-        auto LoadThing(size_t nId, std::string const & crsName = ""s)
+        auto LoadNode(size_t nId, std::string const & crsName = ""s)
 #endif
             {
             auto p = std::make_shared<CNode>(nId, crsName);
-            m_oThings.insert( p );
+            m_oNodes.insert( p );
             return std::move( p );
             }
 
@@ -322,7 +322,7 @@ class COdb : public Identifiable<COdb>
          */
         void print() const
             {
-            print(m_oThings);
+            print(m_oNodes);
             print(m_oAtoms);
             print(m_oProperties);
             print(m_oReasons);
@@ -346,10 +346,10 @@ class COdb : public Identifiable<COdb>
             } // void print(CAtoms const & crContainer)
 
         /**
-         * @brief Print out container of CThing's
+         * @brief Print out container of CNode's
          *
          * @param crContainer The forward iterable container, containing
-         *        all CThing instances
+         *        all CNode instances
          */
         template<typename T>
         void print(CT<T> const & crContainer) const
@@ -360,7 +360,7 @@ class COdb : public Identifiable<COdb>
                           << " name: " << e->m_sName << '\t'
                           << '(' << e.use_count() << ')' << '\n';
                 }
-            } // void print(CThings const & crContainer)
+            } // void print(CNodes const & crContainer)
 
 
         /// @brief Replaces 2 with \" and \ with \\
@@ -372,17 +372,17 @@ class COdb : public Identifiable<COdb>
 	    }
 
         /**
-         * @brief Dump all CThings in Sub-JSON format
+         * @brief Dump all CNodes in Sub-JSON format
          *
          * @param crContainer The forward iterable container, containing
-         *        all CThing instances
+         *        all CNode instances
          * @param ros The output destination
          */
         void print_json(CNodes const & crContainer, std::ostream & ros)
             {
             std::size_t cm{crContainer.size()};
             std::size_t cc{0};
-            ros << spcr<2> << "\"Things\": " << '\n';
+            ros << spcr<2> << "\"Nodes\": " << '\n';
             ros << spcr<3> << '[' << '\n';
             for (auto const & e:crContainer)
                 {
@@ -423,25 +423,25 @@ class COdb : public Identifiable<COdb>
                     if ( !lb ) { lb=true; ros << ""; } else { ros << ","; }
                     ++lc;
                     if ( lc % 3 == 0 & lc > 1 ) { ros << "\n" << spcr<6>; }
-                    ros << "{\"thing-id\": " << b.first->m_nId << ", \"reason-id\": " << b.second->m_nId << "}";
+                    ros << "{\"node-id\": " << b.first->m_nId << ", \"reason-id\": " << b.second->m_nId << "}";
                     }
                 if ( ++cc < cm ) { ros << " ] },\n"; } else { ros << " ] }\n"; }
                 }
             ros << spcr<3> << "]\n";
-            } // void print_json(CThings const & crContainer, std::ostream & ros)
+            } // void print_json(CNodes const & crContainer, std::ostream & ros)
 
         /**
-         * @brief Dump all CThings in Sub-JSON format
+         * @brief Dump all CNodes in Sub-JSON format
          *
          * @param crContainer The forward iterable container, containing
-         *        all CThing instances
+         *        all CNode instances
          * @param ros The output destination
          */
         void print_json_stream(CNodes const & crContainer, std::ostream & ros)
             {
             std::size_t cm{crContainer.size()};
             std::size_t cc{0};
-            ros << "\"Things\":[";
+            ros << "\"Nodes\":[";
             for (auto const & e:crContainer)
                 {
 //              ros << "{\"type\":\"" << e->type  << "\",";
@@ -471,12 +471,12 @@ class COdb : public Identifiable<COdb>
                 for (auto const & b:e->m_mLink)
                     {
                     if ( !lb ) { lb=true; } else { ros << ","; }
-                    ros << "{\"thing-id\":" << b.first->m_nId << ",\"reason-id\":" << b.second->m_nId << "}";
+                    ros << "{\"node-id\":" << b.first->m_nId << ",\"reason-id\":" << b.second->m_nId << "}";
                     }
                 if ( ++cc < cm ) { ros << "]},"; } else { ros << "]}"; }
                 }
             ros << "]";
-            } // void print_json_stream(CThings const & crContainer, std::ostream & ros)
+            } // void print_json_stream(CNodes const & crContainer, std::ostream & ros)
 
         /**
          * @brief Dump all CProperty's in Sub-JSON format
@@ -632,7 +632,7 @@ class COdb : public Identifiable<COdb>
          *
          * @param ros The output destination
 
- @par Sample: Link Atoms to Things and Thing to Thing and dump it as JSON
+ @par Sample: Link Atoms to Nodes and Node to Node and dump it as JSON
  @rst
  .. code-block:: cpp
 
@@ -640,19 +640,19 @@ class COdb : public Identifiable<COdb>
 
 	 #include "odb.h"
 	 #include "atom.h"
-	 #include "thing.h"
+	 #include "node.h"
 
 	 int main()
 	     {
 	     auto oOdb    = odb::COdb();
-	     auto pThing1 = oOdb.MakeThing("Ulrich");
-	     auto pThing2 = oOdb.MakeThing("Fred");
+	     auto pNode1 = oOdb.MakeNode("Ulrich");
+	     auto pNode2 = oOdb.MakeNode("Fred");
 	     auto pAtom1  = oOdb.MakeAtom("Leader", "Role");
 	     auto pAtom2  = oOdb.MakeAtom("Member", "Role");
 	     auto pReason = oOdb.MakeReason("pays");
-	     pThing1->Append(pAtom1);
-	     pThing2->Append(pAtom2);
-	     pThing1->Link(pThing2, pReason);
+	     pNode1->Append(pAtom1);
+	     pNode2->Append(pAtom2);
+	     pNode1->Link(pNode2, pReason);
 	     oOdb.print_json(std::cout);
 	     }
 
@@ -676,12 +676,12 @@ class COdb : public Identifiable<COdb>
             [
                 { "id": 0, "name": "pays" }
             ],
-        "Things":
+        "Nodes":
             [
                 { "id": 0, "name": "Ulrich",
                     "properties": [  ],
                     "atoms": [ {"id": 0} ],
-                    "links": [ {"thing-id": 1, "reason-id": 0} ] },
+                    "links": [ {"node-id": 1, "reason-id": 0} ] },
                 { "id": 1, "name": "Fred",
                     "properties": [  ],
                     "atoms": [ {"id": 1} ],
@@ -703,12 +703,12 @@ class COdb : public Identifiable<COdb>
             m_oProperties.size() << "},{\"A\": " <<
             m_oAtoms.size() << "},{\"R\": " <<
             m_oReasons.size() << "},{\"T\": " <<
-            m_oThings.size() << "} ]," << '\n';
+            m_oNodes.size() << "} ]," << '\n';
 
             print_json(m_oProperties, ros);
             print_json(m_oAtoms,      ros);
             print_json(m_oReasons,    ros);
-            print_json(m_oThings,     ros);
+            print_json(m_oNodes,     ros);
 
             ros << spcr<2> << '}' << '\n';
             ros << spcr<0> << '}' << '\n';
@@ -721,12 +721,12 @@ class COdb : public Identifiable<COdb>
         "Properties": [ { "id": 0, "name": "Person" } ],
         "Atoms": [ { "id": 0, "name": "round", "suffix": "%", "data": "100.2" } ],
         "Reasons": [ { "id": 0, "name": "made" } ],
-        "Things":
+        "Nodes":
             [
                 { "id": 0, "name": "Wundertüte",
                     "properties": [ {"id": 0},{"id": 1} ],
                     "atoms": [ {"id": 13},{"id": 14} ],
-                    "links": [ {"thing-id": 6, "reason-id": 3} ] }
+                    "links": [ {"node-id": 6, "reason-id": 3} ] }
             ]
         }
 }
@@ -740,7 +740,7 @@ class COdb : public Identifiable<COdb>
             ros << "{\"Object Database Dump\":{" << '\n';
 
             ros <<            "\"Sizes\":["
-		<< "{\"T\":" << m_oThings.size()     << "},"
+		<< "{\"T\":" << m_oNodes.size()     << "},"
 		<< "{\"P\":" << m_oProperties.size() << "},"
 		<< "{\"R\":" << m_oReasons.size()    << "},"
 		<< "{\"A\":" << m_oAtoms.size()      << "}"
@@ -749,7 +749,7 @@ class COdb : public Identifiable<COdb>
             print_json_stream(m_oProperties, ros); ros << ",\n";
             print_json_stream(m_oAtoms,      ros); ros << ",\n";
             print_json_stream(m_oReasons,    ros); ros << ",\n";
-            print_json_stream(m_oThings,     ros); ros << "";
+            print_json_stream(m_oNodes,     ros); ros << "";
 
             ros << "}}\n";
             }
@@ -759,7 +759,7 @@ class COdb : public Identifiable<COdb>
 "Properties":[],
 "Atoms":[{"id":0,"name":"Role","data":"Leader"},{"id":1,"name":"Role","data":"Member"}],
 "Reasons":[{"id":0,"name":"pays"}],
-"Things":[{"id":0,"name":"Ulrich","properties":[],"atoms":[{"id":0}],"links":[{"thing-id":1,"reason-id":0}]},{"id":1,"name":"Fred","properties":[],"atoms":[{"id":1}],"links":[]}]}}
+"Nodes":[{"id":0,"name":"Ulrich","properties":[],"atoms":[{"id":0}],"links":[{"node-id":1,"reason-id":0}]},{"id":1,"name":"Fred","properties":[],"atoms":[{"id":1}],"links":[]}]}}
 */
 
         /// @brief Saves an odb json file
@@ -816,37 +816,37 @@ class COdb : public Identifiable<COdb>
                 LoadReason(nId, sName);
                 }
 
-            auto const & things = (*poJson)["Object Database Dump"]["Things"];
-            for ( size_t index = 0; index < things.size(); ++index )
+            auto const & nodes = (*poJson)["Object Database Dump"]["Nodes"];
+            for ( size_t index = 0; index < nodes.size(); ++index )
                 {
-                auto nId   = things[(int)index].get("id",    0).asUInt();
-                auto sName = things[(int)index].get("name", "").asString();
-                LoadThing(nId, sName);
+                auto nId   = nodes[(int)index].get("id",    0).asUInt();
+                auto sName = nodes[(int)index].get("name", "").asString();
+                LoadNode(nId, sName);
                 }
-            for ( size_t index = 0; index < things.size(); ++index )
+            for ( size_t index = 0; index < nodes.size(); ++index )
                 {
-                auto nId   = things[(int)index].get("id",    0).asUInt();
+                auto nId   = nodes[(int)index].get("id",    0).asUInt();
 
-                auto const & p = things[(int)index]["properties"];
+                auto const & p = nodes[(int)index]["properties"];
                 for ( size_t i = 0; i < p.size(); ++i )
                     {
                     auto nPId = p[(int)i].get("id", 0).asUInt();
-                    AppendProperty2Thing( nPId, nId );
+                    AppendProperty2Node( nPId, nId );
                     }
 
-                auto const & a = things[(int)index]["atoms"];
+                auto const & a = nodes[(int)index]["atoms"];
                 for ( size_t i = 0; i < a.size(); ++i )
                     {
                     auto nAId = a[(int)i].get("id", 0).asUInt();
-                    AppendAtom2Thing( nAId, nId );
+                    AppendAtom2Node( nAId, nId );
                     }
 
-                auto const & l = things[(int)index]["links"];
+                auto const & l = nodes[(int)index]["links"];
                 for ( size_t i = 0; i < l.size(); ++i )
                     {
-                    auto nTId = l[(int)i].get("thing-id",  0).asUInt();
+                    auto nTId = l[(int)i].get("node-id",  0).asUInt();
                     auto nRId = l[(int)i].get("reason-id", 0).asUInt();
-                    LinkThing2Thing( nId, nRId, nTId );
+                    LinkNode2Node( nId, nRId, nTId );
                     }
                 }
             poJson = std::make_unique<Json::Value>();
@@ -854,35 +854,35 @@ class COdb : public Identifiable<COdb>
             } // LoadDB(...)    
 
 
-        /// @brief Has to return a thing with specified ID, if it does not exists, it is to make
-        /// @param nId The id of the thing
-        /// @param crsName The name of the thing if it has to be created
+        /// @brief Has to return a node with specified ID, if it does not exists, it is to make
+        /// @param nId The id of the node
+        /// @param crsName The name of the node if it has to be created
 #ifdef __DOXYGEN__
-        PNode FindOrLoadThingById( size_t const nId, std::string const & crsName = "" )
+        PNode FindOrLoadNodeById( size_t const nId, std::string const & crsName = "" )
 #else
-        auto FindOrLoadThingById( size_t const nId, std::string const & crsName = ""s )
+        auto FindOrLoadNodeById( size_t const nId, std::string const & crsName = ""s )
 #endif
             {
-            PNode poThing;
+            PNode poNode;
 
-            auto const itThing =  m_oThings.get<id>().find( nId );
-            if ( itThing == m_oThings.get<id>().end() )
+            auto const itNode =  m_oNodes.get<id>().find( nId );
+            if ( itNode == m_oNodes.get<id>().end() )
                 {
-                poThing = ( ""s == crsName ) ? LoadThing(nId) : LoadThing(nId, crsName);
+                poNode = ( ""s == crsName ) ? LoadNode(nId) : LoadNode(nId, crsName);
                 }
             else
                 {
-                poThing = *itThing;
+                poNode = *itNode;
                 }
-            return std::move(poThing);
+            return std::move(poNode);
             }
 
 
-        /// @brief Finds PThing with a named Property only if it's unique
+        /// @brief Finds PNode with a named Property only if it's unique
         /// 
         /// @param crsProperty The name for the CProperty
         /// 
-        ONode FindThingByProperty( std::string const & crsProperty )
+        ONode FindNodeByProperty( std::string const & crsProperty )
             {
             auto const itProperty =  m_oProperties.get<name>().find( crsProperty );
             if ( itProperty == m_oProperties.get<name>().end() )
@@ -899,11 +899,11 @@ class COdb : public Identifiable<COdb>
             }
 
 
-        /// @brief Finds PThing with a named Property only if it's one
+        /// @brief Finds PNode with a named Property only if it's one
         /// 
         /// @param crsProperty The name for the CProperty
         /// 
-        CNodes FindThingsByProperty( std::string const & crsProperty )
+        CNodes FindNodesByProperty( std::string const & crsProperty )
             {
             auto oRange = m_oProperties.get<name>().equal_range(crsProperty);
             // todo: preallocation
@@ -916,14 +916,14 @@ class COdb : public Identifiable<COdb>
                     }
                 }
             return std::move(oResult);
-            } // CThings FindThingsByProperty( std::string ...
+            } // CNodes FindNodesByProperty( std::string ...
 
 
-        /// @brief Finds PThing with a named Property only if it's one
+        /// @brief Finds PNode with a named Property only if it's one
         /// 
         /// @param crsRegex The name for the CProperty
         /// 
-        CNodes FindThingsByProperty( std::regex const & crsRegex )
+        CNodes FindNodesByProperty( std::regex const & crsRegex )
             {
         //    std::vector<PProperty> oProperties;
         //    std::copy_if(m_oProperties.begin(),
@@ -946,15 +946,15 @@ class COdb : public Identifiable<COdb>
                     }
                 }
             return std::move(oResult);
-            } // CThings FindThingsByProperty( std::regex ...
+            } // CNodes FindNodesByProperty( std::regex ...
 
 
-        /// @brief Finds or creates a PThing with a named Property, which also may be created and assigned
+        /// @brief Finds or creates a PNode with a named Property, which also may be created and assigned
         ///
-        /// @param crsThing The name for the CThing
+        /// @param crsNode The name for the CNode
         /// @param crsProperty The name for the CProperty
         ///
-        PNode FindOrMakeThingByProperty( std::string const & crsThing, std::string const & crsProperty )
+        PNode FindOrMakeNodeByProperty( std::string const & crsNode, std::string const & crsProperty )
             {
             PProperty poProperty;
 
@@ -975,12 +975,12 @@ class COdb : public Identifiable<COdb>
                 }
             else
                 {
-                poResult = MakeThing(crsThing);
+                poResult = MakeNode(crsNode);
                 poResult->Append(poProperty);
                 }
  
             return std::move(poResult);
-            } // PThing FindOrMakeThingByProperty( std::string ...
+            } // PNode FindOrMakeNodeByProperty( std::string ...
 
 
         /// @brief Has to return a property, if it does not exists, it is to make
@@ -1019,32 +1019,32 @@ class COdb : public Identifiable<COdb>
             return std::move(poReason);
             }
 
-        /// todo: optimize / Appends a Property to a Thing by given index value
-        bool AppendProperty2Thing( size_t nProperty, size_t nThing)
+        /// todo: optimize / Appends a Property to a Node by given index value
+        bool AppendProperty2Node( size_t nProperty, size_t nNode)
             {
             auto const itProperty = m_oProperties.get<id>().find( nProperty );
-            auto itThing    = m_oThings.get<id>().find( nThing );
+            auto itNode    = m_oNodes.get<id>().find( nNode );
 
-            if ( (itThing == m_oThings.end()) || (itProperty == m_oProperties.end()) )
+            if ( (itNode == m_oNodes.end()) || (itProperty == m_oProperties.end()) )
                 {
                 return false;
                 }
             PProperty poProperty = *itProperty;
-            (*itThing)->Append( poProperty );
+            (*itNode)->Append( poProperty );
             return true;
             }
 
-        /// todo: optimize / Appends a Property to a Thing by given names
-        bool AppendProperty2Thing( std::string const & crsProperty, std::string const & crsThing )
+        /// todo: optimize / Appends a Property to a Node by given names
+        bool AppendProperty2Node( std::string const & crsProperty, std::string const & crsNode )
             {
-            return AppendProperty2Thing( crsProperty, false, crsThing );
+            return AppendProperty2Node( crsProperty, false, crsNode );
             }
 
-        /// todo: optimize / Appends a Property to a Thing by given names
-        bool AppendProperty2Thing( std::string const & crsProperty, bool const bForce, std::string const & crsThing )
+        /// todo: optimize / Appends a Property to a Node by given names
+        bool AppendProperty2Node( std::string const & crsProperty, bool const bForce, std::string const & crsNode )
             {
-            auto itThings =  m_oThings.get<name>().find( crsThing );
-            if ( itThings == m_oThings.get<name>().end() )
+            auto itNodes =  m_oNodes.get<name>().find( crsNode );
+            if ( itNodes == m_oNodes.get<name>().end() )
                 {
                 return false;
                 }
@@ -1062,70 +1062,70 @@ class COdb : public Identifiable<COdb>
                 poProperty = *itProperty;
                 }
 
-            (*itThings)->Append( poProperty );
+            (*itNodes)->Append( poProperty );
 
             return true;
             }
 
-        /// todo: optimize / Appends an Atom to a Thing by given index value
-        bool AppendAtom2Thing( size_t nThing, size_t nAtom )
+        /// todo: optimize / Appends an Atom to a Node by given index value
+        bool AppendAtom2Node( size_t nNode, size_t nAtom )
             {
-            if ( (nThing >  m_oThings.size()) || (nAtom > m_oAtoms.size()) ) return false;
-            auto itThing =  m_oThings.get<id>().find( nThing );
-            if ( itThing == m_oThings.end() ) return false;
+            if ( (nNode >  m_oNodes.size()) || (nAtom > m_oAtoms.size()) ) return false;
+            auto itNode =  m_oNodes.get<id>().find( nNode );
+            if ( itNode == m_oNodes.end() ) return false;
             auto itAtom  =  m_oAtoms.get<id>().find( nAtom );
             if ( itAtom  == m_oAtoms.end() ) return false;
 
-            (*itThing)->Append( const_cast<PAtom&>(*itAtom) );
+            (*itNode)->Append( const_cast<PAtom&>(*itAtom) );
             return true;
             }
 
-        /// todo: optimize / Links a Thing to a Thing for a Reason by given index value
-        bool LinkThing2Thing( size_t nThingFrom, size_t nReason, size_t nThingTo )
+        /// todo: optimize / Links a Node to a Node for a Reason by given index value
+        bool LinkNode2Node( size_t nNodeFrom, size_t nReason, size_t nNodeTo )
             {
-            auto itThingFrom  =  m_oThings .get<id>().find( nThingFrom );
-            auto itThingTo    =  m_oThings .get<id>().find( nThingTo );
+            auto itNodeFrom  =  m_oNodes .get<id>().find( nNodeFrom );
+            auto itNodeTo    =  m_oNodes .get<id>().find( nNodeTo );
             auto itReason     =  m_oReasons.get<id>().find( nReason );
-            if ( (itThingFrom == m_oThings .end()) || (itThingTo == m_oThings.end()) || (itReason == m_oReasons.end()) )
+            if ( (itNodeFrom == m_oNodes .end()) || (itNodeTo == m_oNodes.end()) || (itReason == m_oReasons.end()) )
                 {
-//              std::cout << "0 " << (*itThingFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itThingTo)->m_sName << '\n';
+//              std::cout << "0 " << (*itNodeFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itNodeTo)->m_sName << '\n';
 /*
                 std::cout << "0 ";
-                if (itThingFrom == m_oThings. end()) std::cout << "E:" << nThingFrom << " "; else std::cout << (*itThingFrom)->m_sName << " ";
+                if (itNodeFrom == m_oNodes. end()) std::cout << "E:" << nNodeFrom << " "; else std::cout << (*itNodeFrom)->m_sName << " ";
                 if (itReason    == m_oReasons.end()) std::cout << "E:" << nReason    << " "; else std::cout << (*itReason)->m_sName    << " ";
-                if (itThingTo   == m_oThings. end()) std::cout << "E:" << nThingTo   << " "; else std::cout << (*itThingTo)->m_sName   << " ";
+                if (itNodeTo   == m_oNodes. end()) std::cout << "E:" << nNodeTo   << " "; else std::cout << (*itNodeTo)->m_sName   << " ";
                 std::cout << '\n';
 */
                 return false;
                 }
-//          std::cout << "true LinkThing2Thing( size_t " << nThingFrom << ", size_t " << nReason << ", size_t " << nThingTo << " )\n";
-//          std::cout << "+ " << (*itThingFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itThingTo)->m_sName << '\n';
-            (*itThingFrom)->Link( const_cast<PNode&>(*itThingTo), const_cast<PReason&>(*itReason) );
-//          Link( *itThingFrom, *itReason, *itThingTo );
+//          std::cout << "true LinkNode2Node( size_t " << nNodeFrom << ", size_t " << nReason << ", size_t " << nNodeTo << " )\n";
+//          std::cout << "+ " << (*itNodeFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itNodeTo)->m_sName << '\n';
+            (*itNodeFrom)->Link( const_cast<PNode&>(*itNodeTo), const_cast<PReason&>(*itReason) );
+//          Link( *itNodeFrom, *itReason, *itNodeTo );
             return true;
             }
 
-        /// todo: optimize / Links a Thing to a Thing for a Reason by given names
-        bool LinkThing2Thing( std::string const & crsThingFrom, std::string const & crsReason, std::string const & crsThingTo )
+        /// todo: optimize / Links a Node to a Node for a Reason by given names
+        bool LinkNode2Node( std::string const & crsNodeFrom, std::string const & crsReason, std::string const & crsNodeTo )
             {
-            auto itThingFrom  =  m_oThings .get<name>().find( crsThingFrom );
-            auto itThingTo    =  m_oThings .get<name>().find( crsThingTo );
+            auto itNodeFrom  =  m_oNodes .get<name>().find( crsNodeFrom );
+            auto itNodeTo    =  m_oNodes .get<name>().find( crsNodeTo );
             auto itReason     =  m_oReasons.get<name>().find( crsReason );
-            if ( (itThingFrom == m_oThings.get<name>().end()) || (itThingTo == m_oThings.get<name>().end()) || (itReason == m_oReasons.get<name>().end()) )
+            if ( (itNodeFrom == m_oNodes.get<name>().end()) || (itNodeTo == m_oNodes.get<name>().end()) || (itReason == m_oReasons.get<name>().end()) )
                 {
 /*
                 std::cout << "0 ";
-                if (itThingFrom == m_oThings. get<name>().end()) std::cout << "E:" << crsThingFrom << " "; else std::cout << (*itThingFrom)->m_sName << " ";
+                if (itNodeFrom == m_oNodes. get<name>().end()) std::cout << "E:" << crsNodeFrom << " "; else std::cout << (*itNodeFrom)->m_sName << " ";
                 if (itReason    == m_oReasons.get<name>().end()) std::cout << "E:" << crsReason    << " "; else std::cout << (*itReason)->m_sName    << " ";
-                if (itThingTo   == m_oThings. get<name>().end()) std::cout << "E:" << crsThingTo   << " "; else std::cout << (*itThingTo)->m_sName   << " ";
+                if (itNodeTo   == m_oNodes. get<name>().end()) std::cout << "E:" << crsNodeTo   << " "; else std::cout << (*itNodeTo)->m_sName   << " ";
                 std::cout << '\n';
 */
                 return false;
                 }
-//          std::cout << "true LinkThing2Thing( size_t " << nThingFrom << ", size_t " << nReason << ", size_t " << nThingTo << " )\n";
-//          std::cout << "+ " << (*itThingFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itThingTo)->m_sName << '\n';
-            (*itThingFrom)->Link( const_cast<PNode&>(*itThingTo), const_cast<PReason&>(*itReason) );
-//          Link( *itThingFrom, *itReason, *itThingTo );
+//          std::cout << "true LinkNode2Node( size_t " << nNodeFrom << ", size_t " << nReason << ", size_t " << nNodeTo << " )\n";
+//          std::cout << "+ " << (*itNodeFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itNodeTo)->m_sName << '\n';
+            (*itNodeFrom)->Link( const_cast<PNode&>(*itNodeTo), const_cast<PReason&>(*itReason) );
+//          Link( *itNodeFrom, *itReason, *itNodeTo );
             return true;
             }
 
@@ -1186,11 +1186,11 @@ class COdb : public Identifiable<COdb>
             }
     public:
         /// API Adapter
-        auto FindThing     ( size_t                  nId ) { return Find(m_oThings, nId );}
+        auto FindNode     ( size_t                  nId ) { return Find(m_oNodes, nId );}
         /// API Adapter
-        auto FindThings    ( std::string const & crsName ) { return Find(m_oThings, crsName ); }
+        auto FindNodes    ( std::string const & crsName ) { return Find(m_oNodes, crsName ); }
         /// API Adapter
-        auto FindThings    ( std::regex const & crsRegex ) { return Find(m_oThings, crsRegex); }
+        auto FindNodes    ( std::regex const & crsRegex ) { return Find(m_oNodes, crsRegex); }
 
         /// API Adapter
         auto FindProperty  ( size_t                  nId ) { return Find(m_oProperties, nId     ); }
@@ -1218,9 +1218,9 @@ class COdb : public Identifiable<COdb>
         /// Result container of collecting operations, collecting IDs
         using CAggregate = std::set<size_t>;
 
-        /// todo: optimize / Selects Thing-IDs by a Property
-        /// Returns the IDs of all things having a property as RegExNamed
-        CAggregate SelectThingsByProperty( std::regex const & croProperty )
+        /// todo: optimize / Selects Node-IDs by a Property
+        /// Returns the IDs of all nodes having a property as RegExNamed
+        CAggregate SelectNodesByProperty( std::regex const & croProperty )
             {
             CAggregate result{};
 
@@ -1260,22 +1260,22 @@ class COdb : public Identifiable<COdb>
             return std::move(oResult);
             }
     public:
-	/// find all things not linked with anything
-        auto FindUnUsedThings()
+	/// find all nodes not linked with anynode
+        auto FindUnUsedNodes()
 	    {
-	    return FindUnUsed( m_oThings );
+	    return FindUnUsed( m_oNodes );
 	    }
-	/// find all reasons not used with anything
+	/// find all reasons not used with anynode
 	auto FindUnUsedReasons()
 	    {
 	    return FindUnUsed( m_oReasons );
 	    }
-	/// find all properties not linked to anything
+	/// find all properties not linked to anynode
 	auto FindUnUsedProperties()
 	    {
 	    return FindUnUsed( m_oProperties );
 	    }
-	/// find all atoms not linked to anything
+	/// find all atoms not linked to anynode
 	auto FindUnUsedAtoms()
 	    {
 	    return FindUnUsed( m_oAtoms );
@@ -1283,8 +1283,8 @@ class COdb : public Identifiable<COdb>
 
 
 
-        /// Access function to call then container of CThing's
-        auto const & Things() const { return m_oThings;  }
+        /// Access function to call then container of CNode's
+        auto const & Nodes() const { return m_oNodes;  }
         /// Access function to call then container of CProperties
         auto const & Properties() const { return m_oProperties; }
         /// Access function to call then container of CAtom's
@@ -1294,8 +1294,8 @@ class COdb : public Identifiable<COdb>
         /// Access function to call then container of CStrand's
         auto const & Strands() const { return m_oStrands; }
     protected:
-        /// A container instance of CThing's
-        CNodes      m_oThings;
+        /// A container instance of CNode's
+        CNodes      m_oNodes;
         /// A container instance of CProperties
         CProperties  m_oProperties;
         /// A container instance of CAtom's

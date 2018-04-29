@@ -1,5 +1,5 @@
 /**
- *  @file link2things-test.cpp
+ *  @file link2nodes-test.cpp
  *
  *  @author Manfred Morgner
  *  @date 21.01.2018
@@ -10,21 +10,21 @@
 #include "odb.h"
 #include "node.h"
 
-/// @brief Demo main program "linking things together"
+/// @brief Demo main program "linking nodes together"
 int main()
     {
-    // creating things
+    // creating nodes
     auto oOdb    = odb::COdb();
-    auto pThing1 = oOdb.MakeThing("Ulrich");
-    auto pThing2 = oOdb.MakeThing("Fred");
+    auto pNode1 = oOdb.MakeNode("Ulrich");
+    auto pNode2 = oOdb.MakeNode("Fred");
     auto pReason = oOdb.MakeReason("pays");
 
     // linking them together
-    pThing1->Link(pThing2, pReason);
+    pNode1->Link(pNode2, pReason);
 
-    // 1) print the thing's view
-    std::cout << "thing: " << *pThing1 << '\n';
-    std::cout << "thing: " << *pThing2 << '\n';
+    // 1) print the node's view
+    std::cout << "node: " << *pNode1 << '\n';
+    std::cout << "node: " << *pNode2 << '\n';
 
     // 2) print complete database in simple form
     oOdb.print();

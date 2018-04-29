@@ -24,7 +24,7 @@ class COdb;
 
 
 /**
- *  @brief A Reason to link two Things (Unidirectional)
+ *  @brief A Reason to link two Nodes (Unidirectional)
  */
 class CReason : public IReason
     {
@@ -60,20 +60,20 @@ class CReason : public IReason
         /// Conversion operator will return the name of the instance
         operator std::string const & ();
 
-        /// Add the information about linking from one CThing to another
+        /// Add the information about linking from one CNode to another
         /// regarding 'this' CReason
-        void RelationAdd( PNode & poThingFrom, PNode & poThingTo );
+        void RelationAdd( PNode & poNodeFrom, PNode & poNodeTo );
 
         /**
-           @brief Removes a link between two CThing's
+           @brief Removes a link between two CNode's
 
-           Removes the information about a particular link from one CThing to
+           Removes the information about a particular link from one CNode to
            another regarding 'this' reason
 
-           @param poThingFrom The thing the link is claimed to be made from
-           @param poThingTo The thing the link is claimed to be made to
+           @param poNodeFrom The node the link is claimed to be made from
+           @param poNodeTo The node the link is claimed to be made to
          */
-        void RelationSub( PNode & poThingFrom, PNode & poThingTo );
+        void RelationSub( PNode & poNodeFrom, PNode & poNodeTo );
 
         /// Prints an informational output to std::cout
         void print();
@@ -85,7 +85,7 @@ class CReason : public IReason
 	    }
 
     protected:
-        /// A map containing all links from one thing to another using
+        /// A map containing all links from one node to another using
         /// 'this' CReason
         std::multimap<PNode, PNode> m_mRelations;
 

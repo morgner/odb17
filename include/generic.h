@@ -26,7 +26,7 @@
 #include <optional>
 
 /**
- * Demangle C++ types into something human readable
+ * Demangle C++ types into somenode human readable
  *
  * @param type A std::type_info object holding a C++ type
  */
@@ -176,8 +176,8 @@ struct lessIdentifiableName
     };
 
 /* 2
-    auto compare = [](PThing const p1, PThing const p2){return p1->id < p2->id;};
-    std::set<PThing, decltype(compare)> m_spoThingsRelating{std::move(compare)};
+    auto compare = [](PNode const p1, PNode const p2){return p1->id < p2->id;};
+    std::set<PNode, decltype(compare)> m_spoNodesRelating{std::move(compare)};
 */
 
 /* 3
@@ -191,10 +191,10 @@ auto make_set(Comparator && ... comparator)
     };
   return std::set<Type, Compare>{Compare{std::forward<Comparator>(comparator)...}};
   }
-auto m_spoThingsRelating = make_set<PThing>(
-  [](PThing const p1, PThing const p2){return p1->id < p2->id;}
-  [](long   const c , PThing const p2){return c      < p2->id;},
-  [](PThing const p1, long   const c ){return p1->id < c;     }
+auto m_spoNodesRelating = make_set<PNode>(
+  [](PNode const p1, PNode const p2){return p1->id < p2->id;}
+  [](long   const c , PNode const p2){return c      < p2->id;},
+  [](PNode const p1, long   const c ){return p1->id < c;     }
   );
 */
 
@@ -221,14 +221,19 @@ template<typename T> using CT = multi_index_container<
     ordered_non_unique<tag<name>,member<IT<T>, std::string, &IT<T>::m_sName>> >>;
 
 /// Forward decleration to befriend with it in other classes
+class COdb;
+/// The type to inherit from (Identifiable<>)
+using IOdb = Identifiable<COdb>;
+
+/// Forward decleration to befriend with it in other classes
 class CNode;
 /// The shared_ptr of the entity
 using PNode  = PT<CNode>;
-/// The type to inherite from (Identifiable<>)
+/// The type to inherit from (Identifiable<>)
 using INode  = IT<CNode>;
 /// A return value for 'optional' returns
 using ONode = std::optional<PNode>;
-/// A set of PThing's
+/// A set of PNode's
 using SNodes = std::set<PNode, lessIdentifiableName<PNode>>;
 /// A container for the shared_ptr's of the entity
 using CNodes = CT<CNode>; 

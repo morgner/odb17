@@ -22,7 +22,7 @@ class COdb;
 using IStrand = Identifiable<CStrand>;
 
 /**
- * A Strand to link two Things (Unidirectional)
+ * A Strand to link two Nodes (Unidirectional)
  */
 class CStrand : public IStrand
     {

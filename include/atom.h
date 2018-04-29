@@ -167,10 +167,8 @@ std::ostream& operator<< (std::ostream & ros, std::array<T, N> const & crContain
 /// forward declarations to befriend with
 class COdb;
 
-using IAtom = Identifiable<CAtom>;
-
 /**
- @brief An Atom is a data field for a CThing
+ @brief An Atom is a data field for a CNode
 
  @par Sample Code goes here
  @rst
@@ -308,7 +306,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
      */
     void clear()
         {
-        m_spoThingsRelating.clear();
+        m_spoNodesRelating.clear();
         }
 
     /// friend function to print the atom instance in an inforamtional manner
@@ -319,9 +317,9 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
         {
         croAtom.m_pAtomData->ToStream(ros);
 /*
-        for ( auto const & e:croAtom.m_qpoThingsRelating )
+        for ( auto const & e:croAtom.m_qpoNodesRelating )
           {
-          ros << '\n' << " used by thing: " << e;
+          ros << '\n' << " used by node: " << e;
           }
 */
         return ros;
@@ -352,25 +350,25 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
         if (m_sSuffix.length() > 0) out << " " << m_sSuffix;
         }
 
-    /// Adds the backlink from the atom to a thing
-    /// @param poThing Inform a thing about being linked from another thing
-    auto RelatingThingAdd(PNode poThing)
+    /// Adds the backlink from the atom to a node
+    /// @param poNode Inform a node about being linked from another node
+    auto RelatingNodeAdd(PNode poNode)
         {
-        m_spoThingsRelating.insert(poThing);
-        return poThing;
+        m_spoNodesRelating.insert(poNode);
+        return poNode;
         }
 
-    /// Removes the backlink from the atom to a thing
-    /// @param poThing Inform a thing about no more being linked from another thing
-    auto RelatingThingSub(PNode poThing)
+    /// Removes the backlink from the atom to a node
+    /// @param poNode Inform a node about no more being linked from another node
+    auto RelatingNodeSub(PNode poNode)
         {
-        return m_spoThingsRelating.erase(poThing);
+        return m_spoNodesRelating.erase(poNode);
         }
 
     /// returns if the instance is 'free'
     auto IsUnUsed()
 	    {
-	    return (0 == m_spoThingsRelating.size());
+	    return (0 == m_spoNodesRelating.size());
 	    }
 
     protected:
@@ -380,8 +378,8 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
         std::string m_sPrefix{""s};
         /// The UI suffix (if any) for the atom
         std::string m_sSuffix{""s};
-        /// CThing's Relating to this CAtom
-        std::set<PNode, lessIdentifiableId<PNode>>  m_spoThingsRelating;
+        /// CNode's Relating to this CAtom
+        std::set<PNode, lessIdentifiableId<PNode>>  m_spoNodesRelating;
 
     /// start of data implementation
     struct SAtomDataConcept

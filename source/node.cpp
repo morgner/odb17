@@ -1,5 +1,5 @@
 /**
- * @file thing.cpp
+ * @file node.cpp
  *
  * @author Manfred Morgner
  * @date 26.12.2017
@@ -25,27 +25,27 @@ void CNode::clear()
     }
 
 
-std::ostream & operator << (std::ostream & ros, CNode const & crThing)
+std::ostream & operator << (std::ostream & ros, CNode const & crNode)
     {
-    ros << crThing.m_sName; // << '\n';
+    ros << crNode.m_sName; // << '\n';
     bool bFirst = false; // true;
-    for (auto const & a:crThing.m_spoProperties)
+    for (auto const & a:crNode.m_spoProperties)
         {
         if (bFirst) { bFirst = false; } else { ros << '\n' << "  Property: " << a->m_sName << " "; }
         }
-    for (auto const & a:crThing.m_spoAtoms)
+    for (auto const & a:crNode.m_spoAtoms)
         {
         if (bFirst) { bFirst = false; } else { ros << '\n' << "  " << a->m_sName << ": "; }
         a->print_atom_data_formated(ros);
         }
-    for (auto const & a:crThing.m_mLink)
+    for (auto const & a:crNode.m_mLink)
         {
         if (bFirst) { bFirst = false; } else { ros << '\n' << "  "; }
         ros << " => linked for reason: " << '"' << a.second->m_sName << '"' << " to: " << '"' << a.first->m_sName << '"';
 //      ros << " => linked to: " << '"' << a.first->m_sName << '"' << " for reason: " << '"' << a.second->m_sName << '"';
-//      ros << " = " << crThing.m_sName << ' ' << *a.second << ' ' << a.first->m_sName;
+//      ros << " = " << crNode.m_sName << ' ' << *a.second << ' ' << a.first->m_sName;
         }
-    for (auto const & a:crThing.m_spoThingsRelating)
+    for (auto const & a:crNode.m_spoNodesRelating)
         {
         if (bFirst) { bFirst = false; } else { ros << '\n' << "  "; }
         ros << " <= linked from: " << a->m_sName;
@@ -55,12 +55,12 @@ std::ostream & operator << (std::ostream & ros, CNode const & crThing)
 
 
 CNode::CNode(std::string const & crsName)
-    : INode(crsName.length() ? crsName : s_csNameUnnamedThing)
+    : INode(crsName.length() ? crsName : s_csNameUnnamedNode)
     {
     }
 
 CNode::CNode(size_t nId, std::string const & crsName)
-    : INode(nId, crsName.length() ? crsName : s_csNameUnnamedThing)
+    : INode(nId, crsName.length() ? crsName : s_csNameUnnamedNode)
     {
     }
 
@@ -78,29 +78,29 @@ PAtom CNode::Append (PAtom poAtom)
     {
     if ( m_spoAtoms.emplace(poAtom).second )
         {
-        poAtom->RelatingThingAdd( shared_from_this() );
+        poAtom->RelatingNodeAdd( shared_from_this() );
         }
     return std::move(poAtom);
     }
 
-PAtom Append (PNode poThing, PAtom poAtom)
+PAtom Append (PNode poNode, PAtom poAtom)
     {
-    return poThing->Append( poAtom );
+    return poNode->Append( poAtom );
     }
 
-PNode CNode::Link(PNode po2Thing, PReason po4Reason)
+PNode CNode::Link(PNode po2Node, PReason po4Reason)
     {
     auto me = shared_from_this();
     if (s_bDebug) std::cout << ":--LINK- -- -intern ... ---------------------------------" << '\n';
-    if (s_bDebug) std::cout << " 1 QUERY -- " << m_mLink.count(po2Thing) << ' ' << m_sName << " (" << me.use_count()-1 << "), " << *po4Reason << " (" << po4Reason.use_count() << "), " << po2Thing->m_sName << " (" << po2Thing.use_count() << ")\n";
+    if (s_bDebug) std::cout << " 1 QUERY -- " << m_mLink.count(po2Node) << ' ' << m_sName << " (" << me.use_count()-1 << "), " << *po4Reason << " (" << po4Reason.use_count() << "), " << po2Node->m_sName << " (" << po2Node.use_count() << ")\n";
 
-    bool bDoLink = ( 0 == m_mLink.count(po2Thing) );
-    if ( !bDoLink && me != po2Thing )
+    bool bDoLink = ( 0 == m_mLink.count(po2Node) );
+    if ( !bDoLink && me != po2Node )
         {
         bDoLink = true;
-        for (auto it = m_mLink.find( po2Thing ); it != m_mLink.end(); ++it )
+        for (auto it = m_mLink.find( po2Node ); it != m_mLink.end(); ++it )
             {
-            if ( it->first != po2Thing )
+            if ( it->first != po2Node )
                 {
                 break;
                 }
@@ -115,29 +115,29 @@ PNode CNode::Link(PNode po2Thing, PReason po4Reason)
 
     if ( bDoLink )
         {
-        m_mLink.emplace(po2Thing, po4Reason);
-        po2Thing->RelatingThingAdd( me );
-        po4Reason->RelationAdd( me, po2Thing );
+        m_mLink.emplace(po2Node, po4Reason);
+        po2Node->RelatingNodeAdd( me );
+        po4Reason->RelationAdd( me, po2Node );
         }
 
-    if (s_bDebug) std::cout << " 2 RESLT -- " << m_mLink.count(po2Thing) << ' ' << m_sName << " (" << me.use_count()-1 << "), " << *po4Reason << " (" << po4Reason.use_count() << "), " << po2Thing->m_sName << " (" << po2Thing.use_count() << ")\n";
-    return std::move(po2Thing);
+    if (s_bDebug) std::cout << " 2 RESLT -- " << m_mLink.count(po2Node) << ' ' << m_sName << " (" << me.use_count()-1 << "), " << *po4Reason << " (" << po4Reason.use_count() << "), " << po2Node->m_sName << " (" << po2Node.use_count() << ")\n";
+    return std::move(po2Node);
     }
 
-PNode Link(PNode poThing, PReason po4Reason, PNode po2Thing)
+PNode Link(PNode poNode, PReason po4Reason, PNode po2Node)
     {
-    return poThing->Link( po2Thing, po4Reason );
+    return poNode->Link( po2Node, po4Reason );
     }
 
-PNode CNode::Unlink(PNode po2Thing, PReason po4Reason)
+PNode CNode::Unlink(PNode po2Node, PReason po4Reason)
     {
     auto me = shared_from_this();
     if (s_bDebug) std::cout << ":-UNLINK -- ---------------------------------------------" << '\n';
-    if (s_bDebug) std::cout << " 1 QUERY -- " << m_mLink.count(po2Thing) << ' ' << m_sName << " (" << me.use_count()-1 << "), " << *po4Reason << " (" << po4Reason.use_count() << "), " << po2Thing->m_sName << " (" << po2Thing.use_count() << ")\n";
-    for (auto it = m_mLink.find( po2Thing ); it != m_mLink.end(); ++it )
+    if (s_bDebug) std::cout << " 1 QUERY -- " << m_mLink.count(po2Node) << ' ' << m_sName << " (" << me.use_count()-1 << "), " << *po4Reason << " (" << po4Reason.use_count() << "), " << po2Node->m_sName << " (" << po2Node.use_count() << ")\n";
+    for (auto it = m_mLink.find( po2Node ); it != m_mLink.end(); ++it )
         {
         if (s_bDebug) std::cout << " 2 FOUND -- " << this->m_sName << ", " << *it->second << ", " << it->first->m_sName << '\n';
-        if ( it->first  != po2Thing )
+        if ( it->first  != po2Node )
             {
             if (s_bDebug) std::cout << " X BREAK -- " << "end of search, we leave" << '\n';
             break;
@@ -145,35 +145,35 @@ PNode CNode::Unlink(PNode po2Thing, PReason po4Reason)
         if ( it->second == po4Reason )
             {
             if (s_bDebug) std::cout << " 3 MATCH -- " << this->m_sName << ", " << *it->second << ", " << it->first->m_sName << '\n';
-            if ( 1 == m_mLink.count(po2Thing) )
+            if ( 1 == m_mLink.count(po2Node) )
                 {
                 if (s_bDebug) std::cout << " 4 ERASE -- " << this->m_sName << ", " << *it->second << ", " << it->first->m_sName << '\n';
-                po2Thing->RelatingThingSub( me );
+                po2Node->RelatingNodeSub( me );
                 }
-            po4Reason->RelationSub( me, po2Thing );
+            po4Reason->RelationSub( me, po2Node );
             m_mLink.erase(it);
             if (s_bDebug) std::cout << " 5 BREAK -- " << "job done, we leave" << '\n';
             break;
             }
         }
-    if (s_bDebug) std::cout << " 6 RESLT -- " << m_mLink.count(po2Thing) << ' ' << m_sName << " (" << me.use_count()-1 << "), " << *po4Reason << " (" << po4Reason.use_count() << "), " << po2Thing->m_sName << " (" << po2Thing.use_count() << ")\n";
-    return std::move(po2Thing);
+    if (s_bDebug) std::cout << " 6 RESLT -- " << m_mLink.count(po2Node) << ' ' << m_sName << " (" << me.use_count()-1 << "), " << *po4Reason << " (" << po4Reason.use_count() << "), " << po2Node->m_sName << " (" << po2Node.use_count() << ")\n";
+    return std::move(po2Node);
     }
 
-PNode CNode::RelatingThingAdd(PNode poThing)
+PNode CNode::RelatingNodeAdd(PNode poNode)
     {
-    if (s_bDebug) std::cout << " ===> RelatingThingAdd : " << this->m_sName << " (" << poThing.use_count() << ") -> " << poThing->m_sName << " (" << poThing.use_count() << ")\n";
-    m_spoThingsRelating.emplace(poThing);
-    if (s_bDebug) std::cout << " <=== RelatingThingAdd : " << this->m_sName << " (" << poThing.use_count() << ") -> " << poThing->m_sName << " (" << poThing.use_count() << ")\n";
-    return std::move(poThing);
+    if (s_bDebug) std::cout << " ===> RelatingNodeAdd : " << this->m_sName << " (" << poNode.use_count() << ") -> " << poNode->m_sName << " (" << poNode.use_count() << ")\n";
+    m_spoNodesRelating.emplace(poNode);
+    if (s_bDebug) std::cout << " <=== RelatingNodeAdd : " << this->m_sName << " (" << poNode.use_count() << ") -> " << poNode->m_sName << " (" << poNode.use_count() << ")\n";
+    return std::move(poNode);
     }
 
-PNode CNode::RelatingThingSub(PNode poThing)
+PNode CNode::RelatingNodeSub(PNode poNode)
     {
-    if (s_bDebug) std::cout << " ==== RelatingThingSub : " << this->m_sName << " -> " << poThing->m_sName << " (" << poThing.use_count() << ")\n";
-    m_spoThingsRelating.erase(poThing);
-    if (s_bDebug) std::cout << " ==== RelatingThingSub : " << this->m_sName << " -> " << poThing->m_sName << " (" << poThing.use_count() << ")\n";
-    return std::move(poThing);
+    if (s_bDebug) std::cout << " ==== RelatingNodeSub : " << this->m_sName << " -> " << poNode->m_sName << " (" << poNode.use_count() << ")\n";
+    m_spoNodesRelating.erase(poNode);
+    if (s_bDebug) std::cout << " ==== RelatingNodeSub : " << this->m_sName << " -> " << poNode->m_sName << " (" << poNode.use_count() << ")\n";
+    return std::move(poNode);
     }
 
 } // namespace odb

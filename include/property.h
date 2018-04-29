@@ -23,7 +23,7 @@ namespace odb {
 class COdb;
 
 /**
-    @brief A Property for a CThing
+    @brief A Property for a CNode
  */
 class CProperty : public IProperty
     {
@@ -58,12 +58,12 @@ class CProperty : public IProperty
         /// Conversion operator will return the name of the instance
         operator std::string const & () noexcept;
 
-        /// Add the information about a link from a CThing
-        void RelationAdd( PNode poThing );
+        /// Add the information about a link from a CNode
+        void RelationAdd( PNode poNode );
 
-        /// @brief Removes a link to a CThing
-        /// @param poThing The thing the link is pointing to
-        void RelationSub( PNode poThing );
+        /// @brief Removes a link to a CNode
+        /// @param poNode The node the link is pointing to
+        void RelationSub( PNode poNode );
 
         /// Prints an informational output to std::cout
         void print();
@@ -74,10 +74,10 @@ class CProperty : public IProperty
 	    return (0 == m_oRelations.size());
 	    }
 
-        /// Access function to call then container of PThings's
+        /// Access function to call then container of PNodes's
         SNodes const & Relations() const { return m_oRelations; }
     protected:
-        /// A set containing backlinks from things
+        /// A set containing backlinks from nodes
         SNodes m_oRelations;
 
     }; // class CProperty
