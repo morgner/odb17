@@ -8,8 +8,6 @@
 #include "node.h"
 #include "reason.h"
 
-#include "generic.h"
-
 
 namespace odb {
 

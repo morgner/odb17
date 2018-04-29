@@ -11,10 +11,6 @@
 #include <json/json.h>
 
 #include "odb.h"
-#include "atom.h"
-#include "node.h"
-#include "property.h"
-#include "generic.h"
 
 
 odb::COdb oOdb;

@@ -6,7 +6,6 @@
  */
 
 #include "atom.h"
-#include "node.h"
 
 
 namespace odb {

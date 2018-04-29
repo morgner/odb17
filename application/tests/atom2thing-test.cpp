@@ -8,8 +8,7 @@
 #include <iostream>
 
 #include "odb.h"
-#include "atom.h"
-#include "node.h"
+
 
 /**
     @brief Demo main program

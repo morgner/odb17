@@ -8,8 +8,7 @@
 #include <iostream>
 
 #include "odb.h"
-#include "node.h"
-#include "property.h"
+
 
 /// @brief Demo main program for "property in node"
 int main()

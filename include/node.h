@@ -31,16 +31,15 @@ class CReason;
 using INode = Identifiable<CNode>;
 
 /**
- * @brief A Node as there are many
+ * @brief A Node as you imagine it
  * 
- * A CNode, or Node, is a main structure element in a GrapDB like
- * odb. The counterpart is a CReason. CNode's will be linked
- * unidirectional to another CNode. There may be an arbitrary amount
- * of Links between CNodes e.g.
+ * A CNode, or Node, is a main structure element in a GrapDB like odb. The
+ * counterpart is a CReason. CNode's will be linked unidirectional to another
+ * CNode's. There may be an arbitrary amount of Links between CNodes e.g.
  * 
  *  - Node, (Link-)Reason, Node
- *  - Mary, wrote, Sandberg
- *  - Mary, read,  Sandberg
+ *  - Mary, wrote, a book
+ *  - Mary, read,  a book
  *  - Mary, loves, Jack
  * 
  * @author Manfred Morgner

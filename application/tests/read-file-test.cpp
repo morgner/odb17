@@ -19,10 +19,8 @@
 #include <string>
 #include <regex>
 
-#include "generic.h"
 #include "odb.h"
-#include "atom.h"
-#include "node.h"
+
 
 using namespace std::string_literals;
 

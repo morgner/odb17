@@ -10,28 +10,8 @@
 #include <list>         //
 #include <set>          //
 
-#include "node.h"
-#include "property.h"
-#include "reason.h"
-#include "atom.h"
 #include "odb.h"
-#include "generic.h"
 
-
-/**
- * Helper function to print a vector of objects
- */
-
-/*
-template<typename T>
-auto print(std::deque<T> & deq, std::ostream & ros)
-    {
-    for (auto const & e : deq)
-        {
-        return ros << e->type << " id: " << e->id << " (u:" << e.use_count() << ')' << ' ' << *e << '\n';
-        }
-    }
-*/
 
 odb::COdb g_oOdb{};
 

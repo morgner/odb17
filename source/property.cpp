@@ -6,7 +6,6 @@
  */
 
 #include "property.h"
-#include "node.h"
 
 
 void print(odb::CProperties const & crContainer)

@@ -10,10 +10,8 @@
 
 #include <iostream>
 
-#include "generic.h"
 #include "odb.h"
-#include "atom.h"
-#include "node.h"
+
 
 auto oOdb = odb::COdb();
 

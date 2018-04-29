@@ -11,10 +11,8 @@
 #include <iostream>
 #include <sstream>
 
-#include "generic.h"
 #include "odb.h"
-#include "atom.h"
-#include "node.h"
+
 
 /*
 #include "../../inja/test/thirdparty/nlohmann/json.hpp"
