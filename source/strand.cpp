@@ -5,7 +5,6 @@
  */
 
 #include "strand.h"
-#include "thing.h"
 #include "generic.h"
 
 

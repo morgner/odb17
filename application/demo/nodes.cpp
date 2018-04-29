@@ -1,5 +1,5 @@
 /**
-    @file things.cpp
+    @file nodes.cpp
  
     @author Manfred Morgner
     @date 15.04.2018
@@ -13,7 +13,7 @@
 #include "generic.h"
 #include "odb.h"
 #include "atom.h"
-#include "thing.h"
+#include "node.h"
 
 auto oOdb = odb::COdb();
 
@@ -37,7 +37,7 @@ int main()
     oOdb.LinkThing2Thing("Ina", "loves"       , "Rob");
 
     // show us
-    std::cout << "---------------- all things" << '\n';
+    std::cout << "---------------- all nodes" << '\n';
     for ( auto const & a:oOdb.Things() )
         {
         std::cout << *a << '\n';

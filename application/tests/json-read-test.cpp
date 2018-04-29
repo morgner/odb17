@@ -12,7 +12,7 @@
 
 #include "odb.h"
 #include "atom.h"
-#include "thing.h"
+#include "node.h"
 #include "property.h"
 #include "generic.h"
 
@@ -25,7 +25,7 @@ int main()
     oOdb.LoadDB("db.json");
     oOdb.print_json(std::cout);
 
-    odb::CThings p;
+    odb::CNodes p;
     {auto t1 = std::clock(); p = oOdb.FindThingsByProperty (std::regex("actor"));
                              p = oOdb.FindThingsByProperty (std::regex("actor"));
                              p = oOdb.FindThingsByProperty (std::regex("actor")); auto t2 = std::clock(); std::cout << "A: " << t2-t1 << " - " << p.size() << '\n';}

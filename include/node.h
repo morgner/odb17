@@ -2,7 +2,7 @@
 #define THING_H
 
 /**
- * @file thing.h
+ * @file node.h
  *
  * @author Manfred Morgner
  * @date 26.12.2017
@@ -28,7 +28,7 @@ class COdb;
 class CProperty;
 class CReason;
 
-using IThing = Identifiable<CThing>;
+using INode = Identifiable<CNode>;
 
 /**
  * @brief A Thing as there are many
@@ -46,8 +46,8 @@ using IThing = Identifiable<CThing>;
  * @author Manfred Morgner
  * @since  0.1.17
  */
-class CThing : public std::enable_shared_from_this<CThing>,
-               public IThing
+class CNode : public std::enable_shared_from_this<CNode>,
+              public INode
     {
     friend class COdb;
     friend class CProperty;
@@ -60,24 +60,24 @@ class CThing : public std::enable_shared_from_this<CThing>,
         static constexpr bool s_bDebug{false};
     public:
                  /// DELETED: We never construct without a name for the thing
-	         CThing() = delete;
+	         CNode() = delete;
 
                  /// DELETED: and we don't make copies
-                 CThing(CThing const &) = delete;
+                 CNode(CNode const &) = delete;
 
                  /// Move-Contructor, noexcept and default.
                  /// make_shared<T> move-constructs.
                  /// Function return of CThing's moves too.
-                 CThing(CThing&&) noexcept = default;
+                 CNode(CNode&&) noexcept = default;
 
                  /// Normal constructor, receiving the name of the Thing
-                 explicit CThing(std::string const & crsName);
+                 explicit CNode(std::string const & crsName);
                  
                  /// Load constructor, receiving the ID and name of the Thing
-                 CThing(size_t nId, std::string const & crsName);
+                 CNode(size_t nId, std::string const & crsName);
 
         /// Destructor (default). Nothings special here
-        virtual ~CThing() noexcept = default;
+        virtual ~CNode() noexcept = default;
 
         /// We need to unbind all relations in the COdb before letting us
         /// destruct
@@ -98,7 +98,7 @@ class CThing : public std::enable_shared_from_this<CThing>,
          * @param ros The output stream to send the Thing to
          * @param crThing The Thing to output
          */
-        friend std::ostream & operator << (std::ostream & ros, CThing const & crThing);
+        friend std::ostream & operator << (std::ostream & ros, CNode const & crThing);
 
         /**
          * @brief Appends an CProperty to its property list
@@ -126,26 +126,26 @@ class CThing : public std::enable_shared_from_this<CThing>,
          * @param po2Thing A Thing to Link to
          * @param po4Reason The Reason we link for
 a         */
-        PThing Link(PThing po2Thing, PReason po4Reason);
+        PNode Link(PNode po2Thing, PReason po4Reason);
 
         /**
          * @brief Removes a link to a specific CThing with a specific CReason
          * @param po2Thing A Thing to Linked to
          * @param po4Reason The Reason we linked for
          */
-        PThing Unlink(PThing po2Thing, PReason po4Reason);
+        PNode Unlink(PNode po2Thing, PReason po4Reason);
 
         /**
          * @brief adds a CThing as referencing to this
          * @param poThing A CThing that links to us notifies us, we register it
          */
-        PThing RelatingThingAdd(PThing poThing);
+        PNode RelatingThingAdd(PNode poThing);
 
         /**
          * @brief subtract a CThing as referencing to this
          * @param poThing A CThing that linked to us notifies us, we deregister it
          */
-        PThing RelatingThingSub(PThing poThing);
+        PNode RelatingThingSub(PNode poThing);
 
         /// returns if the instance is 'free'
         auto IsUnUsed()
@@ -163,14 +163,14 @@ a         */
          * @param PReason The PReason we link for
          * @param Compare Function to compare two CThings
          */
-        std::multimap<PThing, PReason, lessIdentifiableId<PThing>> m_mLink;
+        std::multimap<PNode, PReason, lessIdentifiableId<PNode>> m_mLink;
 
         /**
          * @brief Registers PThings relating to 'this' instance
          * @param PThing The PThing we are linked from
          * @param Compare Function to compare two CThing's
          */
-        SThings               m_spoThingsRelating;
+        SNodes               m_spoThingsRelating;
 
         /**
          * @brief Registers PProperties of this CThing

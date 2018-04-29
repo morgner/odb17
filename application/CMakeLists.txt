@@ -3,13 +3,13 @@ add_executable(odb.server
   $<TARGET_OBJECTS:${PROJECT_NAME}>
   )
 
-add_executable(a-things.demo
-  demo/things.cpp
+add_executable(a-nodes.demo
+  demo/nodes.cpp
   $<TARGET_OBJECTS:${PROJECT_NAME}>
   )
 
-add_executable(b-html-things.demo
-  demo/html-things.cpp
+add_executable(b-html-nodes.demo
+  demo/html-nodes.cpp
   $<TARGET_OBJECTS:${PROJECT_NAME}>
   )
 

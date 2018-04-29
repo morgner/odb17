@@ -1,5 +1,5 @@
 /**
-    @file things.cpp
+    @file html-nodes.cpp
  
     @author Manfred Morgner
     @date 15.04.2018
@@ -14,10 +14,12 @@
 #include "generic.h"
 #include "odb.h"
 #include "atom.h"
-#include "thing.h"
+#include "node.h"
 
+/*
 #include "../../inja/test/thirdparty/nlohmann/json.hpp"
 #include "../../inja/src/inja.hpp"
+*/
 
 auto oOdb = odb::COdb();
 
@@ -50,7 +52,7 @@ int main()
     std::cout << "}" << '\n';
 */
     
-
+/*
     using json = nlohmann::json;
 
 
@@ -62,5 +64,6 @@ int main()
     std::string s = env.render_file("../templates/data.html", data);
 
     std::cout << s <<'\n';    
+*/
     }
 

@@ -22,7 +22,7 @@
 #include "generic.h"
 #include "odb.h"
 #include "atom.h"
-#include "thing.h"
+#include "node.h"
 
 using namespace std::string_literals;
 
@@ -90,7 +90,7 @@ int main( int argc, const char* argv[] )
         char * ptr = std::strtok(&*sLine.begin(), "\t");
         std::string sItem;
         e = 0;
-        odb::PThing m;
+        odb::PNode m;
 //      0=id	1=/	2=/	3=name	4=/	5=p	6=/	7=(a)	8=p+
         while ( ptr != nullptr )
             {
@@ -154,8 +154,8 @@ nm0000002	Lauren Bacall	1924		2014		actress,soundtrack		tt0117057,tt0037382,tt00
 
         std::string sItem;
         e = 0;
-        odb::PThing m; m = nullptr;
-        odb::PThing movie; movie = nullptr;
+        odb::PNode m; m = nullptr;
+        odb::PNode movie; movie = nullptr;
         std::regex_token_iterator<std::string::iterator> it(sLine.begin(), sLine.end(), r, -1);
 //	0=id	1=name	2=Ybirth	3=Ydeath	4=profession	5=movies	
         while ( (it != end) && (!brk) )
@@ -231,8 +231,8 @@ tt0000003	2	nm5442194	producer	producer	\N
         std::string sItem;
         e = 0;
 	brk = false;
-        odb::PThing tt;
-        odb::PThing nm;
+        odb::PNode tt;
+        odb::PNode nm;
         std::regex_token_iterator<std::string::iterator> it(sLine.begin(), sLine.end(), r, -1);
 //	0=tid		1=ordering	2=nid		3=category	4=job	5=characters
 //	tt0000001	1		nm1588970	self		\N	plays ["Smithson","Man at Broker's"]
@@ -310,8 +310,8 @@ tt0000247       nm2156608,nm0005690,nm0002504   nm0000636,nm0002504
         std::string sItem;
         e = 0;
 	brk = false;
-        odb::PThing tt;
-        odb::PThing nm;
+        odb::PNode tt;
+        odb::PNode nm;
         std::regex_token_iterator<std::string::iterator> it(sLine.begin(), sLine.end(), r, -1);
 //      tconst     directors                       writers
 //      tt0000247  nm2156608,nm0005690,nm0002504   nm0000636,nm0002504
@@ -393,8 +393,8 @@ tt0000003       1       Szegény Pierrot                 HU      \N             
         std::string sItem;
         e = 0;
 	brk = false;
-        odb::PThing tt;
-        odb::PThing nm;
+        odb::PNode tt;
+        odb::PNode nm;
         std::regex_token_iterator<std::string::iterator> it(sLine.begin(), sLine.end(), r, -1);
 //      tt0000001  4      Carmencita  \N     \N   original  \N      1
 //	0=id       1=Ord  2=title     3=reg  4=L  5=type    6=attr  7=isOrgTitle
@@ -478,7 +478,7 @@ tt0000012       7.4     8000
 //	std::cin >> sInput;
         std::getline (std::cin,sInput); // eat the linebreak
         std::getline (std::cin,sInput);
-	odb::CThings     ts;
+	odb::CNodes     ts;
 	odb::CReasons    rs;
 	odb::CProperties ps;
 	odb::CAtoms      as;

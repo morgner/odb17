@@ -8,7 +8,7 @@
 #include <iostream>
 
 #include "odb.h"
-#include "thing.h"
+#include "node.h"
 
 /// @brief Demo main program "linking things together"
 int main()

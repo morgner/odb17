@@ -8,7 +8,7 @@
 #include <iostream>
 
 #include "odb.h"
-#include "thing.h"
+#include "node.h"
 #include "property.h"
 
 /// @brief Demo main program for "property in thing"

@@ -17,7 +17,7 @@
 #include <set>          //
 
 #include "generic.h"
-#include "thing.h"
+#include "node.h"
 
 
 namespace odb {
@@ -354,7 +354,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
 
     /// Adds the backlink from the atom to a thing
     /// @param poThing Inform a thing about being linked from another thing
-    auto RelatingThingAdd(PThing poThing)
+    auto RelatingThingAdd(PNode poThing)
         {
         m_spoThingsRelating.insert(poThing);
         return poThing;
@@ -362,7 +362,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
 
     /// Removes the backlink from the atom to a thing
     /// @param poThing Inform a thing about no more being linked from another thing
-    auto RelatingThingSub(PThing poThing)
+    auto RelatingThingSub(PNode poThing)
         {
         return m_spoThingsRelating.erase(poThing);
         }
@@ -381,7 +381,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
         /// The UI suffix (if any) for the atom
         std::string m_sSuffix{""s};
         /// CThing's Relating to this CAtom
-        std::set<PThing, lessIdentifiableId<PThing>>  m_spoThingsRelating;
+        std::set<PNode, lessIdentifiableId<PNode>>  m_spoThingsRelating;
 
     /// start of data implementation
     struct SAtomDataConcept

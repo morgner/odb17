@@ -10,7 +10,7 @@
 #include <list>         //
 #include <set>          //
 
-#include "thing.h"
+#include "node.h"
 #include "property.h"
 #include "reason.h"
 #include "atom.h"

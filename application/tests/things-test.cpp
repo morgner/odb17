@@ -16,7 +16,7 @@
 #include "generic.h"
 #include "odb.h"
 #include "atom.h"
-#include "thing.h"
+#include "node.h"
 
 auto oOdb = odb::COdb();
 
@@ -97,7 +97,7 @@ int main()
     // collect all females
     auto females = oOdb.FindThingsByProperty( "female" );
     // intersect 'drivers' with 'females', resulting in an aggregate of 'female drivers'
-    std::vector<odb::PThing> vFemaleDrivers;
+    std::vector<odb::PNode> vFemaleDrivers;
     std::set_intersection(drivers.begin(), drivers.end(),
                           females.begin(), females.end(),
                           std::back_inserter(vFemaleDrivers));
@@ -108,7 +108,7 @@ int main()
     // collect all builder
     auto builder = oOdb.FindThingsByProperty( "builder" );
     // sum 'artists' and 'builder', resulting in an aggregate of 'artist or builder'
-    odb::CThings vArtistOrBuilder;
+    odb::CNodes vArtistOrBuilder;
     for ( auto const & a:artists ) vArtistOrBuilder.insert(a);
     for ( auto const & a:builder ) vArtistOrBuilder.insert(a);
 

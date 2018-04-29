@@ -221,17 +221,17 @@ template<typename T> using CT = multi_index_container<
     ordered_non_unique<tag<name>,member<IT<T>, std::string, &IT<T>::m_sName>> >>;
 
 /// Forward decleration to befriend with it in other classes
-class CThing;
+class CNode;
 /// The shared_ptr of the entity
-using PThing  = PT<CThing>;
+using PNode  = PT<CNode>;
 /// The type to inherite from (Identifiable<>)
-using IThing  = IT<CThing>;
+using INode  = IT<CNode>;
 /// A return value for 'optional' returns
-using OThing = std::optional<PThing>;
+using ONode = std::optional<PNode>;
 /// A set of PThing's
-using SThings = std::set<PThing, lessIdentifiableName<PThing>>;
+using SNodes = std::set<PNode, lessIdentifiableName<PNode>>;
 /// A container for the shared_ptr's of the entity
-using CThings = CT<CThing>; 
+using CNodes = CT<CNode>; 
 
 /// Forward decleration to befriend with it in other classes
 class CProperty;

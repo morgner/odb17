@@ -11,7 +11,7 @@ Welcome to Object DataBase's documentation!
    :caption: Contents:
 
    classes/odb
-   classes/thing
+   classes/node
    classes/property
    classes/reason
    classes/atom
@@ -23,7 +23,7 @@ Welcome to Object DataBase's documentation!
 .. .. .. doxygenenum::
 .. .. .. doxygentypedef::
 .. .. .. doxygenclass:: odb::COdb
-.. .. .. doxygenclass:: odb::CThing
+.. .. .. doxygenclass:: odb::CNode
 .. .. .. doxygenclass:: odb::CProperty
 .. .. .. doxygenclass:: odb::CAtom
 .. .. .. doxygenclass:: odb::CReason

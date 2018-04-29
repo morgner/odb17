@@ -10,7 +10,7 @@
 
 #include <map>
 
-#include "thing.h"
+#include "node.h"
 #include "generic.h"
 
 
@@ -62,7 +62,7 @@ class CReason : public IReason
 
         /// Add the information about linking from one CThing to another
         /// regarding 'this' CReason
-        void RelationAdd( PThing & poThingFrom, PThing & poThingTo );
+        void RelationAdd( PNode & poThingFrom, PNode & poThingTo );
 
         /**
            @brief Removes a link between two CThing's
@@ -73,7 +73,7 @@ class CReason : public IReason
            @param poThingFrom The thing the link is claimed to be made from
            @param poThingTo The thing the link is claimed to be made to
          */
-        void RelationSub( PThing & poThingFrom, PThing & poThingTo );
+        void RelationSub( PNode & poThingFrom, PNode & poThingTo );
 
         /// Prints an informational output to std::cout
         void print();
@@ -87,7 +87,7 @@ class CReason : public IReason
     protected:
         /// A map containing all links from one thing to another using
         /// 'this' CReason
-        std::multimap<PThing, PThing> m_mRelations;
+        std::multimap<PNode, PNode> m_mRelations;
 
     }; // class CReason
 

@@ -15,7 +15,7 @@
 #include "generic.h"
 #include "odb.h"
 #include "atom.h"
-#include "thing.h"
+#include "node.h"
 
 auto oOdb = odb::COdb();
 

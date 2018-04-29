@@ -6,7 +6,7 @@
  */
 
 #include "property.h"
-#include "thing.h"
+#include "node.h"
 
 
 void print(odb::CProperties const & crContainer)
@@ -46,12 +46,12 @@ CProperty::operator std::string const & () noexcept
     return m_sName;
     }
 
-void CProperty::RelationAdd( PThing poThing )
+void CProperty::RelationAdd( PNode poThing )
     {
     m_oRelations.emplace( poThing );
     }
 
-void CProperty::RelationSub( PThing poThing )
+void CProperty::RelationSub( PNode poThing )
     {
     m_oRelations.erase( poThing );
     }

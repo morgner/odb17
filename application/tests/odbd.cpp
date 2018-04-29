@@ -30,7 +30,7 @@
 #include "generic.h"
 #include "odb.h"
 #include "atom.h"
-#include "thing.h"
+#include "node.h"
 
 using namespace std::string_literals;
 
@@ -210,7 +210,7 @@ bool Insert(std::string const & crsQuery, std::ostream & ros)
     char c = crsQuery[0];
     std::string sInput = crsQuery.substr(2);
 
-    odb::PThing    t;
+    odb::PNode    t;
     odb::PReason   r;
     odb::PProperty p;
     odb::PAtom     a;
@@ -283,7 +283,7 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
     char d = crsQuery[1];
     std::string sInput = crsQuery.substr(2);
 
-    odb::CThings     ts;
+    odb::CNodes     ts;
     odb::CReasons    rs;
     odb::CProperties ps;
     odb::CAtoms      as;
@@ -332,7 +332,7 @@ bool FindUnuseds(std::string const & crsQuery, tcp::iostream & ros)
     char d = crsQuery[1];
     std::string sInput = crsQuery.substr(2);
 
-    odb::CThings     ts;
+    odb::CNodes     ts;
     odb::CReasons    rs;
     odb::CProperties ps;
     odb::CAtoms      as;

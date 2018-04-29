@@ -10,8 +10,8 @@
 
 #include <map>
 
-#include "thing.h"
 #include "generic.h"
+#include "node.h"
 
 
 /// print CProperties in an informational fasion
@@ -28,7 +28,7 @@ class COdb;
 class CProperty : public IProperty
     {
     friend COdb;
-    friend CThing;
+    friend CNode;
 
     public:
         /// The name of an unnamed property
@@ -59,11 +59,11 @@ class CProperty : public IProperty
         operator std::string const & () noexcept;
 
         /// Add the information about a link from a CThing
-        void RelationAdd( PThing poThing );
+        void RelationAdd( PNode poThing );
 
         /// @brief Removes a link to a CThing
         /// @param poThing The thing the link is pointing to
-        void RelationSub( PThing poThing );
+        void RelationSub( PNode poThing );
 
         /// Prints an informational output to std::cout
         void print();
@@ -75,10 +75,10 @@ class CProperty : public IProperty
 	    }
 
         /// Access function to call then container of PThings's
-        SThings const & Relations() const { return m_oRelations; }
+        SNodes const & Relations() const { return m_oRelations; }
     protected:
         /// A set containing backlinks from things
-        SThings m_oRelations;
+        SNodes m_oRelations;
 
     }; // class CProperty
 

@@ -6,7 +6,7 @@
  */
 
 #include "reason.h"
-#include "thing.h"
+#include "node.h"
 
 
 void print(odb::CReasons const & crContainer)
@@ -46,12 +46,12 @@ CReason::operator std::string const & ()
     return m_sName;
     }
 
-void CReason::RelationAdd( PThing & poThingFrom, PThing & poThingTo )
+void CReason::RelationAdd( PNode & poThingFrom, PNode & poThingTo )
     {
-    m_mRelations.emplace( std::pair<PThing, PThing>( poThingFrom, poThingTo ) );
+    m_mRelations.emplace( std::pair<PNode, PNode>( poThingFrom, poThingTo ) );
     }
 
-void CReason::RelationSub( PThing & poThingFrom, PThing & poThingTo )
+void CReason::RelationSub( PNode & poThingFrom, PNode & poThingTo )
     {
     for ( auto it = m_mRelations.find(poThingFrom); it != m_mRelations.end(); ++it )
         {

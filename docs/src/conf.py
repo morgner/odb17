@@ -17,7 +17,8 @@ breathe_projects = {
 }
 breathe_default_project = 'ObjectDataBase'
 #breathe_default_members = ('members', 'private-members', 'protected-members')
-breathe_default_members = ('members', 'protected-members')
+#breathe_default_members = ('members', 'protected-members')
+breathe_default_members = ('members', 'public-members')
 
 highlight_language = 'c++'
 
@@ -25,7 +26,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 project = 'ObjectDataBase'
-copyright = '2018, Manfred Morgner'
+copyright = '1998-2018, Manfred Morgner'
 author = 'Manfred Morgner'
 
 version = '0.1.17'

@@ -6,7 +6,7 @@
  */
 
 #include "atom.h"
-#include "thing.h"
+#include "node.h"
 
 
 namespace odb {

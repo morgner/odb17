@@ -5,7 +5,7 @@
  * @date 26.12.2017
  */
 
-#include "thing.h"
+#include "node.h"
 #include "reason.h"
 
 #include "generic.h"
@@ -13,7 +13,7 @@
 
 namespace odb {
 
-void CThing::clear()
+void CNode::clear()
     {
     for ( auto & a:m_spoAtoms )
         {
@@ -25,7 +25,7 @@ void CThing::clear()
     }
 
 
-std::ostream & operator << (std::ostream & ros, CThing const & crThing)
+std::ostream & operator << (std::ostream & ros, CNode const & crThing)
     {
     ros << crThing.m_sName; // << '\n';
     bool bFirst = false; // true;
@@ -54,18 +54,18 @@ std::ostream & operator << (std::ostream & ros, CThing const & crThing)
     }
 
 
-CThing::CThing(std::string const & crsName)
-    : IThing(crsName.length() ? crsName : s_csNameUnnamedThing)
+CNode::CNode(std::string const & crsName)
+    : INode(crsName.length() ? crsName : s_csNameUnnamedThing)
     {
     }
 
-CThing::CThing(size_t nId, std::string const & crsName)
-    : IThing(nId, crsName.length() ? crsName : s_csNameUnnamedThing)
+CNode::CNode(size_t nId, std::string const & crsName)
+    : INode(nId, crsName.length() ? crsName : s_csNameUnnamedThing)
     {
     }
 
 
-PProperty CThing::Append (PProperty poProperty)
+PProperty CNode::Append (PProperty poProperty)
     {
     if ( m_spoProperties.emplace(poProperty).second )
         {
@@ -74,7 +74,7 @@ PProperty CThing::Append (PProperty poProperty)
     return std::move(poProperty);
     }
 
-PAtom CThing::Append (PAtom poAtom)
+PAtom CNode::Append (PAtom poAtom)
     {
     if ( m_spoAtoms.emplace(poAtom).second )
         {
@@ -83,12 +83,12 @@ PAtom CThing::Append (PAtom poAtom)
     return std::move(poAtom);
     }
 
-PAtom Append (PThing poThing, PAtom poAtom)
+PAtom Append (PNode poThing, PAtom poAtom)
     {
     return poThing->Append( poAtom );
     }
 
-PThing CThing::Link(PThing po2Thing, PReason po4Reason)
+PNode CNode::Link(PNode po2Thing, PReason po4Reason)
     {
     auto me = shared_from_this();
     if (s_bDebug) std::cout << ":--LINK- -- -intern ... ---------------------------------" << '\n';
@@ -124,12 +124,12 @@ PThing CThing::Link(PThing po2Thing, PReason po4Reason)
     return std::move(po2Thing);
     }
 
-PThing Link(PThing poThing, PReason po4Reason, PThing po2Thing)
+PNode Link(PNode poThing, PReason po4Reason, PNode po2Thing)
     {
     return poThing->Link( po2Thing, po4Reason );
     }
 
-PThing CThing::Unlink(PThing po2Thing, PReason po4Reason)
+PNode CNode::Unlink(PNode po2Thing, PReason po4Reason)
     {
     auto me = shared_from_this();
     if (s_bDebug) std::cout << ":-UNLINK -- ---------------------------------------------" << '\n';
@@ -160,7 +160,7 @@ PThing CThing::Unlink(PThing po2Thing, PReason po4Reason)
     return std::move(po2Thing);
     }
 
-PThing CThing::RelatingThingAdd(PThing poThing)
+PNode CNode::RelatingThingAdd(PNode poThing)
     {
     if (s_bDebug) std::cout << " ===> RelatingThingAdd : " << this->m_sName << " (" << poThing.use_count() << ") -> " << poThing->m_sName << " (" << poThing.use_count() << ")\n";
     m_spoThingsRelating.emplace(poThing);
@@ -168,7 +168,7 @@ PThing CThing::RelatingThingAdd(PThing poThing)
     return std::move(poThing);
     }
 
-PThing CThing::RelatingThingSub(PThing poThing)
+PNode CNode::RelatingThingSub(PNode poThing)
     {
     if (s_bDebug) std::cout << " ==== RelatingThingSub : " << this->m_sName << " -> " << poThing->m_sName << " (" << poThing.use_count() << ")\n";
     m_spoThingsRelating.erase(poThing);
