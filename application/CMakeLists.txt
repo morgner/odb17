@@ -53,7 +53,7 @@ add_executable(6-json-read.test
   $<TARGET_OBJECTS:${PROJECT_NAME}>
   )
 
-find_library(JSON_CPP linjsoncpp.a jsoncpp)
+find_library(JSON_CPP libjsoncpp.a jsoncpp)
 target_link_libraries(6-json-read.test
   ${JSON_CPP}
   )
