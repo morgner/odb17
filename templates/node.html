@@ -10,26 +10,3 @@
 <p>{{ story.tease|truncatewords:"100" }}</p>
 {% endfor %}
 {% endblock %}
-
-<!-- soso --><p>Soso</p><!-- dada -->
-<!--
-https://docs.djangoproject.com/en/1.7/topics/templates/
--->
-
-Variablen:
-
-cat thing.html | sed -e 's/<!--[^-]*-->//g' -e '/<!--/,/-->/d' -e 's#{{\s*\([^ ]*\)\s*}}#[++++++++\1--------]#g'
-<!--
-$ cat thing.html | sed -n -e 's#{\([%{]\) \([^}]*\) \([}%]\)}#\1-\2-\3#gp'
-%-extends "base.html"-%
-%-block title-%{-section.title-}%-endblock-%
-%-block content-%
-<h1>{-section.title-}</h1>
-%-for story in stories-%
-  <a href="{-story.get_absolute_url-}">
-    {-story.headline-}
-<p>{-story.tease|truncatewords:"100"-}</p>
-%-endfor-%
-%-endblock-%
--->
-

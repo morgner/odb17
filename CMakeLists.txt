@@ -15,7 +15,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
-option(BUILD_DOCS "Build the documentation" ON)
+option(BUILD_DOCS "Build the documentation" OFF)
 
 find_package(Threads)
 

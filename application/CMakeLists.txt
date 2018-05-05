@@ -73,17 +73,20 @@ target_link_libraries(8-odbd.test
   ${CMAKE_THREAD_LIBS_INIT}
   )
 
-add_executable(9-odbcli.test
-  tests/odbcli.cpp
-  $<TARGET_OBJECTS:${PROJECT_NAME}>
-  )
-
 find_library(LINE_NOISE liblinenoise.a linenoise)
-target_link_libraries(9-odbcli.test
-  ${LINE_NOISE}
-  ${CMAKE_THREAD_LIBS_INIT}
-  )
+if(LINE_NOISE)
+    add_executable(9-odbcli.test
+      tests/odbcli.cpp
+      $<TARGET_OBJECTS:${PROJECT_NAME}>
+      )
+
+    target_link_libraries(9-odbcli.test
+      ${LINE_NOISE}
+      ${CMAKE_THREAD_LIBS_INIT}
+      )
+endif()
 
 target_link_libraries(odb.server
   ${CMAKE_THREAD_LIBS_INIT}
   )
+

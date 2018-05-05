@@ -326,7 +326,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
         } // operator << (...)
 
     /// todo: output the instance xml formated
-    void print_xml(std::ostream& out, size_t const cnDepth, bool bFormated = false) const
+    void print_xml(std::ostream& out, size_t const cnDepth, bool const bFormated = false) const
         {
         out << std::string(cnDepth, ' ') << "<" << m_sName << ">";
 
