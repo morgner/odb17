@@ -73,15 +73,18 @@ target_link_libraries(8-odbd.test
   ${CMAKE_THREAD_LIBS_INIT}
   )
 
-find_library(LINE_NOISE liblinenoise.a linenoise)
-if(LINE_NOISE)
+find_library(LINENOISE liblinenoise.a linenoise)
+if(NOT LINENOISE)
+    add_definitions(-DNO_LINENOISE)
+else()
+    add_definitions(-DLINENOISE)
     add_executable(9-odbcli.test
       tests/odbcli.cpp
       $<TARGET_OBJECTS:${PROJECT_NAME}>
       )
 
     target_link_libraries(9-odbcli.test
-      ${LINE_NOISE}
+      ${LINENOISE}
       ${CMAKE_THREAD_LIBS_INIT}
       )
 endif()

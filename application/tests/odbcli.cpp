@@ -2,9 +2,11 @@
 #include <string>
 #include <asio/ts/internet.hpp>
 
+#ifdef LINENOISE
 extern "C" {
 #include <linenoise.h>
 }
+#endif // LINENOISE
 
 using asio::ip::tcp;
 
@@ -19,8 +21,10 @@ int main(int argc, char* argv[])
             std::cout << "  " << argv[0] << " localhost 1025\n";
             return 1;
             }
+#ifdef LINENOISE
         std::string sHistoryFilename{".odbcli_history"};
         linenoiseHistoryLoad(sHistoryFilename.c_str());
+#endif // LINENOISE
         for (;;)
             {
             asio::ip::tcp::iostream oStream;
@@ -32,17 +36,19 @@ int main(int argc, char* argv[])
                 return 1;
                 }
 
-//            std::cout << "> ";
-//            std::string sInput;
-//            std::getline(std::cin, sInput);
-//            oStream << sInput + "\n";
-
+#ifdef LINENOISE
             char* line = linenoise("> ");
             if ( !line || line[0] == 'q' ) { free(line); return 0; }
             linenoiseHistoryAdd(line);
             linenoiseHistorySave(sHistoryFilename.c_str());
             oStream << std::string(line) + "\n";
             free(line);
+#else
+            std::cout << "> ";
+            std::string sInput;
+            std::getline(std::cin, sInput);
+            oStream << sInput + "\n";
+#endif // LINENOISE
 
             std::string sOutput;
             do
