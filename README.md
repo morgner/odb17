@@ -17,19 +17,19 @@ Here some simple samples
 
 #include "odb.h"
 #include "atom.h"
-#include "thing.h"
+#include "node.h"
 
 int main()
        {
        auto oOdb    = odb::COdb();
-       auto pThing1 = oOdb.MakeThing("Ulrich");
-       auto pThing2 = oOdb.MakeThing("Fred");
+       auto pNode1  = oOdb.MakeNode("Ulrich");
+       auto pNode2  = oOdb.MakeNode("Fred");
        auto pAtom1  = oOdb.MakeAtom("Leader", "Role");
        auto pAtom2  = oOdb.MakeAtom("Member", "Role");
        auto pReason = oOdb.MakeReason("pays");
-       pThing1->Append(pAtom1);
-       pThing2->Append(pAtom2);
-       pThing1->Link(pThing2, pReason);
+       pNode1->Append(pAtom1);
+       pNode2->Append(pAtom2);
+       pNode1->Link(pNode2, pReason);
        oOdb.print_json(std::cout);
        }
 ```
@@ -52,12 +52,12 @@ int main()
             [
                 { "id": 0, "name": "pays" }
             ],
-        "Things":
+        "Nodes":
             [
                 { "id": 0, "name": "Ulrich",
                     "properties": [  ],
                     "atoms": [ {"id": 0} ],
-                    "links": [ {"thing-id": 1, "reason-id": 0} ] },
+                    "links": [ {"node-id": 1, "reason-id": 0} ] },
                 { "id": 1, "name": "Fred",
                     "properties": [  ],
                     "atoms": [ {"id": 1} ],
