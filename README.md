@@ -39,7 +39,7 @@ int main()
     {
     "Object Database Dump":
         {
-        "Sizes": [ {"P": 0},{"A": 2},{"R": 1},{"T": 2} ],
+        "Sizes": [ {"P": 0},{"A": 2},{"R": 1},{"N": 2} ],
         "Properties":
             [
             ],
