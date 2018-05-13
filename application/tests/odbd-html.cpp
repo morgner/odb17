@@ -152,6 +152,7 @@ size_t CollectDataForTemplate( T const & roContainer, TMapS2M & roData, std::str
 	    oSubM. emplace("type",  a->m_sType.substr(6));
 	    }
 	roData.emplace(crsName, oSubM);
+	roData.emplace(crsName + "-hits", TSubMap{ {"", std::to_string(roContainer.size())} } );
 	oSubM.clear();
 	}
     return roContainer.size();
@@ -363,8 +364,7 @@ void SendResult(T const & croData, std::iostream & ros, char const ccSwitch, std
     else
         {
 	TMapS2M o{g_oHead};
-	std::string sPrimKey = "Node";
-        g_sTemplate = "nodes.html";
+	std::string sPrimKey = "none"; g_sTemplate = "none.html";
 
         if constexpr ( std::is_same<T, odb::CNodes>() )
 	    {
@@ -382,32 +382,23 @@ void SendResult(T const & croData, std::iostream & ros, char const ccSwitch, std
 	    {
             sPrimKey = "Atom"; g_sTemplate = "atoms.html";
 	    }
-/*
-        if constexpr ( std::is_same<T, odb::MLinkets>() )
-	    {
-            sPrimKey = "Node"; g_sTemplate = "nodes.html";
-	    }
-	if constexpr ( std::is_same<T, odb::MLinks>() )
-	    {
-	    sPrimKey = "Reason"; g_sTemplate = "reasons.html";
-	    }
-*/
+        
         SortDataForTemplate( croData, o, sPrimKey );
         std::cout << g_sTemplate << '\n';
         Cte ote(o, g_sTemplate, g_sTemplatePath);
         SendResultPage( ote, ros );
-//        SendResultPage( ote, std::cout );
-
-                    for (auto & a:o)
-                	{
-                	std::cout << a.first << ", [";
-                	for (auto & b:a.second)
-                	    {
-                	    std::cout << "(" << b.first << ", " << b.second << ") ";
-                	    }
-                	std::cout << "]\n";
-                	}
-
+/*
+        // prints raw data to console
+        for (auto & a:o)
+            {
+            std::cout << a.first << ", [ ";
+            for (auto & b:a.second)
+                {
+                std::cout << "('" << b.first << "', '" << b.second << "') ";
+                }
+            std::cout << "]\n";
+            }
+*/
 
 /*
         for (auto const & a:croData) 
@@ -663,20 +654,9 @@ Cache-Control: no-cache
                     sQuery  = sm[1];
                     }
 		}
-            std::cout << "Qo: |" << sQuery << "|\n";
+            std::cout << "Qy: |" << sQuery << "|\n";
 
 
-/*
-            for (auto & a:o)
-        	{
-        	std::cout << a.first << ", [";
-        	for (auto & b:a.second)
-        	    {
-        	    std::cout << "(" << b.first << ", " << b.second << ") ";
-        	    }
-        	std::cout << "]\n";
-        	}
-*/
             if ( sQuery == "stat" )
                 {
                 SendStatistics(stream);
