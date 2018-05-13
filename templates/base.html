@@ -15,7 +15,8 @@
 			
 	 </style>
     </head>
-    <body>
+    <body>{% if srv-matches %}
+        <p>{{ srv-matches }} hits</p>{% endif %}
         <form action="?=" method="GET">
           regex: <input type="text" name="n."></input>
           <input type="submit" value="Submit">

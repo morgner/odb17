@@ -160,7 +160,8 @@ size_t CollectDataForTemplate( T const & roContainer, TMapS2M & roData, std::str
 template<typename T>
 size_t SortDataForTemplate( T const & roContainer, TMapS2M & roData, std::string const & crsName )
     {
-    if ( 1 == CollectDataForTemplate( roContainer, roData, crsName) )
+    size_t nHits = CollectDataForTemplate( roContainer, roData, crsName);
+    if ( 1 == nHits )
 	{
 	for ( auto const & a:roContainer )
 	    {
@@ -183,6 +184,11 @@ size_t SortDataForTemplate( T const & roContainer, TMapS2M & roData, std::string
    		CollectDataForTemplate( a->Relations(),     roData, "Node");
 		}
 	    }
+	}
+    else
+	{
+	roData.emplace( "srv-version", TSubMap{ {"", "odb.0.9.0"} } );
+	roData.emplace( "srv-matches", TSubMap{ {"", std::to_string(nHits)} } );
 	}
     return roContainer.size();
     }
@@ -329,6 +335,11 @@ bool Insert(std::string const & crsQuery, std::ostream & ros)
     return true;
     }
 
+
+TMapS2M g_oHead{
+	       {"title",   { {"", "odb Interactor"} } },
+	       {"message", { {"", "Welcome"}        } } };
+
 template<typename T>
 void SendResult(T const & croData, std::iostream & ros, char const ccSwitch, std::string const & crsBadQuery = ""s)
     {
@@ -351,7 +362,7 @@ void SendResult(T const & croData, std::iostream & ros, char const ccSwitch, std
         }
     else
         {
-	TMapS2M o;
+	TMapS2M o{g_oHead};
 	std::string sPrimKey = "Node";
         g_sTemplate = "nodes.html";
 
@@ -603,9 +614,29 @@ Pragma: no-cache
 Cache-Control: no-cache
 )";
 
+	    std::string sQI{};
+
+//	    std::cout << "QI: |" << sQI << "|Query|" << sQuery << "|\n";
+
+	    std::regex const reSpace("%20");
+	    sQI = std::regex_replace(sQuery, reSpace, " ");
+	    sQuery = sQI;
+
+//	    std::cout << "QI: |" << sQI << "|Query|" << sQuery << "|\n";
+
+	    std::regex const reSplus("\\+");
+	    sQI = std::regex_replace(sQuery, reSplus, " ");
+	    sQuery = sQI;
+
+//	    std::cout << "QI: |" << sQI << "|Query|" << sQuery << "|\n";
+
+	    std::regex const reStar ("%2A");
+	    sQI = std::regex_replace(sQuery, reStar, "*");
+	    sQuery = sQI;
+
+	    std::cout << "QI: |" << sQI << "|Query|" << sQuery << "|\n";
             if (sQuery.substr(0, 6) != R"(GET /?)" )
         	{
-                std::cout << "Qi: |" << sQuery << "|\n";
         	if (sQuery.substr(0, 4) != R"(GET )" )
 		    {
 		    SendError( 404, stream );
@@ -613,9 +644,9 @@ Cache-Control: no-cache
         	continue;
         	}
 
-	    std::string sQI{sQuery};
 	    std::smatch      sm{};
-	    std::regex const re(R"(/?(..)=([^ ]+))");
+//	    std::regex const re(R"(/?(..)=([^ ]+))");
+	    std::regex const re(R"(/?(..)=([^&]+) HTTP.*)");
 	    std::regex_search(sQI, sm, re);
 	    if ( sm.size() > 2 )
 		{
@@ -633,12 +664,6 @@ Cache-Control: no-cache
                     }
 		}
             std::cout << "Qo: |" << sQuery << "|\n";
-
-            TMapS2M oHead{
-			   {"title",   { {"", "odb Interactor"} } },
-			   {"message", { {"", "Welcome"}        } } };
-            TMapS2M o = oHead;
-            TSubMap u;
 
 
 /*
