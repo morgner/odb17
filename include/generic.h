@@ -22,6 +22,7 @@
 
 #include <deque>
 #include <set>
+#include <map>
 #include <optional>
 
 /**
@@ -256,6 +257,9 @@ using PReason  = PT<CReason>;
 using IReason  = IT<CReason>;
 /// A container for the shared_ptr's of the entity
 using CReasons = CT<CReason>;
+
+/// A multimap containing links to other nodes with reason
+using MLinks = std::multimap<PNode, PReason, lessIdentifiableId<PNode>>;
 
 /// Forward decleration to befriend with it in other classes
 class CAtom;

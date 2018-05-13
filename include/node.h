@@ -155,6 +155,11 @@ a         */
 		     (0 == m_spoAtoms.size()) );
 	    }
 
+        MLinks      const & GetLinks     () const { return m_mLink; }
+        SNodes      const & GetNodes     () const { return m_spoNodesRelating; }
+        SProperties const & GetProperties() const { return m_spoProperties; }
+        SAtoms      const & GetAtoms     () const { return m_spoAtoms; }
+
     protected:
         /**
          * @brief Holds the links to another CNode for CReason
@@ -162,7 +167,7 @@ a         */
          * @param PReason The PReason we link for
          * @param Compare Function to compare two CNodes
          */
-        std::multimap<PNode, PReason, lessIdentifiableId<PNode>> m_mLink;
+        MLinks               m_mLink;
 
         /**
          * @brief Registers PNodes relating to 'this' instance

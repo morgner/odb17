@@ -1,9 +1,15 @@
 {% extends "base.html" %}
 
 {% block data %}
-        <p>{{ class }} : <a href="{{ object-link }}">{{ object }}</a></p>
-        <p><ul>{% for property in properties %}
-               <li><a href="p:{{ property }}">{{ property }}</a></li>{% endfor %}
-           </ul></p>
-{% endblock %}
+        <p>{{ node.type }} : <a href="ni={{ node.id }}">{{ node }}</a>( {{ node.name }} )</p>{% if property %}
+        <p>
+            <ul>{% for property in properties %}
+                <li><a href="pi={{ property.id }}">{{ property }}</a></li>{% endfor %}
+                </ul>
+            </p>
+        {% endif %}{% if link %}<p>
+            <ul>{% for link in linked %}
+                <li><a href="li={{ link.id }}">{{ link.reason }} {{ link }}</a></li>{% endfor %}
+                </ul>
+            </p>{% endif %}{% endblock %}
 

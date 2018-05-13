@@ -29,12 +29,16 @@
 
 #include "odb.h"
 
+#include "../../../te/include/te.h"
+
 
 using namespace std::string_literals;
 
+std::string g_sTemplate = "nodes.html";
+
 auto poOdb = std::make_unique<odb::COdb>();
 
-template<typename ...Args> void mknodes    (Args&&... args) { (poOdb->MakeNode   (args), ...); } 
+template<typename ...Args> void mknodes     (Args&&... args) { (poOdb->MakeNode   (args), ...); }
 template<typename... Args> void mkproperties(Args&&... args) { (poOdb->MakeProperty(args), ...); }
 template<typename... Args> void mkreasons   (Args&&... args) { (poOdb->MakeReason  (args), ...); }
 template<typename... Args> void mkatoms     (Args&&... args) { (poOdb->MakeAtom    (args, "fold" ), ...); }
@@ -113,6 +117,109 @@ void FillInSomeData()
 
 using asio::ip::tcp;
 
+
+
+
+template<typename T>
+size_t CollectDataForTemplate( T const & roContainer, TMapS2M & roData, std::string const & crsName)
+    {
+    TSubMap oSubM{};
+    for ( auto const & a:roContainer )
+	{
+	if constexpr ( std::is_same<T, odb::MLinks>() )
+	    {
+	    oSubM. emplace("",         a.first->m_sName);
+	    oSubM. emplace("id",       std::to_string(a.first->m_nId));
+	    oSubM. emplace("type",     a.first->m_sType);
+	    oSubM. emplace("rsn",      a.second->m_sName);
+	    oSubM. emplace("rsn-id",   std::to_string(a.second->m_nId));
+	    oSubM. emplace("rsn-type", a.second->m_sType);
+	    }
+	else
+	    {
+	    oSubM. emplace("",      a->m_sName);
+	    oSubM. emplace("id",    std::to_string(a->m_nId));
+	    oSubM. emplace("type",  a->m_sType.substr(6));
+	    }
+	roData.emplace(crsName, oSubM);
+	oSubM.clear();
+	}
+    return roContainer.size();
+    }
+
+template<typename T>
+size_t SortDataForTemplate( T const & roContainer, TMapS2M & roData, std::string const & crsName )
+    {
+    std::string sTypeName;
+
+    if ( 1 == CollectDataForTemplate( roContainer, roData, crsName) )
+	{
+	for ( auto const & a:roContainer )
+	    {
+	    if constexpr ( std::is_same<T, odb::MLinks>() )
+		{
+		sTypeName = a.first->m_sType;
+		}
+	    else
+		{
+		sTypeName = a->m_sType;
+	    }
+//	    if ( "odb::CNode" == sTypeName )
+	    if constexpr ( std::is_same<T, odb::SNodes>() || std::is_same<T, odb::CNodes>())
+//	    if ( true )
+		{
+		g_sTemplate = "node.html";
+		CollectDataForTemplate( a->GetLinks(),      roData, "link-to");
+		CollectDataForTemplate( a->GetNodes(),      roData, "link-from");
+		CollectDataForTemplate( a->GetProperties(), roData, "Property");
+		CollectDataForTemplate( a->GetAtoms(),      roData, "Atom");
+		}
+	    if constexpr ( std::is_same<T, odb::SProperties>() )
+		{
+		g_sTemplate = "property.html";
+//		CollectDataForTemplate( a->Relations(),     roData, "Node");
+		}
+/*
+	    if constexpr ( std::is_same<T, odb::SReasons>() )
+		{
+		g_sTemplate = "reason.html";
+//   		CollectDataForTemplate( a->Realtions(),     roData, "Node");
+		}
+*/
+	    }
+	}
+    return roContainer.size();
+    }
+
+void SendError( long nError, std::ostream & ros )
+    {
+    TMapS2M oErrorData{ {"title",   { {"", "odb Interactor"} } },
+		        {"message", { {"", "ERROR 404"}      } },
+		        {"text",    { {"", "Not found"}      } } };
+
+    Cte const ote(oErrorData, "error.html", "../templates/");
+    ros << "HTTP/1.1 404 Not found" << '\n';
+    ros << "Server: odb/0.9.0 (Linux) CPP" << '\n';
+    ros << "Content-Length: " << ote.length() << '\n';
+    ros << "Content-Language: en" << '\n';
+    ros << "Connection: close" << '\n';
+    ros << "Content-Type: text/html" << '\n';
+    ros << "\n";
+    ros << ote;
+    }
+
+void SendResultPage( Cte const & ote, std::ostream & ros )
+    {
+//  std::cerr << "======================================" << '\n' << ote << '\n';
+    ros << "HTTP/1.1 200 OK" << '\n';
+    ros << "Server: odb/0.9.0 (Linux) C++" << '\n';
+    ros << "Content-Length: " << ote.length() << '\n';
+    ros << "Content-Language: en" << '\n';
+    ros << "Connection: close" << '\n';
+    ros << "Content-Type: text/html" << '\n';
+    ros << "\n";
+    ros << ote;
+    }
 
 bool LinkNAppend(std::string const & crsQuery, std::ostream & ros)
     {
@@ -248,6 +355,32 @@ void SendResult(T const & croData, std::iostream & ros, char const ccSwitch, std
         }
     else
         {
+//        SortDataForTemplate( roContainer, TMapS2M, crsName );
+//        SendResultPage( Cte, ros );
+
+	TMapS2M o;
+        g_sTemplate = "nodes.html";
+        if ( 1 == SortDataForTemplate( croData, o, "Node" ) )
+            {
+            g_sTemplate = "node.html";
+            }
+        std::cout << g_sTemplate << '\n';
+        Cte ote(o, g_sTemplate, "../templates/");
+        SendResultPage( ote, ros );
+//        SendResultPage( ote, std::cout );
+
+                    for (auto & a:o)
+                	{
+                	std::cout << a.first << ", [";
+                	for (auto & b:a.second)
+                	    {
+                	    std::cout << "(" << b.first << ", " << b.second << ") ";
+                	    }
+                	std::cout << "]\n";
+                	}
+
+
+/*
         for (auto const & a:croData) 
             {
             ros << " \n" << ":" << a->m_nId << ":";
@@ -260,19 +393,21 @@ void SendResult(T const & croData, std::iostream & ros, char const ccSwitch, std
                 ros << (*a).m_sName;
                 }
             }
+*/
         }
-
+/*
     if (ccSwitch == '.')
         {
         ros << " \n";
         }
 
     ros << " \n  total: " << croData.size() << " \n";
+*/
     }
 
 bool Answer(std::string const & crsQuery, tcp::iostream & ros)
     {
-    ros << "? " + crsQuery;
+//    ros << "? " + crsQuery;
 
     if ( crsQuery.length() < 2 ) return false;
 
@@ -287,17 +422,26 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
     auto             b = false;
     switch (c)
         {
-        case 't': if ( (d=='p') || (d=='P') )
+        case 't':
+        case 'n': if ( (d=='p') || (d=='P') )
                     {
                     ts = poOdb->FindNodesByProperty(sInput);
                     if (ts.size() == 0) { try { ts = poOdb->FindNodesByProperty(std::regex(sInput)); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
                     d = (d=='p') ? ':' : '.';
                     }
+                  else if ( (d=='i') )
+                      {
+                      auto oop = poOdb->FindNode(stol(sInput)); // .value_or(nullptr);
+                      if ( oop.has_value() )
+                	  {
+                	  ts.insert( oop.value() );
+                	  }
+                      }
                   else
-                    {
-                    ts = poOdb->FindNodes(sInput);
-                    if (ts.size() == 0)  { try { ts = poOdb->FindNodes(std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
-                    }
+		    {
+		    ts = poOdb->FindNodes(sInput);
+		    if (ts.size() == 0)  { try { ts = poOdb->FindNodes(std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
+		    }
                   SendResult(ts, ros, d, (b)?sInput:""s);
                   break;
         case 'r': rs = poOdb->FindReasons(std::string( sInput ));
@@ -354,6 +498,8 @@ void SendStatistics(std::ostream & ros)
     ros << "---------------- " <<  poOdb->Atoms().size()      << " atoms" << " \n";
     }
 
+
+
 int main(int argc, char* argv[])
     {
     if (argc != 2)
@@ -364,7 +510,7 @@ int main(int argc, char* argv[])
         return 1;
         }
 
-    auto const sFilename = "wdb.json";
+    auto const sFilename = "wwwdb.json";
 
     poOdb->LoadDB(sFilename);
 
@@ -383,9 +529,79 @@ int main(int argc, char* argv[])
             tcp::iostream stream;
             asio::error_code ec;
             acceptor.accept(*stream.rdbuf(), ec);
-            std::string sQuery;
-            std::getline(stream, sQuery);
-            std::cout << "> " << sQuery << '\n';
+            std::string sLine{};
+            std::getline(stream, sLine);
+            std::string sQuery = sLine;
+
+std::string sMoz = R"(
+GET /?ai=4 HTTP/1.1
+Host: localhost:8080
+User-Agent: Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:59.0) Gecko/20100101 Firefox/59.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: de,en-US;q=0.7,en;q=0.3
+Accept-Encoding: gzip, deflate
+Referer: http://localhost:8080/?pi=2
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Pragma: no-cache
+Cache-Control: no-cache
+)";
+
+            if (sQuery.substr(0, 6) != R"(GET /?)" )
+        	{
+        	if (sQuery.substr(0, 4) != R"(GET )" )
+		    {
+		    SendError( 404, stream );
+		    }
+        	continue;
+        	}
+
+	    std::string sQI{sQuery};
+	    std::smatch      sm{};
+	    std::regex const re(R"(/?(..)=([^ ]+))");
+	    std::regex_search(sQI, sm, re);
+	    if ( sm.size() > 2 )
+		{
+		sQuery  = sm[1];
+		sQuery += sm[2];
+		}
+	    else
+		{
+		sQuery = "";
+		}
+            std::cout << "Q: " << sQuery << '\n';
+
+            TMapS2M oHead{
+			   {"title",   { {"", "odb Interactor"} } },
+			   {"message", { {"", "Welcome"}        } } };
+            TMapS2M o = oHead;
+            TSubMap u;
+
+
+//            odb::CNodes mn = poOdb->FindNodes(std::regex("Terry Pratchett"));
+//            odb::CNodes mn = poOdb->FindNodes(std::regex(".*"));
+//            odb::CNodes mn = poOdb->FindNodes(std::regex("'Good Omens'"));
+//            odb::ONode mn = poOdb->FindNode (1);
+//            SortDataForTemplate( mn, o, "Node" );
+            g_sTemplate = "node.html";
+
+/*
+            for (auto & a:o)
+        	{
+        	std::cout << a.first << ", [";
+        	for (auto & b:a.second)
+        	    {
+        	    std::cout << "(" << b.first << ", " << b.second << ") ";
+        	    }
+        	std::cout << "]\n";
+        	}
+*/
+//            Cte const ote(o, g_sTemplate, "../templates/");
+//            SendResultPage( ote, stream );
+
+//            continue;
+
+//            std::cout << "> " << sQuery << '\n';
             if ( sQuery == "stat" )
                 {
                 SendStatistics(stream);
@@ -487,7 +703,7 @@ int main(int argc, char* argv[])
                         {
                         stream << "try: 'help' to get help\n";
                         }
-                else if ( (sQuery[1] == ':') || (sQuery[1] == '.') || (sQuery[1] == 'c') || (sQuery[1] == 'j') || (sQuery.substr(0,2) == "tP") || (sQuery.substr(0,2) == "tp") )
+                else if ( (sQuery[1] == ':') || (sQuery[1] == '.') || (sQuery[1] == 'c') || (sQuery[1] == 'i') || (sQuery[1] == 'j') || (sQuery.substr(0,2) == "tP") || (sQuery.substr(0,2) == "tp") )
                         {
                         if ( not Answer(sQuery, stream) ) stream << ": no result\n";
                         }

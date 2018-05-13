@@ -9,15 +9,10 @@
  */
 
 #include <iostream>
-#include <sstream>
 
 #include "odb.h"
+#include "../../../te/include/te.h"
 
-
-/*
-#include "../../inja/test/thirdparty/nlohmann/json.hpp"
-#include "../../inja/src/inja.hpp"
-*/
 
 auto oOdb = odb::COdb();
 
@@ -43,25 +38,53 @@ int main()
     // show us
 /*
     std::stringstream ss;
-    std::cout << "---------------- all nodes" << '\n';
-    std::cout << "{" << '\n';
     oOdb.print_json(ss);
     std::cout << ss.str() << '\n';
-    std::cout << "}" << '\n';
 */
-    
+    TMapS2M o{ 
+               {"title",               { {"", "odb Interactor"}    } },
+               {"message",             { {"", "WELCOME"}           } },
+               {"former-query",        { {"", "t:Star Trek"}       } },
+               {"static+favicon-icon", { {"", "/static/fav.icon"}  } },
+               {"static+style-css",    { {"", "/static/style.css"} } },
+             };
+
+    TSubMap u;
+
+    odb::CNodes mn = oOdb.FindNodes(std::regex(".*"));
+    std::string sTemplate = "nodes.html";
+    for ( auto const & a:mn )
+	{
+        u.emplace("", a->m_sName);
+	u.emplace("id", std::to_string(a->m_nId));
+        u.emplace("type", a->m_sType);
+	o.emplace("node", u );
+	u.clear();
+	}
+
 /*
-    using json = nlohmann::json;
-
-
-    inja::Environment env = inja::Environment();
-    json data;
-    data["data"] = "Jeff";
-    data["deps"] = {"Ab","Zu"};
-
-    std::string s = env.render_file("../templates/data.html", data);
-
-    std::cout << s <<'\n';    
+	odb::ONode a = oOdb.FindNode(0);
+	std::string sTemplate = "node.html";
+	u.emplace("", (*a)->m_sName);
+	u.emplace("id", std::to_string((*a)->m_nId));
+	u.emplace("type", (*a)->m_sType);
+	o.emplace("node", u );
+	u.clear();
 */
+/*
+    for (auto & a:o)
+	{
+	std::cout << a.first << ", [";
+	for (auto & b:a.second)
+	    {
+	    std::cout << "(" << b.first << ", " << b.second << ") ";
+	    }
+	std::cout << "]\n";
+	}
+*/
+
+    Cte const ote(o, sTemplate, "../templates/");
+
+    std::cout << ote;
     }
 

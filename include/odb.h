@@ -1083,8 +1083,8 @@ class COdb : public IOdb
         /// todo: optimize / Links a Node to a Node for a Reason by given index value
         bool LinkNode2Node( size_t nNodeFrom, size_t nReason, size_t nNodeTo )
             {
-            auto itNodeFrom  =  m_oNodes .get<id>().find( nNodeFrom );
-            auto itNodeTo    =  m_oNodes .get<id>().find( nNodeTo );
+            auto itNodeFrom   =  m_oNodes  .get<id>().find( nNodeFrom );
+            auto itNodeTo     =  m_oNodes  .get<id>().find( nNodeTo );
             auto itReason     =  m_oReasons.get<id>().find( nReason );
             if ( (itNodeFrom == m_oNodes .end()) || (itNodeTo == m_oNodes.end()) || (itReason == m_oReasons.end()) )
                 {

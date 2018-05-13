@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block data %}
+        <p>{{ Node.type }}</p>{% if Node %}
+        <ul>{% for Node in nodes %}
+            <li><a href="http://lenovum:8080/?ni={{ Node.id }}">{{ Node }}</a></li>{% endfor %}
+            </ul>{% endif %}{% endblock %}
+
