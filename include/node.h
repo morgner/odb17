@@ -155,7 +155,7 @@ a         */
 		     (0 == m_spoAtoms.size()) );
 	    }
 
-        MLinks      const & GetLinks     () const { return m_mLink; }
+        MLinkets    const & GetLinkets   () const { return m_mLink; }
         SNodes      const & GetNodes     () const { return m_spoNodesRelating; }
         SProperties const & GetProperties() const { return m_spoProperties; }
         SAtoms      const & GetAtoms     () const { return m_spoAtoms; }
@@ -167,7 +167,7 @@ a         */
          * @param PReason The PReason we link for
          * @param Compare Function to compare two CNodes
          */
-        MLinks               m_mLink;
+        MLinkets               m_mLink;
 
         /**
          * @brief Registers PNodes relating to 'this' instance

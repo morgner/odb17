@@ -1207,7 +1207,7 @@ class COdb : public IOdb
         auto FindReasons   ( std::regex const & crsRegex ) { return Find(m_oReasons, crsRegex); }
 
         /// API Adapter
-        auto FindAtoms     ( size_t                  nId ) { return Find(m_oAtoms, nId     ); }
+        auto FindAtom      ( size_t                  nId ) { return Find(m_oAtoms, nId     ); }
         /// API Adapter
         auto FindAtoms     ( std::string const & crsName ) { return Find(m_oAtoms, crsName ); }
         /// API Adapter

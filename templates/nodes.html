@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block data %}
-        <p>{{ Node.type }}</p>{% if Node %}
+        <h2>{{ Node.type }}</h2>{% if Node %}
         <ul>{% for Node in nodes %}
-            <li><a href="http://lenovum:8080/?ni={{ Node.id }}">{{ Node }}</a></li>{% endfor %}
+            <li><a href="/?ni={{ Node.id }}">{{ Node }}</a></li>{% endfor %}
             </ul>{% endif %}{% endblock %}
 

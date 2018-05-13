@@ -13,10 +13,12 @@
 #include "node.h"
 
 
-/// print CReasons in an informational fasion
+/// print CReasons in an informational fashion
 void print(odb::CReasons const & crContainer);
 
 namespace odb {
+
+using MLinks = std::multimap<PNode, PNode>;
 
 /// forward declarations of COdb to befriend with
 class COdb;
@@ -83,10 +85,12 @@ class CReason : public IReason
 	    return (0 == m_mRelations.size());
 	    }
 
+        MLinks const & Relations() const { return m_mRelations; }
+
     protected:
         /// A map containing all links from one node to another using
         /// 'this' CReason
-        std::multimap<PNode, PNode> m_mRelations;
+        MLinks m_mRelations;
 
     }; // class CReason
 

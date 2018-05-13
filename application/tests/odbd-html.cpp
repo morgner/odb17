@@ -35,10 +35,11 @@
 using namespace std::string_literals;
 
 std::string g_sTemplate = "nodes.html";
+std::string g_sTemplatePath = "../templates/";
 
 auto poOdb = std::make_unique<odb::COdb>();
 
-template<typename ...Args> void mknodes     (Args&&... args) { (poOdb->MakeNode   (args), ...); }
+template<typename ...Args> void mknodes     (Args&&... args) { (poOdb->MakeNode    (args), ...); }
 template<typename... Args> void mkproperties(Args&&... args) { (poOdb->MakeProperty(args), ...); }
 template<typename... Args> void mkreasons   (Args&&... args) { (poOdb->MakeReason  (args), ...); }
 template<typename... Args> void mkatoms     (Args&&... args) { (poOdb->MakeAtom    (args, "fold" ), ...); }
@@ -126,14 +127,23 @@ size_t CollectDataForTemplate( T const & roContainer, TMapS2M & roData, std::str
     TSubMap oSubM{};
     for ( auto const & a:roContainer )
 	{
-	if constexpr ( std::is_same<T, odb::MLinks>() )
+	if constexpr ( std::is_same<T, odb::MLinkets>() )
 	    {
 	    oSubM. emplace("",         a.first->m_sName);
 	    oSubM. emplace("id",       std::to_string(a.first->m_nId));
-	    oSubM. emplace("type",     a.first->m_sType);
+	    oSubM. emplace("type",     a.first->m_sType.substr(6));
 	    oSubM. emplace("rsn",      a.second->m_sName);
 	    oSubM. emplace("rsn-id",   std::to_string(a.second->m_nId));
-	    oSubM. emplace("rsn-type", a.second->m_sType);
+	    oSubM. emplace("rsn-type", a.second->m_sType.substr(6));
+	    }
+	else if constexpr ( std::is_same<T, odb::MLinks>() )
+	    {
+	    oSubM. emplace("",         a.first->m_sName);
+	    oSubM. emplace("id",       std::to_string(a.first->m_nId));
+	    oSubM. emplace("type",     a.first->m_sType.substr(6));
+	    oSubM. emplace("linker",      a.second->m_sName);
+	    oSubM. emplace("linker-id",   std::to_string(a.second->m_nId));
+	    oSubM. emplace("linker-type", a.second->m_sType.substr(6));
 	    }
 	else
 	    {
@@ -150,42 +160,28 @@ size_t CollectDataForTemplate( T const & roContainer, TMapS2M & roData, std::str
 template<typename T>
 size_t SortDataForTemplate( T const & roContainer, TMapS2M & roData, std::string const & crsName )
     {
-    std::string sTypeName;
-
     if ( 1 == CollectDataForTemplate( roContainer, roData, crsName) )
 	{
 	for ( auto const & a:roContainer )
 	    {
-	    if constexpr ( std::is_same<T, odb::MLinks>() )
-		{
-		sTypeName = a.first->m_sType;
-		}
-	    else
-		{
-		sTypeName = a->m_sType;
-	    }
-//	    if ( "odb::CNode" == sTypeName )
 	    if constexpr ( std::is_same<T, odb::SNodes>() || std::is_same<T, odb::CNodes>())
-//	    if ( true )
 		{
 		g_sTemplate = "node.html";
-		CollectDataForTemplate( a->GetLinks(),      roData, "link-to");
+		CollectDataForTemplate( a->GetLinkets(),    roData, "link-to");
 		CollectDataForTemplate( a->GetNodes(),      roData, "link-from");
 		CollectDataForTemplate( a->GetProperties(), roData, "Property");
 		CollectDataForTemplate( a->GetAtoms(),      roData, "Atom");
 		}
-	    if constexpr ( std::is_same<T, odb::SProperties>() )
+	    if constexpr ( std::is_same<T, odb::SProperties>() || std::is_same<T, odb::CProperties>() )
 		{
 		g_sTemplate = "property.html";
-//		CollectDataForTemplate( a->Relations(),     roData, "Node");
+		CollectDataForTemplate( a->Relations(),     roData, "Node");
 		}
-/*
-	    if constexpr ( std::is_same<T, odb::SReasons>() )
+	    if constexpr ( std::is_same<T, odb::SReasons>() || std::is_same<T, odb::CReasons>())
 		{
 		g_sTemplate = "reason.html";
-//   		CollectDataForTemplate( a->Realtions(),     roData, "Node");
+   		CollectDataForTemplate( a->Relations(),     roData, "Node");
 		}
-*/
 	    }
 	}
     return roContainer.size();
@@ -197,14 +193,14 @@ void SendError( long nError, std::ostream & ros )
 		        {"message", { {"", "ERROR 404"}      } },
 		        {"text",    { {"", "Not found"}      } } };
 
-    Cte const ote(oErrorData, "error.html", "../templates/");
+    Cte const ote(oErrorData, "error.html", g_sTemplatePath);
     ros << "HTTP/1.1 404 Not found" << '\n';
     ros << "Server: odb/0.9.0 (Linux) CPP" << '\n';
     ros << "Content-Length: " << ote.length() << '\n';
     ros << "Content-Language: en" << '\n';
     ros << "Connection: close" << '\n';
     ros << "Content-Type: text/html" << '\n';
-    ros << "\n";
+    ros << '\n';
     ros << ote;
     }
 
@@ -217,7 +213,7 @@ void SendResultPage( Cte const & ote, std::ostream & ros )
     ros << "Content-Language: en" << '\n';
     ros << "Connection: close" << '\n';
     ros << "Content-Type: text/html" << '\n';
-    ros << "\n";
+    ros << '\n';
     ros << ote;
     }
 
@@ -355,17 +351,39 @@ void SendResult(T const & croData, std::iostream & ros, char const ccSwitch, std
         }
     else
         {
-//        SortDataForTemplate( roContainer, TMapS2M, crsName );
-//        SendResultPage( Cte, ros );
-
 	TMapS2M o;
+	std::string sPrimKey = "Node";
         g_sTemplate = "nodes.html";
-        if ( 1 == SortDataForTemplate( croData, o, "Node" ) )
-            {
-            g_sTemplate = "node.html";
-            }
+
+        if constexpr ( std::is_same<T, odb::CNodes>() )
+	    {
+            sPrimKey = "Node"; g_sTemplate = "nodes.html";
+	    }
+        if constexpr ( std::is_same<T, odb::CProperties>() )
+	    {
+            sPrimKey = "Property"; g_sTemplate = "properties.html";
+	    }
+        if constexpr ( std::is_same<T, odb::CReasons>() )
+	    {
+            sPrimKey = "Reason"; g_sTemplate = "reasons.html";
+	    }
+        if constexpr ( std::is_same<T, odb::CAtoms>() )
+	    {
+            sPrimKey = "Atom"; g_sTemplate = "atoms.html";
+	    }
+/*
+        if constexpr ( std::is_same<T, odb::MLinkets>() )
+	    {
+            sPrimKey = "Node"; g_sTemplate = "nodes.html";
+	    }
+	if constexpr ( std::is_same<T, odb::MLinks>() )
+	    {
+	    sPrimKey = "Reason"; g_sTemplate = "reasons.html";
+	    }
+*/
+        SortDataForTemplate( croData, o, sPrimKey );
         std::cout << g_sTemplate << '\n';
-        Cte ote(o, g_sTemplate, "../templates/");
+        Cte ote(o, g_sTemplate, g_sTemplatePath);
         SendResultPage( ote, ros );
 //        SendResultPage( ote, std::cout );
 
@@ -394,7 +412,7 @@ void SendResult(T const & croData, std::iostream & ros, char const ccSwitch, std
                 }
             }
 */
-        }
+        } // else if (ccSwitch == 'c') 
 /*
     if (ccSwitch == '.')
         {
@@ -420,6 +438,11 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
     odb::CProperties ps;
     odb::CAtoms      as;
     auto             b = false;
+    long nInput        = 1;
+    if ( d=='i' )
+	{
+	try { nInput = stol(sInput); } catch(...) {  }
+	}
     switch (c)
         {
         case 't':
@@ -430,13 +453,13 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
                     d = (d=='p') ? ':' : '.';
                     }
                   else if ( (d=='i') )
-                      {
-                      auto oop = poOdb->FindNode(stol(sInput)); // .value_or(nullptr);
-                      if ( oop.has_value() )
-                	  {
-                	  ts.insert( oop.value() );
-                	  }
-                      }
+                    {
+                    auto oop = poOdb->FindNode(nInput);
+                    if ( oop.has_value() )
+                	{
+                	ts.insert( oop.value() );
+                	}
+                    }
                   else
 		    {
 		    ts = poOdb->FindNodes(sInput);
@@ -444,19 +467,52 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
 		    }
                   SendResult(ts, ros, d, (b)?sInput:""s);
                   break;
-        case 'r': rs = poOdb->FindReasons(std::string( sInput ));
-		  if (rs.size() == 0) { try { rs = poOdb->FindReasons(std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
+        case 'r': if ( (d=='i') )
+                    {
+                    auto oop = poOdb->FindReason(nInput);
+                    if ( oop.has_value() )
+                	{
+                	rs.insert( oop.value() );
+                	}
+                    }
+                  else
+		    {
+		    rs = poOdb->FindReasons(std::string( sInput ));
+		    if (rs.size() == 0) { try { rs = poOdb->FindReasons(std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
+                    }
                   SendResult(rs, ros, d, (b)?sInput:""s);
                   break;
-        case 'p': ps = poOdb->FindProperties(std::string( sInput ));
-                  if (ps.size() == 0) { try { ps = poOdb->FindProperties(std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
+        case 'p': if ( (d=='i') )
+                    {
+                    auto oop = poOdb->FindProperty(nInput);
+                    if ( oop.has_value() )
+                	{
+                	ps.insert( oop.value() );
+                	}
+                    }
+                  else
+		    {
+		    ps = poOdb->FindProperties(std::string( sInput ));
+                    if (ps.size() == 0) { try { ps = poOdb->FindProperties(std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
+                    }
                   SendResult(ps, ros, d, (b)?sInput:""s);
                   break;
-        case 'a': as = poOdb->FindAtoms(std::string( sInput ));
-                  if (as.size() == 0) { try { as = poOdb->FindAtoms(std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
+        case 'a': if ( (d=='i') )
+                    {
+                    auto oop = poOdb->FindAtom(nInput);
+                    if ( oop.has_value() )
+                	{
+                	as.insert( oop.value() );
+                	}
+                    }
+                  else
+		    {
+		    as = poOdb->FindAtoms(std::string( sInput ));
+                    if (as.size() == 0) { try { as = poOdb->FindAtoms(std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
+                    }
                   SendResult(as, ros, d, (b)?sInput:""s);
                   break;
-        default : ros << ": no result";
+        default : SendError( 404, ros);
                   return false;
         }
 
@@ -549,6 +605,7 @@ Cache-Control: no-cache
 
             if (sQuery.substr(0, 6) != R"(GET /?)" )
         	{
+                std::cout << "Qi: |" << sQuery << "|\n";
         	if (sQuery.substr(0, 4) != R"(GET )" )
 		    {
 		    SendError( 404, stream );
@@ -568,8 +625,14 @@ Cache-Control: no-cache
 	    else
 		{
 		sQuery = "";
+                std::regex const re(R"(/?([^ ]+))");
+                std::regex_search(sQI, sm, re);
+                if ( sm.size() > 1 )
+                    {
+                    sQuery  = sm[1];
+                    }
 		}
-            std::cout << "Q: " << sQuery << '\n';
+            std::cout << "Qo: |" << sQuery << "|\n";
 
             TMapS2M oHead{
 			   {"title",   { {"", "odb Interactor"} } },
@@ -577,13 +640,6 @@ Cache-Control: no-cache
             TMapS2M o = oHead;
             TSubMap u;
 
-
-//            odb::CNodes mn = poOdb->FindNodes(std::regex("Terry Pratchett"));
-//            odb::CNodes mn = poOdb->FindNodes(std::regex(".*"));
-//            odb::CNodes mn = poOdb->FindNodes(std::regex("'Good Omens'"));
-//            odb::ONode mn = poOdb->FindNode (1);
-//            SortDataForTemplate( mn, o, "Node" );
-            g_sTemplate = "node.html";
 
 /*
             for (auto & a:o)
@@ -596,12 +652,6 @@ Cache-Control: no-cache
         	std::cout << "]\n";
         	}
 */
-//            Cte const ote(o, g_sTemplate, "../templates/");
-//            SendResultPage( ote, stream );
-
-//            continue;
-
-//            std::cout << "> " << sQuery << '\n';
             if ( sQuery == "stat" )
                 {
                 SendStatistics(stream);

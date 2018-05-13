@@ -255,11 +255,13 @@ class CReason;
 using PReason  = PT<CReason>;
 /// The type to inherite from (Identifiable<>)
 using IReason  = IT<CReason>;
+/// A set of PReason's
+using SReasons = std::set<PReason, lessIdentifiableName<PReason>>;
 /// A container for the shared_ptr's of the entity
 using CReasons = CT<CReason>;
 
 /// A multimap containing links to other nodes with reason
-using MLinks = std::multimap<PNode, PReason, lessIdentifiableId<PNode>>;
+using MLinkets = std::multimap<PNode, PReason, lessIdentifiableId<PNode>>;
 
 /// Forward decleration to befriend with it in other classes
 class CAtom;

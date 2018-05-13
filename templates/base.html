@@ -9,14 +9,18 @@
     <style>
 		body { background-color: powderblue; 
 		       font-family: arial, helvetica, sans-serif;
-	          font-size: small; }
+	               font-size: small; }
 		h1   { color: blue; }
 		p    { color: red;  }
 			
 	 </style>
     </head>
-
     <body>
+        <form action="?=" method="GET">
+          regex: <input type="text" name="n."></input>
+          <input type="submit" value="Submit">
+        </form>
+
         <div class=paragraph>
             <h1>{{ title }}</h1>
             {% block data %}i<p class="info">No data found</p>{% endblock %}
