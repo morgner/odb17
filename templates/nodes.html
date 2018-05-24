@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block data %}
-        <h2>{{ Node.type }}</h2>{% if Node %}
+        <h2>{{ Node.type }} ({{ Node-hits }})</h2>{% if Node %}
         <ul>{% for Node in nodes %}
             <li><a href="/?ni={{ Node.id }}">{{ Node }}</a></li>{% endfor %}
             </ul>{% endif %}{% endblock %}

@@ -188,9 +188,10 @@ size_t SortDataForTemplate( T const & roContainer, TMapS2M & roData, std::string
 	}
     else
 	{
-	roData.emplace( "srv-matches", TSubMap{ {"", std::to_string(nHits)} } );
+	roData.emplace( "result-matches", TSubMap{ {"", std::to_string(nHits)} } );
 	}
     roData.emplace( "srv-version", TSubMap{ {"", "odb.0.9.0"} } );
+    roData.emplace( "result-class",   TSubMap{ {"", crsName} } );
     return roContainer.size();
     }
 
