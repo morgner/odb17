@@ -122,9 +122,9 @@ using asio::ip::tcp;
 
 
 template<typename T>
-size_t CollectDataForTemplate( T const & roContainer, TMapS2M & roData, std::string const & crsName)
+size_t CollectDataForTemplate( T const & roContainer, TRenderData & roData, std::string const & crsName)
     {
-    TSubMap oSubM{};
+    TRenderItem oSubM{};
     for ( auto const & a:roContainer )
 	{
 	if constexpr ( std::is_same<T, odb::MLinkets>() )
@@ -152,14 +152,14 @@ size_t CollectDataForTemplate( T const & roContainer, TMapS2M & roData, std::str
 	    oSubM. emplace("type",  a->m_sType.substr(6));
 	    }
 	roData.emplace(crsName, oSubM);
-	roData.emplace(crsName + "-hits", TSubMap{ {"", std::to_string(roContainer.size())} } );
+	roData.emplace(crsName + "-hits", TRenderItem{ {"", std::to_string(roContainer.size())} } );
 	oSubM.clear();
 	}
     return roContainer.size();
     }
 
 template<typename T>
-size_t SortDataForTemplate( T const & roContainer, TMapS2M & roData, std::string const & crsName )
+size_t SortDataForTemplate( T const & roContainer, TRenderData & roData, std::string const & crsName )
     {
     size_t nHits = CollectDataForTemplate( roContainer, roData, crsName);
     if ( 1 == nHits )
@@ -188,16 +188,16 @@ size_t SortDataForTemplate( T const & roContainer, TMapS2M & roData, std::string
 	}
     else
 	{
-	roData.emplace( "result-matches", TSubMap{ {"", std::to_string(nHits)} } );
+	roData.emplace( "result-matches", TRenderItem{ {"", std::to_string(nHits)} } );
 	}
-    roData.emplace( "srv-version", TSubMap{ {"", "odb.0.9.0"} } );
-    roData.emplace( "result-class",   TSubMap{ {"", crsName} } );
+    roData.emplace( "srv-version", TRenderItem{ {"", "odb.0.9.0"} } );
+    roData.emplace( "result-class",   TRenderItem{ {"", crsName} } );
     return roContainer.size();
     }
 
 void SendError( long nError, std::ostream & ros )
     {
-    TMapS2M oErrorData{ {"title",   { {"", "odb Interactor"} } },
+    TRenderData oErrorData{ {"title",   { {"", "odb Interactor"} } },
 		        {"message", { {"", "ERROR 404"}      } },
 		        {"text",    { {"", "Not found"}      } } };
 
@@ -338,7 +338,7 @@ bool Insert(std::string const & crsQuery, std::ostream & ros)
     }
 
 
-TMapS2M g_oHead{
+TRenderData g_oHead{
 	       {"title",   { {"", "odb Interactor"} } },
 	       {"message", { {"", "Welcome"}        } } };
 
@@ -364,7 +364,7 @@ void SendResult(T const & croData, std::iostream & ros, char const ccSwitch, std
         }
     else
         {
-	TMapS2M o{g_oHead};
+	TRenderData o{g_oHead};
 	std::string sPrimKey = "none"; g_sTemplate = "none.html";
 
         if constexpr ( std::is_same<T, odb::CNodes>() )

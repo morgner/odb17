@@ -41,7 +41,7 @@ int main()
     oOdb.print_json(ss);
     std::cout << ss.str() << '\n';
 */
-    TMapS2M o{ 
+    TRenderData o{ 
                {"title",               { {"", "odb Interactor"}    } },
                {"message",             { {"", "WELCOME"}           } },
                {"former-query",        { {"", "t:Star Trek"}       } },
@@ -49,7 +49,7 @@ int main()
                {"static+style-css",    { {"", "/static/style.css"} } },
              };
 
-    TSubMap u;
+    TRenderItem u;
 
     odb::CNodes mn = oOdb.FindNodes(std::regex(".*"));
     std::string sTemplate = "nodes.html";
