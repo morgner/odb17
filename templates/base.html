@@ -17,12 +17,12 @@
 	 </style>
     </head>
     <body>
-        <h4>Server version: {{ srv-version }}{% if result-matches %}, {{ result-matches }} hits{% endif %}</h4>
+        <h4>Server version: {{ server.release }}{% if result-matches %}, {{ result-matches }} hits{% endif %}</h4>
         <form action="?=" method="GET">
           nodes: <input type="text" name="n."></input>
           <input type="submit" value="Submit">
         </form>
         <h1>{{ result-class }}</h1>
-{% block data %}i<p class="info">No data found</p>{% endblock %}
+{% block data %}<p class="info">No data found</p>{% endblock %}
         </body>
     </html>

@@ -32,6 +32,12 @@
 #include "../../../te/include/te.h"
 
 
+TRenderData const g_oHead{
+                     {"title",  { {"", "odb Interactor"} } },
+	             {"server", { {"", "odb" }, {"release", "odb.0.9.0" }, {"message", "Welcome" } } },
+                   };
+
+
 using namespace std::string_literals;
 
 std::string g_sTemplate = "nodes.html";
@@ -39,87 +45,11 @@ std::string g_sTemplatePath = "../templates/";
 
 auto poOdb = std::make_unique<odb::COdb>();
 
-template<typename ...Args> void mknodes     (Args&&... args) { (poOdb->MakeNode    (args), ...); }
-template<typename... Args> void mkproperties(Args&&... args) { (poOdb->MakeProperty(args), ...); }
-template<typename... Args> void mkreasons   (Args&&... args) { (poOdb->MakeReason  (args), ...); }
-template<typename... Args> void mkatoms     (Args&&... args) { (poOdb->MakeAtom    (args, "fold" ), ...); }
-
-// append a property to a group of nodes, if property does not exists and
-// 'cbForce' is 'true', the property will be added to the DB
-template<typename... Args>
-void ap2ts(std::string const & crsProperty, // name of the property
-                  bool const   cbForce,     // create it if not existent?
-                     Args&&... args)        // pack of names of 'nodes'
-    {
-    (poOdb->AppendProperty2Node(crsProperty, cbForce, args), ...);
-    }
-        
-template<typename... Args>
-void lt2t(std::string const & crsNameTo, // name of the property
-          std::string const & crsReason, // create it if not existent?
-                    Args&&... args)      // pack of names of 'nodes'
-    {
-    (poOdb->LinkNode2Node(args, crsReason, crsNameTo), ...);
-    }
-
-void FillInSomeData()
-    {
-    // filling in some data
-    // ================================================================================================
-    mknodes    ("Ulli", "Nora", "Peter", "Paula", "Rudi", "Marta", "Arnold", "Bertha", "Elise", "Jack");
-    mknodes    ("Emerald woods", "Madix", "Skoda", "Trombone", "Lecho", "SilentOS", "Insurance");
-    mkproperties("person", "male", "female", "driver", "consumer", "contractor");
-    mkreasons   ("wrote", "read", "bought", "left", "foundet", "loves", "sells", "works at", "uses", "plays");
-    mkatoms     ( 2.5, "done", 7, std::array{2,1,3}, "go", 89, "sold", "percent");
-    // ================================================================================================
-
-    // ================================================================================================
-    lt2t("Emerald woods", "wrote",    "Ulli"                                                         );
-    lt2t("Emerald woods", "read",     "Nora",   "Peter", "Paula", "Rudi", "Marta", "Arnold", "Bertha");
-    lt2t("Trombone",      "bought",   "Peter"                                                        );
-    lt2t("Rudi",          "left",     "Paula",  "Elise", "Marta"                                     );
-    lt2t("Lecho",         "foundet",  "Rudi"                                                         );
-    lt2t("Peter",         "loves",    "Marta",  "Jack"                                               );
-    lt2t("Insurance",     "sells",    "Arnold"                                                       );
-    lt2t("Skoda",         "works at", "Bertha", "Ulli", "Nora", "Arnold"                             );
-    lt2t("SilentOS",      "uses",     "Elise"                                                        );
-    lt2t("Trombone",      "plays",    "Jack",   "Peter"                                              );
-    // ================================================================================================
-
-
-    // give all 'nodes' the property 'person'
-    for ( size_t n = 0; n < poOdb->Nodes().size(); ++n )
-        {
-        poOdb->AppendProperty2Node( 0, n );
-        }
-
-    // assign 'properties' to groups of 'nodes' (supported by fold expressions)
-    // ========================================================================================================
-    ap2ts( "person",     false, "Ulli", "Nora", "Peter", "Paula", "Rudi", "Marta", "Arnold", "Bertha", "Elise");
-    ap2ts( "male",       false, "Ulli",         "Peter",          "Rudi",          "Arnold"                   );
-    ap2ts( "female",     false,         "Nora",          "Paula",         "Marta",           "Bertha", "Elise");
-    ap2ts( "driver",     false, "Ulli",                  "Paula", "Rudi", "Marta",           "Bertha"         );
-    ap2ts( "consumer",   false, "Ulli", "Nora", "Peter",                                               "Elise");
-    ap2ts( "contractor", false,                 "Peter", "Paula", "Rudi",                              "Elise");
-    ap2ts( "artist",     true,  "Ulli",                                            "Arnold", "Bertha", "Elise");
-    ap2ts( "builder",    true,                  "Peter", "Paula",                  "Arnold"                   );
-    // ========================================================================================================
-
-    auto px = poOdb->MakeNode("Ulli");
-    poOdb->AppendProperty2Node( 0, px->m_nId );
-    poOdb->AppendProperty2Node( 6, px->m_nId );
-    poOdb->AppendProperty2Node( 7, px->m_nId );
-
-    } // void FillInSomeData()
-
 
 #include <asio/ip/tcp.hpp>
 #include <asio/io_service.hpp>
 
 using asio::ip::tcp;
-
-
-
 
 template<typename T>
 size_t CollectDataForTemplate( T const & roContainer, TRenderData & roData, std::string const & crsName)
@@ -169,10 +99,10 @@ size_t SortDataForTemplate( T const & roContainer, TRenderData & roData, std::st
 	    if constexpr ( std::is_same<T, odb::SNodes>() || std::is_same<T, odb::CNodes>())
 		{
 		g_sTemplate = "node.html";
-		CollectDataForTemplate( a->GetLinkets(),    roData, "link-to");
-		CollectDataForTemplate( a->GetNodes(),      roData, "link-from");
-		CollectDataForTemplate( a->GetProperties(), roData, "Property");
-		CollectDataForTemplate( a->GetAtoms(),      roData, "Atom");
+		CollectDataForTemplate( a->Linkets(),    roData, "link-to");
+		CollectDataForTemplate( a->Nodes(),      roData, "link-from");
+		CollectDataForTemplate( a->Properties(), roData, "Property");
+		CollectDataForTemplate( a->Atoms(),      roData, "Atom");
 		}
 	    if constexpr ( std::is_same<T, odb::SProperties>() || std::is_same<T, odb::CProperties>() )
 		{
@@ -190,18 +120,15 @@ size_t SortDataForTemplate( T const & roContainer, TRenderData & roData, std::st
 	{
 	roData.emplace( "result-matches", TRenderItem{ {"", std::to_string(nHits)} } );
 	}
-    roData.emplace( "srv-version", TRenderItem{ {"", "odb.0.9.0"} } );
     roData.emplace( "result-class",   TRenderItem{ {"", crsName} } );
     return roContainer.size();
     }
 
 void SendError( long nError, std::ostream & ros )
     {
-    TRenderData oErrorData{ {"title",   { {"", "odb Interactor"} } },
-		        {"message", { {"", "ERROR 404"}      } },
-		        {"text",    { {"", "Not found"}      } } };
+    TRenderData oHead{g_oHead};
 
-    Cte const ote(oErrorData, "error.html", g_sTemplatePath);
+    Cte const ote(oHead, "error.html", g_sTemplatePath);
     ros << "HTTP/1.1 404 Not found" << '\n';
     ros << "Server: odb/0.9.0 (Linux) CPP" << '\n';
     ros << "Content-Length: " << ote.length() << '\n';
@@ -212,17 +139,18 @@ void SendError( long nError, std::ostream & ros )
     ros << ote;
     }
 
-void SendResultPage( Cte const & ote, std::ostream & ros )
+template<typename T>
+void SendResultPage( T const & croT, std::ostream & ros )
     {
-//  std::cerr << "======================================" << '\n' << ote << '\n';
+//  std::cerr << "======================================" << '\n' << croT << '\n';
     ros << "HTTP/1.1 200 OK" << '\n';
     ros << "Server: odb/0.9.0 (Linux) C++" << '\n';
-    ros << "Content-Length: " << ote.length() << '\n';
+    ros << "Content-Length: " << croT.length() << '\n';
     ros << "Content-Language: en" << '\n';
     ros << "Connection: close" << '\n';
     ros << "Content-Type: text/html" << '\n';
     ros << '\n';
-    ros << ote;
+    ros << croT;
     }
 
 bool LinkNAppend(std::string const & crsQuery, std::ostream & ros)
@@ -338,33 +266,34 @@ bool Insert(std::string const & crsQuery, std::ostream & ros)
     }
 
 
-TRenderData g_oHead{
-	       {"title",   { {"", "odb Interactor"} } },
-	       {"message", { {"", "Welcome"}        } } };
-
 template<typename T>
-void SendResult(T const & croData, std::iostream & ros, char const ccSwitch, std::string const & crsBadQuery = ""s)
+void SendResult(T const & croContainer, std::iostream & ros, char const ccSwitch, std::string const & crsBadQuery = ""s)
     {
+    TRenderData oData{g_oHead};
     if (crsBadQuery > ""s)
 	{
-	ros << " \nE: '" << crsBadQuery << "' invalid expression\n";
 	return;
+	std::ostringstream oss;
+	oss << "ERROR: '" << crsBadQuery << "' invalid expression";
+        SendResultPage(oss.str(), ros);
+        return;
 	}
     if (ccSwitch == 'j') 
         {
-        ros << " \n { \n";
-        poOdb->print_json(croData, ros);
-        ros << " \n } \n";
+	std::ostringstream oss;
+        oss << " \n { \n";
+        poOdb->print_json(croContainer, oss);
+        oss << " \n } \n";
+        SendResultPage(oss.str(), ros);
         return;
         }
 
     if (ccSwitch == 'c') 
         {
-        ros << " \n";
+        // ros << " \n";
         }
     else
         {
-	TRenderData o{g_oHead};
 	std::string sPrimKey = "none"; g_sTemplate = "none.html";
 
         if constexpr ( std::is_same<T, odb::CNodes>() )
@@ -384,9 +313,9 @@ void SendResult(T const & croData, std::iostream & ros, char const ccSwitch, std
             sPrimKey = "Atom"; g_sTemplate = "atoms.html";
 	    }
         
-        SortDataForTemplate( croData, o, sPrimKey );
+        SortDataForTemplate( croContainer, oData, sPrimKey );
         std::cout << g_sTemplate << '\n';
-        Cte ote(o, g_sTemplate, g_sTemplatePath);
+        Cte ote(oData, g_sTemplate, g_sTemplatePath);
         SendResultPage( ote, ros );
 /*
         // prints raw data to console
@@ -673,6 +602,7 @@ Cache-Control: no-cache
                 SendStatistics(std::cout);
                 stream << "Done\n";
                 }
+/*
             else if ( sQuery == "fillr" )
                 {
                 stream << "Fill DB with small set of data, old statistics:\n";
@@ -685,6 +615,7 @@ Cache-Control: no-cache
                 SendStatistics(std::cout);
                 stream << "Done\n";
                 }
+*/
             else if ( sQuery == "load" )
                 {
                 stream << "Replacing DB, old statistics:\n";

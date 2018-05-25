@@ -124,7 +124,7 @@ class CNode : public std::enable_shared_from_this<CNode>,
          * @brief Links this CNode to another CNode for a CReason
          * @param po2Node A Node to Link to
          * @param po4Reason The Reason we link for
-a         */
+         */
         PNode Link(PNode po2Node, PReason po4Reason);
 
         /**
@@ -155,10 +155,10 @@ a         */
 		     (0 == m_spoAtoms.size()) );
 	    }
 
-        MLinkets    const & GetLinkets   () const { return m_mLink; }
-        SNodes      const & GetNodes     () const { return m_spoNodesRelating; }
-        SProperties const & GetProperties() const { return m_spoProperties; }
-        SAtoms      const & GetAtoms     () const { return m_spoAtoms; }
+        MLinkets    const & Linkets   () const { return m_mLink; }
+        SNodes      const & Nodes     () const { return m_spoNodesRelating; }
+        SProperties const & Properties() const { return m_spoProperties; }
+        SAtoms      const & Atoms     () const { return m_spoAtoms; }
 
     protected:
         /**
@@ -167,28 +167,28 @@ a         */
          * @param PReason The PReason we link for
          * @param Compare Function to compare two CNodes
          */
-        MLinkets               m_mLink;
+        MLinkets       m_mLink;
 
         /**
          * @brief Registers PNodes relating to 'this' instance
          * @param PNode The PNode we are linked from
          * @param Compare Function to compare two CNode's
          */
-        SNodes               m_spoNodesRelating;
+        SNodes         m_spoNodesRelating;
 
         /**
          * @brief Registers PProperties of this CNode
          * @param PProperty PProperties we have
          * @param Compare Function to compare two PAtom's
          */
-        SProperties           m_spoProperties;
+        SProperties    m_spoProperties;
 
         /**
          * @brief Registers PAtoms of this CNode
          * @param PAtom PAtom's we own
          * @param Compare Function to compare two PAtom's
          */
-        SAtoms                m_spoAtoms;
+        SAtoms         m_spoAtoms;
 
     }; // class CNode
 
