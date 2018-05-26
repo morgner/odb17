@@ -7,7 +7,7 @@
 {% if link-to %}
 <h3>Links to other nodes ({{ link-to-hits }})</h3>
 <ul>{% for link-to in links-to %}
-    <li><a href="/?ri={{ link-to.rsn-id }}">{{link-to.rsn}}</a> <a href="/?ni={{ link-to.id }}">{{ link-to }}</a></li>{% endfor %}
+    <li><a href="/?ri={{ link-to.rsn-id }}">{{ link-to.rsn }}</a>: <a href="/?ni={{ link-to.id }}">{{ link-to }}</a></li>{% endfor %}
 </ul>{% endif %}
 
 {% if link-from %}

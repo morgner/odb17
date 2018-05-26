@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block data %}<h2>odb Help</h2>
+
+<table>
+    <tr><th>Query</th><th>Description</th></li>{% for help in x %}
+    <tr><td><a href="{{ help.query }}">{{ help }}</a></td><td>{{ help.text }}</td></li>{% endfor %}
+    </table>
+
+{% endblock %}

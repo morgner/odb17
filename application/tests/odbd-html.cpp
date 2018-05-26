@@ -140,17 +140,17 @@ void SendError( long nError, std::ostream & ros )
     }
 
 template<typename T>
-void SendResultPage( T const & croT, std::ostream & ros )
+void SendResultPage( T const & croContainer, std::ostream & ros )
     {
 //  std::cerr << "======================================" << '\n' << croT << '\n';
-    ros << "HTTP/1.1 200 OK"                   << '\n';
-    ros << "Server: odb/0.9.0 (Linux) C++"     << '\n';
-    ros << "Content-Length: " << croT.length() << '\n';
-    ros << "Content-Language: en"              << '\n';
-    ros << "Connection: close"                 << '\n';
-    ros << "Content-Type: text/html"           << '\n';
+    ros << "HTTP/1.1 200 OK"                           << '\n';
+    ros << "Server: odb/0.9.0 (Linux) C++"             << '\n';
+    ros << "Content-Length: " << croContainer.length() << '\n';
+    ros << "Content-Language: en"                      << '\n';
+    ros << "Connection: close"                         << '\n';
+    ros << "Content-Type: text/html"                   << '\n';
     ros << '\n';
-    ros << croT;
+    ros << croContainer;
     }
 
 bool LinkNAppend(std::string const & crsQuery, std::ostream & ros)
@@ -481,13 +481,7 @@ bool FindUnuseds(std::string const & crsQuery, tcp::iostream & ros)
 void SendStatistics(std::ostream & ros)
     {
     TRenderData oData{g_oHead};
-    /*
-    std::ostringstream oss;
-    oss << "---------------- " << poOdb->Nodes().size()      << " nodes"      << " \n";
-    oss << "---------------- " << poOdb->Properties().size() << " properties" << " \n";
-    oss << "---------------- " << poOdb->Reasons().size()    << " reasons"    << " \n";
-    oss << "---------------- " << poOdb->Atoms().size()      << " atoms"      << " \n";
-    */
+
     oData.emplace(  "Nodes",      TRenderItem{ { "count", std::to_string(poOdb->Nodes().size())      } }  );
     oData.emplace(  "Properties", TRenderItem{ { "count", std::to_string(poOdb->Properties().size()) } }  );
     oData.emplace(  "Reasons",    TRenderItem{ { "count", std::to_string(poOdb->Reasons().size())    } }  );
@@ -514,7 +508,6 @@ int main(int argc, char* argv[])
     poOdb->LoadDB(sFilename);
 
     std::cout << '\n';
-    SendStatistics(std::cout);
 
     try
         {
@@ -601,7 +594,6 @@ Cache-Control: no-cache
             if ( sQuery == "stat" )
                 {
                 SendStatistics(stream);
-                SendStatistics(std::cout);
                 }
             else if ( sQuery == "clean" )
                 {
@@ -610,7 +602,6 @@ Cache-Control: no-cache
                 stream << "Cleaning, please wait\n";
                 poOdb = std::make_unique<odb::COdb>();
                 SendStatistics(stream);
-                SendStatistics(std::cout);
                 stream << "Done\n";
                 }
 /*
@@ -623,7 +614,6 @@ Cache-Control: no-cache
                 stream << "Filling, please wait\n";
                 FillInSomeData();
                 SendStatistics(stream);
-                SendStatistics(std::cout);
                 stream << "Done\n";
                 }
 */
@@ -635,7 +625,6 @@ Cache-Control: no-cache
                 stream << "Loading, please wait\n";
                 poOdb->LoadDB(sFilename);
                 SendStatistics(stream);
-                SendStatistics(std::cout);
                 stream << "Done\n";
                 }
             else if ( sQuery == "save" )
@@ -647,36 +636,29 @@ Cache-Control: no-cache
                 }
             else if ( sQuery == "help" )
                 {
-                stream << "help    - shows this help page\n";
-                stream << "stat    - shows db statistics\n";
-                stream << "clean   . deletes all entries from DB\n";
-                stream << "fillr   . fills the DB with test data\n";
-                stream << "load    . loads the DB from disk\n";
-                stream << "save    . saves the DB to disk\n";
-                stream << " \n";
-                stream << "t:regex - search for a node\n";
-                stream << "p:regex - search for a property\n";
-                stream << "r:regex - search for a reason\n";
-                stream << "a:regex - search for an atom\n";
-                stream << "tpregex - search for a node having a specific property\n";
-                stream << " \n";
-                stream << "t.regex - search for a node (short result)\n";
-                stream << "p.regex - search for a property (short result)\n";
-                stream << "r.regex - search for a reason (short result)\n";
-                stream << "a.regex - search for an atom (short result)\n";
-                stream << "tcregex - search for nodes, returns only the result count\n";
-                stream << "tjregex - search for nodes, returns result in JSON format\n";
-                stream << "tPregex - search for a node having a specific property (short result)\n";
-                stream << " \n";
-                stream << "Example\n";
-                stream << " \n";
-                stream << "t:Star (Trek|Wars).*\n";
-                stream << "t.Star (Trek|Wars).*\n";
-                stream << "tcStar (Trek|Wars).*\n";
-                stream << "tjStar (Trek|Wars).*\n";
-                stream << " \n";
-                stream << "Searches for all 'nodes' named \"Star Trek\" or \"Star Wars\"\n";
-                stream << " \n";
+                TRenderData oData(g_oHead);
+                oData.emplace("help", TRenderItem{{ "", "help"    },{ "query", "/?he=lp"                 },{ "text", "shows this help page" }});
+                oData.emplace("help", TRenderItem{{ "", "stat"    },{ "query", "/?st=at"                 },{ "text", "shows db statistics" }});
+                oData.emplace("help", TRenderItem{{ "", "clean"   },{ "query", "/?cl=ean"                },{ "text", "deletes all entries from DB" }});
+                oData.emplace("help", TRenderItem{{ "", "fillr"   },{ "query", "/?fi=llr"                },{ "text", "fills the DB with test data" }});
+                oData.emplace("help", TRenderItem{{ "", "load"    },{ "query", "/?lo=ad"                 },{ "text", "loads the DB from disk" }});
+                oData.emplace("help", TRenderItem{{ "", "save"    },{ "query", "/?sa=ve"                 },{ "text", "saves the DB to disk" }});
+                oData.emplace("help", TRenderItem{{ "", "t:regex" },{ "query", "/?t:=.*Star.*"           },{ "text", "search for a node" }});
+                oData.emplace("help", TRenderItem{{ "", "p:regex" },{ "query", "/?p:=.*dire.*"           },{ "text", "search for a property" }});
+                oData.emplace("help", TRenderItem{{ "", "r:regex" },{ "query", "/?r:=.*know.*"           },{ "text", "search for a reason" }});
+                oData.emplace("help", TRenderItem{{ "", "a:regex" },{ "query", "/?a:=.*size.*"           },{ "text", "search for an atom" }});
+                oData.emplace("help", TRenderItem{{ "", "tpregex" },{ "query", "/?tp=.*role.*"           },{ "text", "search for a node having a specific property" }});
+                oData.emplace("help", TRenderItem{{ "", "t.regex" },{ "query", "/?t.=.*Star.*"           },{ "text", "search for a node" }});
+                oData.emplace("help", TRenderItem{{ "", "p.regex" },{ "query", "/?p.=.*dire.*"           },{ "text", "search for a property (short result)" }});
+                oData.emplace("help", TRenderItem{{ "", "r.regex" },{ "query", "/?r.=.*know.*"           },{ "text", "search for a reason (short result)" }});
+                oData.emplace("help", TRenderItem{{ "", "a.regex" },{ "query", "/?a.=Star (Trek|Wars).*" },{ "text", "search for an atom (short result)" }});
+                oData.emplace("help", TRenderItem{{ "", "tcregex" },{ "query", "/?tc=Star (Trek|Wars).*" },{ "text", "search for nodes, returns only the result count" }});
+                oData.emplace("help", TRenderItem{{ "", "tjregex" },{ "query", "/?tj=Star (Trek|Wars).*" },{ "text", "search for nodes, returns result in JSON format" }});
+                oData.emplace("help", TRenderItem{{ "", "tPregex" },{ "query", "/?tP=director" }, { "text", "search for a node having a specific property (short result)" }});
+                oData.emplace("help", TRenderItem{{ "", "" }, { "query", "" },{ "text", "" }});
+                Cte ote(oData, "help.html", g_sTemplatePath);
+                SendResultPage( ote, stream );
+
                 stream << "t+name  - insert a node\n";
                 stream << "p+name  - insert a property\n";
                 stream << "r+name  - insert a reason\n";
