@@ -83,6 +83,16 @@ target_link_libraries(0-odbd-html.test
   ${CMAKE_THREAD_LIBS_INIT}
   )
 
+add_executable(A-in-out-in.test
+  tests/in-out-in.cpp
+  $<TARGET_OBJECTS:${PROJECT_NAME}>
+  )
+
+target_link_libraries(A-in-out-in.test
+  ${JSON_CPP}
+  ${CMAKE_THREAD_LIBS_INIT}
+  )
+
 find_library(LINENOISE liblinenoise.a linenoise)
 if(NOT LINENOISE)
     add_definitions(-DNO_LINENOISE)

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+
+    oData.emplace(  "Nodes",      TRenderItem{ { "count", std::to_string(poOdb->Nodes().size())      } }  );
+    oData.emplace(  "Properties", TRenderItem{ { "count", std::to_string(poOdb->Properties().size()) } }  );
+    oData.emplace(  "Reasons",    TRenderItem{ { "count", std::to_string(poOdb->Reasons().size())    } }  );
+    oData.emplace(  "Atoms",      TRenderItem{ { "count", std::to_string(poOdb->Atoms().size())      } }  );
+
+
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block data %}<h2>odb Statistics</h2>
+
+<ul>
+    <li>Nodes: {{ Nodes.count }}</li>
+    <li>Properties: {{ Properties.count }}</li>
+    <li>Reasons: {{ Reasons.count }}</li>
+    <li>Atoms: {{ Atoms.count }}</li>
+    </ul>
+
+
+{% endblock %}

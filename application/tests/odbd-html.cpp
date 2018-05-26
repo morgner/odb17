@@ -68,9 +68,9 @@ size_t CollectDataForTemplate( T const & roContainer, TRenderData & roData, std:
 	    }
 	else if constexpr ( std::is_same<T, odb::MLinks>() )
 	    {
-	    oSubM. emplace("",         a.first->m_sName);
-	    oSubM. emplace("id",       std::to_string(a.first->m_nId));
-	    oSubM. emplace("type",     a.first->m_sType.substr(6));
+	    oSubM. emplace("",            a.first->m_sName);
+	    oSubM. emplace("id",          std::to_string(a.first->m_nId));
+	    oSubM. emplace("type",        a.first->m_sType.substr(6));
 	    oSubM. emplace("linker",      a.second->m_sName);
 	    oSubM. emplace("linker-id",   std::to_string(a.second->m_nId));
 	    oSubM. emplace("linker-type", a.second->m_sType.substr(6));
@@ -107,12 +107,12 @@ size_t SortDataForTemplate( T const & roContainer, TRenderData & roData, std::st
 	    if constexpr ( std::is_same<T, odb::SProperties>() || std::is_same<T, odb::CProperties>() )
 		{
 		g_sTemplate = "property.html";
-		CollectDataForTemplate( a->Relations(),     roData, "Node");
+		CollectDataForTemplate( a->Relations(),  roData, "Node");
 		}
 	    if constexpr ( std::is_same<T, odb::SReasons>() || std::is_same<T, odb::CReasons>())
 		{
 		g_sTemplate = "reason.html";
-   		CollectDataForTemplate( a->Relations(),     roData, "Node");
+   		CollectDataForTemplate( a->Relations(),  roData, "Node");
 		}
 	    }
 	}
@@ -143,12 +143,12 @@ template<typename T>
 void SendResultPage( T const & croT, std::ostream & ros )
     {
 //  std::cerr << "======================================" << '\n' << croT << '\n';
-    ros << "HTTP/1.1 200 OK" << '\n';
-    ros << "Server: odb/0.9.0 (Linux) C++" << '\n';
+    ros << "HTTP/1.1 200 OK"                   << '\n';
+    ros << "Server: odb/0.9.0 (Linux) C++"     << '\n';
     ros << "Content-Length: " << croT.length() << '\n';
-    ros << "Content-Language: en" << '\n';
-    ros << "Connection: close" << '\n';
-    ros << "Content-Type: text/html" << '\n';
+    ros << "Content-Language: en"              << '\n';
+    ros << "Connection: close"                 << '\n';
+    ros << "Content-Type: text/html"           << '\n';
     ros << '\n';
     ros << croT;
     }
@@ -461,7 +461,7 @@ bool FindUnuseds(std::string const & crsQuery, tcp::iostream & ros)
     char d = crsQuery[1];
     std::string sInput = crsQuery.substr(2);
 
-    odb::CNodes     ts;
+    odb::CNodes      ts;
     odb::CReasons    rs;
     odb::CProperties ps;
     odb::CAtoms      as;
@@ -480,10 +480,21 @@ bool FindUnuseds(std::string const & crsQuery, tcp::iostream & ros)
 
 void SendStatistics(std::ostream & ros)
     {
-    ros << "---------------- " <<  poOdb->Nodes().size()      << " nodes" << " \n";
-    ros << "---------------- " <<  poOdb->Properties().size() << " properties" << " \n";
-    ros << "---------------- " <<  poOdb->Reasons().size()    << " reasons" << " \n";
-    ros << "---------------- " <<  poOdb->Atoms().size()      << " atoms" << " \n";
+    TRenderData oData{g_oHead};
+    /*
+    std::ostringstream oss;
+    oss << "---------------- " << poOdb->Nodes().size()      << " nodes"      << " \n";
+    oss << "---------------- " << poOdb->Properties().size() << " properties" << " \n";
+    oss << "---------------- " << poOdb->Reasons().size()    << " reasons"    << " \n";
+    oss << "---------------- " << poOdb->Atoms().size()      << " atoms"      << " \n";
+    */
+    oData.emplace(  "Nodes",      TRenderItem{ { "count", std::to_string(poOdb->Nodes().size())      } }  );
+    oData.emplace(  "Properties", TRenderItem{ { "count", std::to_string(poOdb->Properties().size()) } }  );
+    oData.emplace(  "Reasons",    TRenderItem{ { "count", std::to_string(poOdb->Reasons().size())    } }  );
+    oData.emplace(  "Atoms",      TRenderItem{ { "count", std::to_string(poOdb->Atoms().size())      } }  );
+
+    Cte ote(oData, "statistic.html", g_sTemplatePath);
+    SendResultPage(ote, ros);
     }
 
 
@@ -492,7 +503,7 @@ int main(int argc, char* argv[])
     {
     if (argc != 2)
         {
-        std::cout << "Usage: " << argv[0] << " <ip> <port>\n";
+        std::cout << "Usage: " << argv[0] << " <port>\n";
         std::cout << "Example:\n";
         std::cout << "  " << argv[0] << " 1025 &\n";
         return 1;
