@@ -7,12 +7,15 @@
     <link rel=icon       type=image/x-icon href="{{ static+favicon-icon }}">
     <link rel=stylesheet type=text/css     href="{{ static+style-css }}">
     <style>
-		body { background-color: powderblue; 
+html, body { margin:0; padding:.3em; overflow:hidden }
+svg { z-index:-1; position:fixed; top:0; left:0; height:100%; width:100% }
+		body { background-color: darkblue; 
 		       font-family: arial, helvetica, sans-serif;
-	               font-size: small; }
-		h2   { color: darkred; }
-		a    { text-decoration: none; }
-		p,h4 { color: darkgreen;  }
+	               font-size: small;
+                       color: white; }
+		h2   { color: #f88; }
+		a    { text-decoration: none;color: yellow; }
+		p,h4 { color: lightgreen;  }
 			
 	 </style>
     </head>
@@ -24,5 +27,9 @@
         </form>
         <h1>{{ result-class }}</h1>
 {% block data %}<p class="info">No data found</p>{% endblock %}
+
+<svg>
+  <rect width="100%" height="90" style="fill:#008;stroke-width:1;stroke:rgb(255,255,255)" />
+</svg>
         </body>
     </html>
