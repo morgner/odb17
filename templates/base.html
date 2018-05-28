@@ -7,8 +7,10 @@
     <link rel=icon       type=image/x-icon href="{{ static+favicon-icon }}">
     <link rel=stylesheet type=text/css     href="{{ static+style-css }}">
     <style>
-html, body { margin:0; padding:.3em; overflow:hidden }
-svg { z-index:-1; position:fixed; top:0; left:0; height:100%; width:100% }
+      html, body { margin:0; padding:.3em; overflow:hidden }
+      svg { z-index:-1;position:fixed;top:0;left:0;height:100%;width:100%;bottom:0;right:0;font-size:large;}
+
+svg text:hover { color:white; }
 		body { background-color: darkblue; 
 		       font-family: arial, helvetica, sans-serif;
 	               font-size: small;
@@ -28,8 +30,33 @@ svg { z-index:-1; position:fixed; top:0; left:0; height:100%; width:100% }
         <h1>{{ result-class }}</h1>
 {% block data %}<p class="info">No data found</p>{% endblock %}
 
-<svg>
-  <rect width="100%" height="90" style="fill:#008;stroke-width:1;stroke:rgb(255,255,255)" />
+<svg xmlns:xlink="http://www.w3.org/1999/xlink">
+
+  <defs>
+    <filter id="blur" x="0" y="0">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" />
+    </filter>
+  </defs>
+
+  <rect width="100%" height="90" style="fill:#008;stroke-width:1;stroke:#fff"/>
+<g transform="translate(250,25) rotate(0)">
+<!--a href="/?st=at"><text x="0" y="0" fill="yellow" transform="rotate(30 0,0)">Statistics</text></a>
+<a href="/?he=lp"><text transform="translate(32,0) rotate(30 0,0)" fill="yellow">Help</text></a-->
+<text transform="translate(32,0) rotate(30 0,0)" fill="yellow">odb</text>
+</g>
+
+<g transform="translate(5,95) rotate(0)" alignment-baseline="middle" text-anchor="middle">
+  
+  <rect       width="23%" height="10%" filter="url(#blur)" style="fill:#028;stroke-width:1;stroke:#888"/>
+  <rect x=25% width="23%" height="10%" filter="url(#blur)" style="fill:#028;stroke-width:1;stroke:#888"/>
+  <rect x=50% width="23%" height="10%" filter="url(#blur)" style="fill:#028;stroke-width:1;stroke:#888"/>
+  <rect x=75% width="23%" height="10%" filter="url(#blur)" style="fill:#028;stroke-width:1;stroke:#888"/>
+  <text x=13% y=6% fill="#058">Node</text>
+  <text x=38% y=6% fill="#058">Property</text>
+  <text x=63% y=6% fill="#058">Link</text>
+  <text x=88% y=6% fill="#058">Reason</text>
+</g>
+
 </svg>
         </body>
     </html>
