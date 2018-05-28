@@ -9,53 +9,63 @@
     <style>
       svg { z-index:-1;position:fixed;top:0;left:0;height:100%;width:100%;bottom:0;right:0;font-size:large;}
 
-svg text:hover { color:white; }
-		body { background-color: darkblue; 
+                svg text:hover { color:white; }
+		body { margin-top:92px;
+                       background-color: darkblue; 
 		       font-family: arial, helvetica, sans-serif;
 	               font-size: small;
                        color: white; }
 		h2   { color: #f88; }
 		a    { text-decoration: none;color: yellow; }
 		p,h4 { color: lightgreen;  }
-			
+		.e1 { z-index:1; }
 	 </style>
     </head>
     <body>
+        <div class="e1" style="margin:0;position:fixed;width:100%;height:90px;top:0;background-color:darkblue;opacity:1;">
         <h4>Server version: {{ server.release }}{% if result-matches %}, {{ result-matches }} hits{% endif %} <a href=/?st=at>statistics</a> <a href=/?he=lp>help</a> </h4>
         <form action="?=" method="GET">
           nodes: <input type="text" name="n."></input>
           <input type="submit" value="Submit">
         </form>
+        </div>
         <h1>{{ result-class }}</h1>
 {% block data %}<p class="info">No data found</p>{% endblock %}
 
-<svg xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg xmlns="http://www.w3.org/2000/svg" style="opacity:1;position:fixed;">
 
   <defs>
     <filter id="blur" x="0" y="0">
       <feGaussianBlur in="SourceGraphic" stdDeviation="3" />
     </filter>
+    <filter id="tlur" x="0" y="0">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1" />
+    </filter>
   </defs>
 
-  <rect width="100%" height="90" style="fill:#008;stroke-width:1;stroke:#fff"/>
+  <rect width="100%" height="90" class="e1" style="fill:#008;stroke-width:0;stroke:#fff;opacity:1;"/>
 <g transform="translate(250,25) rotate(0)">
 <!--a href="/?st=at"><text x="0" y="0" fill="yellow" transform="rotate(30 0,0)">Statistics</text></a>
 <a href="/?he=lp"><text transform="translate(32,0) rotate(30 0,0)" fill="yellow">Help</text></a-->
 <text transform="translate(32,0) rotate(30 0,0)" fill="yellow">odb</text>
 </g>
 
-<g transform="translate(5,95) rotate(0)" alignment-baseline="middle" text-anchor="middle">
+<g transform="translate(5,95) rotate(0)" dominant-baseline="middle" text-anchor="middle">
   
   <rect       width="23%" height="10%" filter="url(#blur)" style="fill:#028;stroke-width:1;stroke:#888"/>
   <rect x=25% width="23%" height="10%" filter="url(#blur)" style="fill:#028;stroke-width:1;stroke:#888"/>
   <rect x=50% width="23%" height="10%" filter="url(#blur)" style="fill:#028;stroke-width:1;stroke:#888"/>
   <rect x=75% width="23%" height="10%" filter="url(#blur)" style="fill:#028;stroke-width:1;stroke:#888"/>
-  <text x=13% y=6% fill="#058">Node</text>
-  <text x=38% y=6% fill="#058">Property</text>
-  <text x=63% y=6% fill="#058">Link</text>
-  <text x=88% y=6% fill="#058">Reason</text>
+  <text x=13% y=6% filter="url(#tlur)" fill="#058">N({{ Node-hits }})</text>
+  <text x=38% y=6% filter="url(#tlur)" fill="#058">P({{ Property-hits }})</text>
+  <text x=63% y=6% filter="url(#tlur)" fill="#058">L({% if link-to %}{{ link-to-hits }}{% endif %}{% if link-from %}{{ link-from-hits }}{% endif %})</text>
+  <text x=88% y=6% filter="url(#tlur)" fill="#058">R({{ Reason-hits }})</text>
 </g>
-
+<style><![CDATA[
+text{
+    font: bold 32px Verdana, Helvetica, Arial, sans-serif;
+}
+]]></style>
 </svg>
         </body>
     </html>
