@@ -114,6 +114,11 @@ size_t SortDataForTemplate( T const & roContainer, TRenderData & roData, std::st
 		g_sTemplate = "reason.html";
    		CollectDataForTemplate( a->Relations(),  roData, "Node");
 		}
+	    if constexpr ( std::is_same<T, odb::SAtoms>() || std::is_same<T, odb::CAtoms>())
+		{
+		g_sTemplate = "atom.html";
+   		CollectDataForTemplate( a->Relations(),  roData, "Node");
+		}
 	    }
 	}
     else
@@ -238,33 +243,6 @@ bool LinkNAppend(std::string const & crsQuery, std::ostream & ros)
     return b;
     }
 
-bool Insert(std::string const & crsQuery, std::ostream & ros)
-    {
-    ros << "+ " + crsQuery;
-
-    if ( crsQuery.length() < 2 ) return false;
-
-    char c = crsQuery[0];
-    std::string sInput = crsQuery.substr(2);
-
-    odb::PNode     t;
-    odb::PReason   r;
-    odb::PProperty p;
-    odb::PAtom     a;
-
-    switch (c)
-        {
-        case 't': t = poOdb->MakeNode(sInput);     ros << " \n" << ":" << t->m_nId << ":" << *t << " \n"; break;
-        case 'r': r = poOdb->MakeReason(sInput);   ros << " \n" << ":" << r->m_nId << ":" << *r << " \n"; break;
-        case 'p': p = poOdb->MakeProperty(sInput); ros << " \n" << ":" << p->m_nId << ":" << *p << " \n"; break;
-        case 'a': a = poOdb->MakeAtom(sInput);     ros << " \n" << ":" << a->m_nId << ":" << *a << " \n"; break;
-
-        default : ros << ": no insert";
-        }
-
-    return true;
-    }
-
 
 template<typename T>
 void SendResult(T const & croContainer, std::iostream & ros, char const ccSwitch, std::string const & crsBadQuery = ""s)
@@ -353,6 +331,34 @@ void SendResult(T const & croContainer, std::iostream & ros, char const ccSwitch
 
     ros << " \n  total: " << croData.size() << " \n";
 */
+    }
+
+bool Insert(std::string const & crsQuery, std::iostream & ros)
+    {
+//    std::cout << "a " + crsQuery;
+
+    if ( crsQuery.length() < 2 ) { SendError(409, ros); return false; }
+
+    char c = crsQuery[0];
+    std::string sInput = crsQuery.substr(2);
+
+    odb::CNodes      ns;
+    odb::CReasons    rs;
+    odb::CProperties ps;
+    odb::CAtoms      as;
+
+
+    switch (c)
+        {
+        case 'n': ns.emplace(poOdb->FindOrMakeNode(sInput));     SendResult(ns, ros, 'a'); break;
+        case 'r': rs.emplace(poOdb->FindOrMakeReason(sInput));   SendResult(rs, ros, 'a'); break;
+        case 'p': ps.emplace(poOdb->FindOrMakeProperty(sInput)); SendResult(ps, ros, 'a'); break;
+        case 'a': as.emplace(poOdb->FindOrMakeAtom(sInput));     SendResult(as, ros, 'a'); break;
+
+        default : SendError(409, ros);
+        }
+
+    return true;
     }
 
 bool Answer(std::string const & crsQuery, tcp::iostream & ros)
@@ -453,7 +459,7 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
 
 bool FindUnuseds(std::string const & crsQuery, tcp::iostream & ros)
     {
-    ros << "? " + crsQuery;
+    std::cout << "? " + crsQuery;
 
     if ( crsQuery.length() < 2 ) return false;
 
@@ -461,17 +467,18 @@ bool FindUnuseds(std::string const & crsQuery, tcp::iostream & ros)
     char d = crsQuery[1];
     std::string sInput = crsQuery.substr(2);
 
-    odb::CNodes      ts;
+    odb::CNodes      ns;
     odb::CReasons    rs;
     odb::CProperties ps;
     odb::CAtoms      as;
     switch (d)
         {
-        case 't': ts = poOdb->FindUnUsedNodes();      SendResult(ts, ros, d); break;
+	case 'n':
+	case 't': ns = poOdb->FindUnUsedNodes();      SendResult(ns, ros, d); break;
         case 'r': rs = poOdb->FindUnUsedReasons();    SendResult(rs, ros, d); break;
         case 'p': ps = poOdb->FindUnUsedProperties(); SendResult(ps, ros, d); break;
         case 'a': as = poOdb->FindUnUsedAtoms();      SendResult(as, ros, d); break;
-        default : ros << ": no result";
+        default : std::cout << ": no result";
                   return false;
         }
 
@@ -654,16 +661,15 @@ Cache-Control: no-cache
                 oData.emplace("help", TRenderItem{{ "", "a.regex" },{ "query", "/?a.=Star (Trek|Wars).*" },{ "text", "search for an atom (short result)" }});
                 oData.emplace("help", TRenderItem{{ "", "tcregex" },{ "query", "/?tc=Star (Trek|Wars).*" },{ "text", "search for nodes, returns only the result count" }});
                 oData.emplace("help", TRenderItem{{ "", "tjregex" },{ "query", "/?tj=Star (Trek|Wars).*" },{ "text", "search for nodes, returns result in JSON format" }});
-                oData.emplace("help", TRenderItem{{ "", "tPregex" },{ "query", "/?tP=director" }, { "text", "search for a node having a specific property (short result)" }});
+                oData.emplace("help", TRenderItem{{ "", "tPregex" },{ "query", "/?tP=director"           },{ "text", "search for a node having a specific property (short result)" }});
+                oData.emplace("help", TRenderItem{{ "", "naname" }, { "query", "/?na=name"               },{ "text", "insert a node" }});
+                oData.emplace("help", TRenderItem{{ "", "paname" }, { "query", "/?pa=name"               },{ "text", "insert a property" }});
+                oData.emplace("help", TRenderItem{{ "", "raname" }, { "query", "/?ra=name"               },{ "text", "insert a reason" }});
+                oData.emplace("help", TRenderItem{{ "", "aaname" }, { "query", "/?aa=name"               },{ "text", "insert an atom" }});
                 oData.emplace("help", TRenderItem{{ "", "" }, { "query", "" },{ "text", "" }});
                 Cte ote(oData, "help.html", g_sTemplatePath);
                 SendResultPage( ote, stream );
 
-                stream << "t+name  - insert a node\n";
-                stream << "p+name  - insert a property\n";
-                stream << "r+name  - insert a reason\n";
-                stream << "a+name  - insert an atom\n";
-                stream << " \n";
                 stream << "ltidT:idR:idT        - links two Nodes by ID\n";
                 stream << "lTnameT:nameR:nameT  - links two Nodes by Name\n";
                 stream << "lpidP:idT            - links Property to Node\n";
@@ -672,6 +678,7 @@ Cache-Control: no-cache
                 stream << "lAnameA:nameT        - links Atom to Node\n";
                 stream << " \n";
                 stream << "et  - lists unused Nodes\n";
+                stream << "en  - lists unused Nodes\n";
                 stream << "ep  - lists unused Properties\n";
                 stream << "er  - lists unused Reasons\n";
                 stream << "ea  - lists unused Atoms\n";
@@ -687,7 +694,7 @@ Cache-Control: no-cache
                         {
                         if ( not Answer(sQuery, stream) ) stream << ": no result\n";
                         }
-                else if ( sQuery[1] == '+' )
+                else if ( sQuery[1] == 'a' )
                         {
                         if ( not Insert(sQuery, stream) ) stream << ": not inserted\n";
                         }

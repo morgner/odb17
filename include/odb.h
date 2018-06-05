@@ -983,6 +983,24 @@ class COdb : public IOdb
             } // PNode FindOrMakeNodeByProperty( std::string ...
 
 
+        /// @brief Has to return a node, if it does not exists, it is to make
+        /// @param crsNode The name of the Node
+        PNode FindOrMakeNode( std::string const & crsNode )
+            {
+            PNode poNode;
+
+            auto const itNode =  m_oNodes.get<name>().find(crsNode);
+            if ( itNode == m_oNodes.get<name>().end() )
+                {
+                poNode = std::move(MakeNode(crsNode));
+                }
+            else
+                {
+                poNode = *itNode;
+                }
+            return std::move(poNode);
+            }
+
         /// @brief Has to return a property, if it does not exists, it is to make
         /// @param crsProperty The name of the Property
         PProperty FindOrMakeProperty( std::string const & crsProperty )
@@ -1017,6 +1035,24 @@ class COdb : public IOdb
                 poReason = *itReason;
                 }
             return std::move(poReason);
+            }
+
+        /// @brief Has to return an Atom, if it does not exists, it is to make
+        /// @param crsAtom The name of the Atom
+        PAtom FindOrMakeAtom( std::string const & crsAtom )
+            {
+            PAtom poAtom;
+
+            auto const itAtom =  m_oAtoms.get<name>().find(crsAtom);
+            if ( itAtom == m_oAtoms.get<name>().end() )
+                {
+                poAtom = std::move(MakeAtom(crsAtom));
+                }
+            else
+                {
+                poAtom = *itAtom;
+                }
+            return std::move(poAtom);
             }
 
         /// todo: optimize / Appends a Property to a Node by given index value

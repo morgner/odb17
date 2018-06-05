@@ -19,6 +19,7 @@
 		a    { text-decoration: none;color: yellow; }
 		p,h4 { color: lightgreen;  }
 		.e1 { z-index:1; }
+		.e2 { z-index:2; }
 	 </style>
     </head>
     <body>
@@ -31,6 +32,16 @@
         </div>
         <h1>{{ result-class }}</h1>
 {% block data %}<p class="info">No data found</p>{% endblock %}
+
+  <rect x=75% y=45% width="23%" height="08%" style="fill:#048;"/>
+<!--div style="z-index: 5;
+    position: fixed;
+    top: calc(95px + 55%);
+    left: calc(75% + 5px);
+    width: 23%;
+    height: 8%;
+    background-color:#808;
+    border: 0px solid #088;">koko <a href=/?ni=632>koko</a> koko koko koko koko koko koko koko koko koko koko koko koko koko koko koko koko</div-->
 
 <svg xmlns="http://www.w3.org/2000/svg" style="opacity:1;position:fixed;">
 
@@ -52,20 +63,37 @@
 
 <g transform="translate(5,95) rotate(0)" dominant-baseline="middle" text-anchor="middle">
   
-  <rect       width="23%" height="10%" filter="url(#blur)" style="fill:#028;stroke-width:1;stroke:#888"/>
-  <rect x=25% width="23%" height="10%" filter="url(#blur)" style="fill:#028;stroke-width:1;stroke:#888"/>
-  <rect x=50% width="23%" height="10%" filter="url(#blur)" style="fill:#028;stroke-width:1;stroke:#888"/>
-  <rect x=75% width="23%" height="10%" filter="url(#blur)" style="fill:#028;stroke-width:1;stroke:#888"/>
+  <rect       width="23%" height="10%" filter="url(#blur)" style="fill:#028;fill-opacity:1;stroke-width:1;stroke:#888"/>
+  <rect x=25% width="23%" height="10%" filter="url(#blur)" style="fill:#028;fill-opacity:1;stroke-width:1;stroke:#888"/>
+  <rect x=50% width="23%" height="10%" filter="url(#blur)" style="fill:#028;fill-opacity:1;stroke-width:1;stroke:#888"/>
+  <rect x=75% width="23%" height="10%" filter="url(#blur)" style="fill:#028;fill-opacity:1;stroke-width:1;stroke:#888"/>
   <text x=13% y=6% filter="url(#tlur)" fill="#058">N({{ Node-hits }})</text>
   <text x=38% y=6% filter="url(#tlur)" fill="#058">P({{ Property-hits }})</text>
-  <text x=63% y=6% filter="url(#tlur)" fill="#058">L({% if link-to %}{{ link-to-hits }}{% endif %}{% if link-from %}{{ link-from-hits }}{% endif %})</text>
+  <text x=63% y=6% filter="url(#tlur)" fill="#058">L({% if link-to %}{{ link-to-hits }}{% endif %},{% if link-from %}{{ link-from-hits }}{% endif %})</text>
   <text x=88% y=6% filter="url(#tlur)" fill="#058">R({{ Reason-hits }})</text>
+  
+  <rect x=75% y=15% width="23%" height="8%" style="fill:#228;fill-opacity:1;"/>
+  <rect x=75% y=25% width="23%" height="8%" style="fill:#282;fill-opacity:1;"/>
+  <rect x=75% y=35% width="23%" height="8%" style="fill:#822;fill-opacity:1;">
+    <!--animate attributeType="CSS" attributeName="fill-opacity" from="0" to="1" dur="3s" repeatCount="indefinite"/-->
+    </rect>
+  <rect x=75% y=45% width="23%" height="8%" style="fill:#880;fill-opacity:1;">
+    <!--animate attributeName="fill" from="000" to="800" by="200" values="000;200;400;600;800;600;400;200" dur="10s" repeatCount="indefinite"/-->
+    <!--animate attributeName="fill" values="000;200;400;600;800;600;400;200" calcMode="discrete" dur="2s" repeatCount="indefinite"/-->
+    </rect>
+
+  <text x=88% y=21% style="fill:#888;fill-opacity:1;">N({{ Node-hits }})</text>
+  <text x=88% y=31% style="fill:#000;fill-opacity:1;">P({{ Property-hits }})</text>
+  <text x=88% y=41% style="fill:#888;fill-opacity:1;">L({% if link-to %}{{ link-to-hits }}{% endif %},{% if link-from %}{{ link-from-hits }}{% endif %})</text>
+  <text x=88% y=51% style="fill:#000;fill-opacity:1;">R({{ Reason-hits }})</text>
 </g>
 <style><![CDATA[
 text{
-    font: bold 32px Verdana, Helvetica, Arial, sans-serif;
+    font: bold 24px Verdana, Helvetica, Arial, sans-serif;
 }
 ]]></style>
+
 </svg>
         </body>
     </html>
+

@@ -371,6 +371,8 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
 	    return (0 == m_spoNodesRelating.size());
 	    }
 
+    SNodes const & Relations () const { return m_spoNodesRelating; }
+
     protected:
         /// The UI output format for the atom
         std::string m_sFormat{""s};
@@ -379,7 +381,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
         /// The UI suffix (if any) for the atom
         std::string m_sSuffix{""s};
         /// CNode's Relating to this CAtom
-        std::set<PNode, lessIdentifiableId<PNode>>  m_spoNodesRelating;
+        SNodes  m_spoNodesRelating;
 
     /// start of data implementation
     struct SAtomDataConcept

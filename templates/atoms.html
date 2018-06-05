@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block data %}
+        <h2>{{ Atom.type }} ({{ Atom-hits }})</h2>{% if Atom %}
+        <ul>{% for Atom in atoms %}
+            <li><a href="/?ai={{ Atom.id }}">{{ Atom }}</a></li>{% endfor %}
+            </ul>{% endif %}{% endblock %}
+

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block data %}<h2>{{ Node }}</h2>
+
+{% if link-to %}
+<h3>Links to other nodes ({{ link-to-hits }})</h3>
+<ul>{% for link-to in links-to %}
+    <li><a href="/?ri={{ link-to.rsn-id }}">{{ link-to.rsn }}</a>: <a href="/?ni={{ link-to.id }}">{{ link-to }}</a></li>{% endfor %}
+</ul>{% endif %}
+
+{% if link-from %}
+<h3>Links from other nodes ({{ link-from-hits }})</h3>
+<ul>{% for link-from in links-from %}
+    <li><a href="/?ni={{ link-from.id }}">{{ link-from }}</a></li>{% endfor %}
+</ul>{% endif %}
+
+{% if Property %}
+<h3>Properties ({{ Property-hits }})</h3>
+<ul>{% for Property in properties %}
+    <li><a href="/?pi={{ Property.id }}">{{ Property }}</a></li>{% endfor %}
+</ul>{% endif %}
+
+{% if Atom %}
+<h3>Atoms ({{ Atom-hits }})</h3>
+<ul>{% for Atom in atoms %}
+    <li><a href="/?ai={{ Atom.id }}">{{ Atom }}</a></li>{% endfor %}
+</ul>{% endif %}
+
+
+{% endblock %}

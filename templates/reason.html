@@ -5,7 +5,7 @@
 {% block data %}<h2>{{ Reason }}</h2>
 
 {% if Node %}
-<h3>Links to other nodes</h3>
+<h3>Links this nodes</h3>
 <ul>{% for Node in nodes %}
     <li><a href="/?ni={{ Node.id }}">{{ Node }}</a> to <a href="/?ni={{ Node.linker-id }}">{{ Node.linker }}</a></li>{% endfor %}
 </ul>{% endif %}
