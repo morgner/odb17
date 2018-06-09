@@ -82,23 +82,22 @@ void FillInSomeData(odb::COdb & oOdb)
     lt2t("Trombone",      "plays",    "Jack",   "Peter"                                              );
     // ================================================================================================
 
-
-    // give all 'nodes' the property 'person'
-    for ( size_t n = 0; n < oOdb.Nodes().size(); ++n )
-        {
-        oOdb.AppendProperty2Node( 0, n );
-        }
-
     // assign 'properties' to groups of 'nodes' (supported by fold expressions)
     // ========================================================================================================
-    ap2ts( "person",     false, "Ulli", "Nora", "Peter", "Paula", "Rudi", "Marta", "Arnold", "Bertha", "Elise");
-    ap2ts( "male",       false, "Ulli",         "Peter",          "Rudi",          "Arnold"                   );
-    ap2ts( "female",     false,         "Nora",          "Paula",         "Marta",           "Bertha", "Elise");
-    ap2ts( "driver",     false, "Ulli",                  "Paula", "Rudi", "Marta",           "Bertha"         );
-    ap2ts( "consumer",   false, "Ulli", "Nora", "Peter",                                               "Elise");
-    ap2ts( "contractor", false,                 "Peter", "Paula", "Rudi",                              "Elise");
-    ap2ts( "artist",     true,  "Ulli",                                            "Arnold", "Bertha", "Elise");
-    ap2ts( "builder",    true,                  "Peter", "Paula",                  "Arnold"                   );
+    ap2ts( "person",       false, "Ulli", "Nora", "Peter", "Paula", "Rudi", "Marta", "Arnold", "Bertha", "Elise");
+    ap2ts( "male",         false, "Ulli",         "Peter",          "Rudi",          "Arnold"                   );
+    ap2ts( "female",       false,         "Nora",          "Paula",         "Marta",           "Bertha", "Elise");
+    ap2ts( "driver",       false, "Ulli",                  "Paula", "Rudi", "Marta",           "Bertha"         );
+    ap2ts( "consumer",     false, "Ulli", "Nora", "Peter",                                               "Elise");
+    ap2ts( "contractor",   false,                 "Peter", "Paula", "Rudi",                              "Elise");
+    ap2ts( "artist",       true,  "Ulli",                                            "Arnold", "Bertha", "Elise");
+    ap2ts( "builder",      true,                  "Peter", "Paula",                  "Arnold"                   );
+    ap2ts( "book",         true,  "Emerald woods"                                                               );
+    ap2ts( "movie",        true,  "Emerald woods"                                                               );
+    ap2ts( "music",        true,  "Trombone"                                                               );
+    ap2ts( "company",      true,  "Insurance"                                                               );
+    ap2ts( "manufacturer", true,  "Skoda"                                                               );
+    ap2ts( "OS",           true,  "SilentOS"                                                               );
     // ========================================================================================================
 
     auto px = oOdb.MakeNode("Ulli");
@@ -137,16 +136,16 @@ int main(int argc, char* argv[])
 	FillInSomeData(oOdb);
 	std::cout << "(2) odb-1 filled";
 	PrintStatistics(oOdb);
-	oOdb.SaveDB("test_out1");
+	oOdb.SaveDB("test_out1.json");
 	}
 
     std::cout << "(3) odb-2 initial";
 	{
 	PrintStatistics(oOdb);
-	oOdbR.LoadDB("test_out1");
+	oOdbR.LoadDB("test_out1.json");
 	std::cout << "(4) odb-2 loadet";
 	PrintStatistics(oOdb);
-	oOdbR.SaveDB("test_out2");
+	oOdbR.SaveDB("test_out2.json");
 	}
 
     return 0;

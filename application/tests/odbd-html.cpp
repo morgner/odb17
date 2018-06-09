@@ -55,10 +55,12 @@ template<typename T>
 size_t CollectDataForTemplate( T const & roContainer, TRenderData & roData, std::string const & crsName)
     {
     TRenderItem oSubM{};
+    std::set<size_t> oReasonCollector;
     for ( auto const & a:roContainer )
 	{
 	if constexpr ( std::is_same<T, odb::MLinkets>() )
 	    {
+	    oReasonCollector.emplace(a.second->m_nId);
 	    oSubM. emplace("",         a.first->m_sName);
 	    oSubM. emplace("id",       std::to_string(a.first->m_nId));
 	    oSubM. emplace("type",     a.first->m_sType.substr(6));
@@ -82,8 +84,14 @@ size_t CollectDataForTemplate( T const & roContainer, TRenderData & roData, std:
 	    oSubM. emplace("type",  a->m_sType.substr(6));
 	    }
 	roData.emplace(crsName, oSubM);
-	roData.emplace(crsName + "-hits", TRenderItem{ {"", std::to_string(roContainer.size())} } );
 	oSubM.clear();
+	}
+    if ( roContainer.size() )
+	roData.emplace(crsName + "-hits", TRenderItem{ {"", std::to_string(roContainer.size())} } );
+    if constexpr ( std::is_same<T, odb::MLinkets>() )
+	{
+	if ( oReasonCollector.size() )
+	    roData.emplace("Reason-hits", TRenderItem{ {"", std::to_string(oReasonCollector.size())} } );
 	}
     return roContainer.size();
     }
@@ -510,7 +518,7 @@ int main(int argc, char* argv[])
         return 1;
         }
 
-    auto const sFilename = "wwwdb.json";
+    auto const sFilename = "test_out2.json"; // "wwwdb.json";
 
     poOdb->LoadDB(sFilename);
 

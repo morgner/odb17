@@ -982,6 +982,24 @@ class COdb : public IOdb
             return std::move(poResult);
             } // PNode FindOrMakeNodeByProperty( std::string ...
 
+        MLinkets FindNodeLinkingSameNode( size_t const cnIdNodeA, size_t const cnIdNodeB )
+            {
+            MLinkets oResult; 
+
+            auto const itNodeA = m_oNodes.get<id>().find( cnIdNodeA );
+            if ( itNodeA == m_oNodes.get<id>().end() ) return oResult;
+            auto const itNodeB = m_oNodes.get<id>().find( cnIdNodeB );
+            if ( itNodeB == m_oNodes.get<id>().end() ) return oResult;
+
+
+            auto oLinksA = (*itNodeA)->Linkets();
+            auto oLinksB = (*itNodeB)->Linkets();
+
+            auto it = std::set_intersection (oLinksA.begin(), oLinksA.end(), oLinksB.begin(), oLinksB.end(),
+                                             std::inserter(oResult, oResult.begin()));
+
+            return std::move(oResult);
+            }
 
         /// @brief Has to return a node, if it does not exists, it is to make
         /// @param crsNode The name of the Node
@@ -1119,10 +1137,10 @@ class COdb : public IOdb
         /// todo: optimize / Links a Node to a Node for a Reason by given index value
         bool LinkNode2Node( size_t nNodeFrom, size_t nReason, size_t nNodeTo )
             {
-            auto itNodeFrom   =  m_oNodes  .get<id>().find( nNodeFrom );
-            auto itNodeTo     =  m_oNodes  .get<id>().find( nNodeTo );
-            auto itReason     =  m_oReasons.get<id>().find( nReason );
-            if ( (itNodeFrom == m_oNodes .end()) || (itNodeTo == m_oNodes.end()) || (itReason == m_oReasons.end()) )
+            auto itNodeFrom  =  m_oNodes  .get<id>().find( nNodeFrom );
+            auto itNodeTo    =  m_oNodes  .get<id>().find( nNodeTo );
+            auto itReason    =  m_oReasons.get<id>().find( nReason );
+            if ( (itNodeFrom == m_oNodes  .end()) || (itNodeTo == m_oNodes.end()) || (itReason == m_oReasons.end()) )
                 {
 //              std::cout << "0 " << (*itNodeFrom)->m_sName << " " << (*itReason)->m_sName << " " << (*itNodeTo)->m_sName << '\n';
 /*
@@ -1146,14 +1164,14 @@ class COdb : public IOdb
             {
             auto itNodeFrom  =  m_oNodes .get<name>().find( crsNodeFrom );
             auto itNodeTo    =  m_oNodes .get<name>().find( crsNodeTo );
-            auto itReason     =  m_oReasons.get<name>().find( crsReason );
+            auto itReason    =  m_oReasons.get<name>().find( crsReason );
             if ( (itNodeFrom == m_oNodes.get<name>().end()) || (itNodeTo == m_oNodes.get<name>().end()) || (itReason == m_oReasons.get<name>().end()) )
                 {
 /*
                 std::cout << "0 ";
-                if (itNodeFrom == m_oNodes. get<name>().end()) std::cout << "E:" << crsNodeFrom << " "; else std::cout << (*itNodeFrom)->m_sName << " ";
-                if (itReason    == m_oReasons.get<name>().end()) std::cout << "E:" << crsReason    << " "; else std::cout << (*itReason)->m_sName    << " ";
-                if (itNodeTo   == m_oNodes. get<name>().end()) std::cout << "E:" << crsNodeTo   << " "; else std::cout << (*itNodeTo)->m_sName   << " ";
+                if (itNodeFrom == m_oNodes.  get<name>().end()) std::cout << "E:" << crsNodeFrom << " "; else std::cout << (*itNodeFrom)->m_sName << " ";
+                if (itReason   == m_oReasons.get<name>().end()) std::cout << "E:" << crsReason    << " "; else std::cout << (*itReason)->m_sName    << " ";
+                if (itNodeTo   == m_oNodes.  get<name>().end()) std::cout << "E:" << crsNodeTo   << " "; else std::cout << (*itNodeTo)->m_sName   << " ";
                 std::cout << '\n';
 */
                 return false;
@@ -1263,7 +1281,7 @@ class COdb : public IOdb
             std::vector<PProperty> oSelection;
             auto itSelection = std::copy_if(m_oProperties.begin(),
                                             m_oProperties.end(),
-                         std::back_inserter(oSelection), [&](PProperty const & e) {return std::regex_match(e->m_sName, croProperty);});
+
 //          shrink_to_fit();
 
             for ( auto const & s:oSelection )
