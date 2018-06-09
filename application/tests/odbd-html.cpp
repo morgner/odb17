@@ -379,13 +379,13 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
     char d = crsQuery[1];
     std::string sInput = crsQuery.substr(2);
 
-    odb::CNodes      ts;
+    odb::CNodes      ns;
     odb::CReasons    rs;
     odb::CProperties ps;
     odb::CAtoms      as;
     auto             b = false;
     long nInput        = 1;
-    if ( d=='i' )
+    if ( (d=='i') || (d=='n') )
 	{
 	try { nInput = stol(sInput); } catch(...) {  }
 	}
@@ -394,8 +394,8 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
         case 't':
         case 'n': if ( (d=='p') || (d=='P') )
                     {
-                    ts = poOdb->FindNodesByProperty(sInput);
-                    if (ts.size() == 0) { try { ts = poOdb->FindNodesByProperty(std::regex(sInput)); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
+                    ns = poOdb->FindNodesByProperty(sInput);
+                    if (ns.size() == 0) { try { ns = poOdb->FindNodesByProperty(std::regex(sInput)); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
                     d = (d=='p') ? ':' : '.';
                     }
                   else if ( (d=='i') )
@@ -403,15 +403,15 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
                     auto oop = poOdb->FindNode(nInput);
                     if ( oop.has_value() )
                 	{
-                	ts.insert( oop.value() );
+                	ns.insert( oop.value() );
                 	}
                     }
                   else
 		    {
-		    ts = poOdb->FindNodes(sInput);
-		    if (ts.size() == 0)  { try { ts = poOdb->FindNodes(std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
+		    ns = poOdb->FindNodes(sInput);
+		    if (ns.size() == 0)  { try { ns = poOdb->FindNodes(std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
 		    }
-                  SendResult(ts, ros, d, (b)?sInput:""s);
+                  SendResult(ns, ros, d, (b)?sInput:""s);
                   break;
         case 'r': if ( (d=='i') )
                     {
@@ -436,6 +436,19 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
                 	ps.insert( oop.value() );
                 	}
                     }
+                  else if ( (d=='n') )
+                      {
+                      auto oon = poOdb->FindNode(nInput);
+                      if ( oon.has_value() )
+                  	{
+//                	std::cout << *oon.value() << " " << nInput << '\n';
+                    	for ( auto const & a:oon.value()->Properties() )
+                    	    {
+//                    	    std::cout << *a << '\n';
+                    	    ps.insert( a );
+                    	    }
+                  	}
+                      }
                   else
 		    {
 		    ps = poOdb->FindProperties(std::string( sInput ));
@@ -481,8 +494,8 @@ bool FindUnuseds(std::string const & crsQuery, tcp::iostream & ros)
     odb::CAtoms      as;
     switch (d)
         {
-	case 'n':
-	case 't': ns = poOdb->FindUnUsedNodes();      SendResult(ns, ros, d); break;
+	case 't':
+	case 'n': ns = poOdb->FindUnUsedNodes();      SendResult(ns, ros, d); break;
         case 'r': rs = poOdb->FindUnUsedReasons();    SendResult(rs, ros, d); break;
         case 'p': ps = poOdb->FindUnUsedProperties(); SendResult(ps, ros, d); break;
         case 'a': as = poOdb->FindUnUsedAtoms();      SendResult(as, ros, d); break;
@@ -497,10 +510,10 @@ void SendStatistics(std::ostream & ros)
     {
     TRenderData oData{g_oHead};
 
-    oData.emplace(  "Nodes",      TRenderItem{ { "count", std::to_string(poOdb->Nodes().size())      } }  );
-    oData.emplace(  "Properties", TRenderItem{ { "count", std::to_string(poOdb->Properties().size()) } }  );
-    oData.emplace(  "Reasons",    TRenderItem{ { "count", std::to_string(poOdb->Reasons().size())    } }  );
-    oData.emplace(  "Atoms",      TRenderItem{ { "count", std::to_string(poOdb->Atoms().size())      } }  );
+    oData.emplace( "Nodes",      TRenderItem{ { "count", std::to_string(poOdb->Nodes().size())      } }  );
+    oData.emplace( "Properties", TRenderItem{ { "count", std::to_string(poOdb->Properties().size()) } }  );
+    oData.emplace( "Reasons",    TRenderItem{ { "count", std::to_string(poOdb->Reasons().size())    } }  );
+    oData.emplace( "Atoms",      TRenderItem{ { "count", std::to_string(poOdb->Atoms().size())      } }  );
 
     Cte ote(oData, "statistic.html", g_sTemplatePath);
     SendResultPage(ote, ros);
@@ -670,10 +683,11 @@ Cache-Control: no-cache
                 oData.emplace("help", TRenderItem{{ "", "tcregex" },{ "query", "/?tc=Star (Trek|Wars).*" },{ "text", "search for nodes, returns only the result count" }});
                 oData.emplace("help", TRenderItem{{ "", "tjregex" },{ "query", "/?tj=Star (Trek|Wars).*" },{ "text", "search for nodes, returns result in JSON format" }});
                 oData.emplace("help", TRenderItem{{ "", "tPregex" },{ "query", "/?tP=director"           },{ "text", "search for a node having a specific property (short result)" }});
-                oData.emplace("help", TRenderItem{{ "", "naname" }, { "query", "/?na=name"               },{ "text", "insert a node" }});
-                oData.emplace("help", TRenderItem{{ "", "paname" }, { "query", "/?pa=name"               },{ "text", "insert a property" }});
-                oData.emplace("help", TRenderItem{{ "", "raname" }, { "query", "/?ra=name"               },{ "text", "insert a reason" }});
-                oData.emplace("help", TRenderItem{{ "", "aaname" }, { "query", "/?aa=name"               },{ "text", "insert an atom" }});
+                oData.emplace("help", TRenderItem{{ "", "naname"  },{ "query", "/?na=name"               },{ "text", "insert a node" }});
+                oData.emplace("help", TRenderItem{{ "", "paname"  },{ "query", "/?pa=name"               },{ "text", "insert a property" }});
+                oData.emplace("help", TRenderItem{{ "", "raname"  },{ "query", "/?ra=name"               },{ "text", "insert a reason" }});
+                oData.emplace("help", TRenderItem{{ "", "aaname"  },{ "query", "/?aa=name"               },{ "text", "insert an atom" }});
+                oData.emplace("help", TRenderItem{{ "", "pnid"    },{ "query", "/?pn=2"                  },{ "text", "find properties for a node by id" }});
                 oData.emplace("help", TRenderItem{{ "", "" }, { "query", "" },{ "text", "" }});
                 Cte ote(oData, "help.html", g_sTemplatePath);
                 SendResultPage( ote, stream );
@@ -698,7 +712,14 @@ Cache-Control: no-cache
                         {
                         stream << "try: 'help' to get help\n";
                         }
-                else if ( (sQuery[1] == ':') || (sQuery[1] == '.') || (sQuery[1] == 'c') || (sQuery[1] == 'i') || (sQuery[1] == 'j') || (sQuery.substr(0,2) == "tP") || (sQuery.substr(0,2) == "tp") )
+                else if ( (sQuery[1] == ':') || (sQuery[1] == '.') ||
+                	  (sQuery[1] == 'c') || (sQuery[1] == 'i') || (sQuery[1] == 'j') ||
+			  (sQuery.substr(0,2) == "tP") ||
+			  (sQuery.substr(0,2) == "tp") ||
+			  (sQuery.substr(0,2) == "nP") ||
+			  (sQuery.substr(0,2) == "np") ||
+			  (sQuery.substr(0,2) == "pn") ||
+			  (sQuery.substr(0,2) == "pn") )
                         {
                         if ( not Answer(sQuery, stream) ) stream << ": no result\n";
                         }

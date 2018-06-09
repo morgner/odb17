@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block data %}
-        <h2>{{ Property.type }}</h2>{% if Property %}
+        <h2>Properties</h2>{% if Property %}
         <ul>{% for Property in properties %}
             <li><a href="/?pi={{ Property.id }}">{{ Property }}</a></li>{% endfor %}
             </ul>{% endif %}{% endblock %}
