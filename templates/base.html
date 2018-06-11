@@ -17,6 +17,7 @@
                        color: white; }
 		h2   { color: #f88; }
 		a    { text-decoration: none;color: yellow; }
+		text a    { fill: #00f; }
 		p,h4 { color: lightgreen;  }
 		.e1 { z-index:1; }
 		.e2 { z-index:2; }
@@ -72,19 +73,18 @@ text{
 
 </svg>
 
-<svg viewBox="5 2 303 380" style="position:fixed; top:24%; left:35%; width:70%; height:75%;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg viewBox="5 2 303 380" class="e2" style="position:fixed; top:24%; left:33%; width:70%; height:75%;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <g>
-    <ellipse style="fill: #ffffff" cx="58.6832" cy="33.1567" rx="31.5797" ry="16.7647"/>
-    <ellipse style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #888888" cx="58.6832" cy="33.1567" rx="31.5797" ry="16.7647"/>
+    <ellipse style="fill: #fff; fill-opacity:1; stroke-width: 1; stroke: #888" cx="58.6832" cy="33.1567" rx="31.5797" ry="16.7647"/>
     <text font-size="6.77333" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="58.6832" y="35.2233">
-      <tspan x="58.6832" y="35.2233">Property</tspan>
+      <tspan font-size="8" x="58.6832" y="35.2233">Property</tspan>
     </text>
   </g>
   <g>
-    <ellipse style="fill: #ffffff" cx="139.702" cy="96.8735" rx="69.9996" ry="48.0812"/>
-    <ellipse style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" cx="139.702" cy="96.8735" rx="69.9996" ry="48.0812"/>
-    <text font-size="18.0622" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="139.702" y="102.385">
-      <tspan x="139.702" y="102.385">Node{% if Node-hits %}({{ Node-hits }}){% endif %}</tspan>
+    <ellipse style="fill: #fff; fill-opacity:1; stroke-width: 1; stroke: #888" cx="139.702" cy="96.8735" rx="69.9996" ry="48.0812"/>
+    <text font-size="18.0622" style="fill: #088;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="139.702" y="102.385">
+      <tspan font-size="16" x="139.702" y="102.385">Node{% if Node-hits %}({{ Node-hits }}){% endif %}</tspan>{% if Node %}
+      <tspan font-size="10" x="139.702" y="114.385"><a xlink:href="/?ni={{ Node.id }}">{{ Node }}</a></tspan>{% endif %}
     </text>
   </g>
   <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="92.8575" y="165.587">
@@ -94,28 +94,27 @@ text{
     <ellipse style="fill: #ffffff" cx="53.8742" cy="152.047" rx="31.5797" ry="16.7647"/>
     <ellipse style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #888888" cx="53.8742" cy="152.047" rx="31.5797" ry="16.7647"/>
     <text font-size="6.77333" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="53.8742" y="154.113">
-      <tspan x="53.8742" y="154.113">Property</tspan>
+      <tspan font-size="8" x="53.8742" y="154.113">Property</tspan>
     </text>
   </g>
   <g>
     <ellipse style="fill: #ffffff" cx="264.356" cy="51.5983" rx="31.5797" ry="16.7647"/>
     <ellipse style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #888888" cx="264.356" cy="51.5983" rx="31.5797" ry="16.7647"/>
     <text font-size="6.77333" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="264.356" y="53.6649">
-      <tspan x="264.356" y="53.6649">Property</tspan>
+      <tspan font-size="8" x="264.356" y="53.6649">Property</tspan>
     </text>
   </g>
   <g>
     <ellipse style="fill: #ffffff" cx="162.559" cy="19.6573" rx="31.5797" ry="16.7647"/>
     <ellipse style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #888888" cx="162.559" cy="19.6573" rx="31.5797" ry="16.7647"/>
     <text font-size="6.77333" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="162.559" y="21.7239">
-      <tspan x="162.559" y="21.7239">Property</tspan>
+      <tspan font-size="8" x="162.559" y="21.7239">Property</tspan>
     </text>
   </g>
 {% if link-to-hits %}  <g>
-    <ellipse style="fill: #ffffff" cx="76.6116" cy="332.683" rx="69.9996" ry="48.0812"/>
-    <ellipse style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #888888" cx="76.6116" cy="332.683" rx="69.9996" ry="48.0812"/>
-    <text font-size="18.0622" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="76.6116" y="338.194">
-      <tspan x="76.6116" y="338.194">Node({{ link-to-hits }})</tspan>
+    <ellipse style="fill: #fff; fill-opacity:1; stroke-width: 1; stroke: #888" cx="76.6116" cy="332.683" rx="69.9996" ry="48.0812"/>
+    <text font-size="18.0622" style="fill: #808;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="76.6116" y="338.194">
+      <tspan font-size="16" x="76.6116" y="338.194">Node({{ link-to-hits }})</tspan>
     </text>
   </g>
   <g>
@@ -138,10 +137,9 @@ text{
     </text>
   </g>{% endif %}
 {% if link-from-hits %}  <g>
-    <ellipse style="fill: #ffffff" cx="236.678" cy="266.536" rx="69.9996" ry="48.0812"/>
-    <ellipse style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #888888" cx="236.678" cy="266.536" rx="69.9996" ry="48.0812"/>
-    <text font-size="18.0622" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="236.678" y="272.047">
-      <tspan x="236.678" y="272.047">Node({{ link-from-hits }})</tspan>
+    <ellipse style="fill: #fff; fill-opacity:1; stroke-width: 1; stroke: #888" cx="236.678" cy="266.536" rx="69.9996" ry="48.0812"/>
+    <text font-size="18.0622" style="fill: #880;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="236.678" y="272.047">
+      <tspan font-size="16" x="236.678" y="272.047">Node({{ link-from-hits }})</tspan>
     </text>
   </g>
   <g>
