@@ -29,3 +29,19 @@
 </ul>{% endif %}
 
 {% endblock %}
+
+        <select id="opAction" name="actionSel">
+            <option value="l">link</option>
+        </select>
+        <select id="opThingSel" name="typeSel">
+            <option value="N">node by name</option>
+            <option value="P">property by name</option>
+            <option value="A">atom by name</option>
+            <option value="n">node by id</option>
+            <option value="p">property by id</option>
+            <option value="a">atom by id</option>
+        </select>
+        <form onsubmit="return linkToThing(this)" id="linkForm" class="im" action="" method="GET">
+          <input type="text" name="thingToLink" value=""></input>
+          <input type="submit" value="Submit">
+        </form>

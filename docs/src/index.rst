@@ -23,7 +23,7 @@ Welcome to Object DataBase's documentation!
 .. .. .. doxygenenum::
 .. .. .. doxygentypedef::
 .. .. .. doxygenclass:: odb::COdb
-.. .. .. doxygenclass:: odb::CNode
+
 .. .. .. doxygenclass:: odb::CProperty
 .. .. .. doxygenclass:: odb::CAtom
 .. .. .. doxygenclass:: odb::CReason

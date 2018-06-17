@@ -155,9 +155,13 @@ class CNode : public std::enable_shared_from_this<CNode>,
 		     (0 == m_spoAtoms.size()) );
 	    }
 
+        /// Nodes linking to this Node
         MLinkets    const & Linkets   () const { return m_mLink; }
+        /// Nodes linked by this Node
         SNodes      const & Nodes     () const { return m_spoNodesRelating; }
+        /// Properties assigned to this Node
         SProperties const & Properties() const { return m_spoProperties; }
+        /// CAtoms used by this Node
         SAtoms      const & Atoms     () const { return m_spoAtoms; }
 
     protected:

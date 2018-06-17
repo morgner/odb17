@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd">
+<svg width="16cm" height="19cm" viewBox="5 2 303 380" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g>
+    <ellipse style="fill: #ffffff" cx="58.6832" cy="33.1567" rx="31.5797" ry="16.7647"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #888888" cx="58.6832" cy="33.1567" rx="31.5797" ry="16.7647"/>
+    <text font-size="6.77333" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="58.6832" y="35.2233">
+      <tspan x="58.6832" y="35.2233">Property</tspan>
+    </text>
+  </g>
+  <g>
+    <ellipse style="fill: #ffffff" cx="139.702" cy="96.8735" rx="69.9996" ry="48.0812"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" cx="139.702" cy="96.8735" rx="69.9996" ry="48.0812"/>
+    <text font-size="18.0622" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="139.702" y="102.385">
+      <tspan x="139.702" y="102.385">Node-A</tspan>
+    </text>
+  </g>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="92.8575" y="165.587">
+    <tspan x="92.8575" y="165.587"></tspan>
+  </text>
+  <g>
+    <ellipse style="fill: #ffffff" cx="53.8742" cy="152.047" rx="31.5797" ry="16.7647"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #888888" cx="53.8742" cy="152.047" rx="31.5797" ry="16.7647"/>
+    <text font-size="6.77333" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="53.8742" y="154.113">
+      <tspan x="53.8742" y="154.113">Property</tspan>
+    </text>
+  </g>
+  <g>
+    <ellipse style="fill: #ffffff" cx="264.356" cy="51.5983" rx="31.5797" ry="16.7647"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #888888" cx="264.356" cy="51.5983" rx="31.5797" ry="16.7647"/>
+    <text font-size="6.77333" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="264.356" y="53.6649">
+      <tspan x="264.356" y="53.6649">Property</tspan>
+    </text>
+  </g>
+  <g>
+    <ellipse style="fill: #ffffff" cx="162.559" cy="19.6573" rx="31.5797" ry="16.7647"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #888888" cx="162.559" cy="19.6573" rx="31.5797" ry="16.7647"/>
+    <text font-size="6.77333" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="162.559" y="21.7239">
+      <tspan x="162.559" y="21.7239">Property</tspan>
+    </text>
+  </g>
+  <g>
+    <ellipse style="fill: #ffffff" cx="76.6116" cy="332.683" rx="69.9996" ry="48.0812"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #888888" cx="76.6116" cy="332.683" rx="69.9996" ry="48.0812"/>
+    <text font-size="18.0622" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="76.6116" y="338.194">
+      <tspan x="76.6116" y="338.194">Node-To</tspan>
+    </text>
+  </g>
+  <g>
+    <ellipse style="fill: #ffffff" cx="236.678" cy="266.536" rx="69.9996" ry="48.0812"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #888888" cx="236.678" cy="266.536" rx="69.9996" ry="48.0812"/>
+    <text font-size="18.0622" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="236.678" y="272.047">
+      <tspan x="236.678" y="272.047">Node-From</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #008800" x1="210.605" y1="220.92" x2="170.606" y2="150.942"/>
+    <polygon style="fill: #008800" points="166.884,144.43 176.188,150.631 170.606,150.942 167.506,155.593 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #008800" points="166.884,144.43 176.188,150.631 170.606,150.942 167.506,155.593 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #888888" x1="87.9034" y1="130.171" x2="78.1525" y2="136.44"/>
+    <polygon style="fill: #888888" points="77.071,134.757 74.7878,138.603 79.234,138.122 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #888888" points="77.071,134.757 74.7878,138.603 79.234,138.122 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #888888" x1="93.4958" y1="60.535" x2="80.2843" y2="50.1449"/>
+    <polygon style="fill: #888888" points="81.5207,48.5728 77.1402,47.6721 79.048,51.7169 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #888888" points="81.5207,48.5728 77.1402,47.6721 79.048,51.7169 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #888888" x1="153.935" y1="48.7924" x2="156.259" y2="40.9386"/>
+    <polygon style="fill: #888888" points="158.177,41.5063 157.395,37.1031 154.342,40.3709 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #888888" points="158.177,41.5063 157.395,37.1031 154.342,40.3709 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #888888" x1="202.523" y1="74.0563" x2="233.71" y2="62.729"/>
+    <polygon style="fill: #888888" points="234.393,64.6088 237.47,61.3634 233.027,60.8491 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #888888" points="234.393,64.6088 237.47,61.3634 233.027,60.8491 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #008800" x1="126.79" y1="145.132" x2="92.0394" y2="275.019"/>
+    <polygon style="fill: #008800" points="90.1009,282.264 87.8554,271.312 92.0394,275.019 97.5156,273.896 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #008800" points="90.1009,282.264 87.8554,271.312 92.0394,275.019 97.5156,273.896 "/>
+  </g>
+  <g>
+    <path style="fill: #ffffff" d="M 30.1571 235.161 L 93.8928,235.161 C 102.693,235.161 109.827,239.916 109.827,245.782 C 109.827,251.647 102.693,256.402 93.8928,256.402 L 30.1571,256.402 C 21.357,256.402 14.2232,251.647 14.2232,245.782 C 14.2232,239.916 21.357,235.161 30.1571,235.161z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" d="M 30.1571 235.161 L 93.8928,235.161 C 102.693,235.161 109.827,239.916 109.827,245.782 C 109.827,251.647 102.693,256.402 93.8928,256.402 L 30.1571,256.402 C 21.357,256.402 14.2232,251.647 14.2232,245.782 C 14.2232,239.916 21.357,235.161 30.1571,235.161"/>
+    <text font-size="11.2889" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="62.0249" y="249.309">
+      <tspan x="62.0249" y="249.309">Reason</tspan>
+    </text>
+  </g>
+  <g>
+    <path style="fill: #ffffff" d="M 157.008 174.479 L 221.601,174.479 C 230.519,174.479 237.749,178.757 237.749,184.035 C 237.749,189.312 230.519,193.59 221.601,193.59 L 157.008,193.59 C 148.09,193.59 140.86,189.312 140.86,184.035 C 140.86,178.757 148.09,174.479 157.008,174.479z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" d="M 157.008 174.479 L 221.601,174.479 C 230.519,174.479 237.749,178.757 237.749,184.035 C 237.749,189.312 230.519,193.59 221.601,193.59 L 157.008,193.59 C 148.09,193.59 140.86,189.312 140.86,184.035 C 140.86,178.757 148.09,174.479 157.008,174.479"/>
+    <text font-size="11.2889" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="189.304" y="187.562">
+      <tspan x="189.304" y="187.562">Link-From</tspan>
+    </text>
+  </g>
+  <g>
+    <path style="fill: #ffffff" d="M 72.6009 218.388 L 137.193,218.388 C 146.111,218.388 153.341,222.666 153.341,227.944 C 153.341,233.221 146.111,237.499 137.193,237.499 L 72.6009,237.499 C 63.6826,237.499 56.4529,233.221 56.4529,227.944 C 56.4529,222.666 63.6826,218.388 72.6009,218.388z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" d="M 72.6009 218.388 L 137.193,218.388 C 146.111,218.388 153.341,222.666 153.341,227.944 C 153.341,233.221 146.111,237.499 137.193,237.499 L 72.6009,237.499 C 63.6826,237.499 56.4529,233.221 56.4529,227.944 C 56.4529,222.666 63.6826,218.388 72.6009,218.388"/>
+    <text font-size="11.2889" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="104.897" y="231.471">
+      <tspan x="104.897" y="231.471">Link-To</tspan>
+    </text>
+  </g>
+  <text font-size="12.7998" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="-37.3521" y="76.2113">
+    <tspan x="-37.3521" y="76.2113"></tspan>
+  </text>
+  <text font-size="12.7998" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="218.95" y="118.852">
+    <tspan x="218.95" y="118.852">NUM</tspan>
+    <tspan x="218.95" y="134.852">Properties</tspan>
+  </text>
+</svg>

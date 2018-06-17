@@ -6,8 +6,9 @@
     <title>{{ title }}</title>
     <link rel=icon       type=image/x-icon href="{{ static+favicon-icon }}">
     <link rel=stylesheet type=text/css     href="{{ static+style-css }}">
-    <style>
-      svg { z-index:-1;position:fixed;top:0;left:0;height:100%;width:100%;bottom:0;right:0;font-size:large;}
+
+        <style>
+                svg { z-index:-1;position:fixed;top:0;left:0;height:100%;width:100%;bottom:0;right:0;font-size:large;}
 
                 svg text:hover { color:white; }
 		body { margin-top:92px;
@@ -19,17 +20,45 @@
 		a    { text-decoration: none;color: yellow; }
 		text a    { fill: #00f; }
 		p,h4 { color: lightgreen;  }
-		.e1 { z-index:1; }
-		.e2 { z-index:2; }
-	 </style>
+		.e1 { z-index:1; } .e2 { z-index:2; } .e3 { z-index:3; } .e4 { z-index:4; } .e5 { z-index:5; }
+                .im { display:inline; }
+        </style>
+
+        <script language="javascript" type="text/javascript">
+            function addThing(form) {
+               form["thingName"].name = document.getElementById("addThingSel1").value + document.getElementById("addThingSel2").value;
+               if (document.getElementById("addThingSel2").value == "e" )
+                  {
+                  form["thingName"].value = "0";
+                  }
+
+               if (form["thingName"].value == "") form["thingName"].value = ".*"; // return false;
+               return true;
+            }
+        </script>
+
     </head>
     <body>
         <div class="e1" style="margin:0;position:fixed;width:100%;height:90px;top:0;background-color:darkblue;opacity:1;">
         <h4>Server version: {{ server.release }}{% if result-matches %}, {{ result-matches }} hits{% endif %} <a href=/?st=at>statistics</a> <a href=/?he=lp>help</a> </h4>
-        <form action="?=" method="GET">
-          nodes: <input type="text" name="n."></input>
+
+        <select id="addThingSel2" name="actionSel">
+            <option value=".">find</option>
+            <option value="a">add</option>
+            <option value="e">unused</option>
+        </select>
+        <select id="addThingSel1" name="typeSel">
+            <option value="n">node</option>
+            <option value="p">property</option>
+            <option value="r">reason</option>
+            <option value="a">atom</option>
+        </select>
+        <form onsubmit="return addThing(this)" id="addForm" class="im" action="" method="GET">
+          <input type="text" name="thingName" value=""></input>
           <input type="submit" value="Submit">
         </form>
+
+
         </div>
         <h1>{{ result-class }}</h1>
 {% block data %}<p class="info">No data found</p>{% endblock %}

@@ -979,9 +979,15 @@ class COdb : public IOdb
                 poResult->Append(poProperty);
                 }
  
-            return std::move(poResult);
+           return std::move(poResult);
             } // PNode FindOrMakeNodeByProperty( std::string ...
 
+        /**
+         * @brief Returns the nodes linked by the same reason as the given Nodes
+         * 
+         * @param cnIdNodeA Id of one Node
+         * @param cnIdNodeB Id of the other one
+         */ 
         MLinkets FindNodeLinkingSameNode( size_t const cnIdNodeA, size_t const cnIdNodeB )
             {
             MLinkets oResult; 

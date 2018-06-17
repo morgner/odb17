@@ -69,6 +69,7 @@ void FillInSomeData(odb::COdb & oOdb)
     mkatoms     (oOdb,  2.5, "done", 7, std::array{2,1,3}, "go", 89, "sold", "percent");
     // ================================================================================================
 
+    // link nodes to nodes
     // ================================================================================================
     lt2t("Emerald woods", "wrote",    "Ulli"                                                         );
     lt2t("Emerald woods", "read",     "Nora",   "Peter", "Paula", "Rudi", "Marta", "Arnold", "Bertha");
@@ -100,7 +101,7 @@ void FillInSomeData(odb::COdb & oOdb)
     ap2ts( "OS",           true,  "SilentOS"                                                               );
     // ========================================================================================================
 
-    auto px = oOdb.MakeNode("Ulli");
+    auto px = oOdb.MakeNode("Willi");
     oOdb.AppendProperty2Node( 0, px->m_nId );
     oOdb.AppendProperty2Node( 6, px->m_nId );
     oOdb.AppendProperty2Node( 7, px->m_nId );

@@ -3,6 +3,6 @@
 {% block data %}
         <h2>{{ Reason.type }} ({{ Reason-hits }})</h2>{% if Reason %}
         <ul>{% for Reason in reasons %}
-            <li><a href="/?ni={{ Reason.id }}">{{ Reason }}</a></li>{% endfor %}
+            <li><a href="/?ri={{ Reason.id }}">{{ Reason }}</a></li>{% endfor %}
             </ul>{% endif %}{% endblock %}
 

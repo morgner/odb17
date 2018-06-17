@@ -18,6 +18,7 @@ void print(odb::CReasons const & crContainer);
 
 namespace odb {
 
+/// A link from one Node to one other Node
 using MLinks = std::multimap<PNode, PNode>;
 
 /// forward declarations of COdb to befriend with
@@ -85,6 +86,7 @@ class CReason : public IReason
 	    return (0 == m_mRelations.size());
 	    }
 
+        /// @brief Returns the links this Reason administers
         MLinks const & Relations() const { return m_mRelations; }
 
     protected:

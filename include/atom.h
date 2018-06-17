@@ -371,6 +371,7 @@ class CAtom : public std::enable_shared_from_this<CAtom>,
 	    return (0 == m_spoNodesRelating.size());
 	    }
 
+    /// Returns the Relations using this CAtom
     SNodes const & Relations () const { return m_spoNodesRelating; }
 
     protected:
