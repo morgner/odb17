@@ -699,7 +699,7 @@ class COdb : public IOdb
             ros << spcr<1> << "\"Object Database Dump\": " << '\n';
             ros << spcr<2> << '{' << '\n';
 
-            ros << spcr<2> << "\"Sizes\": [ {\"P\": " <<
+            ros << spcr<2> << "\"Alllocate\": [ {\"P\": " <<
             m_oProperties.size() << "},{\"A\": " <<
             m_oAtoms.size() << "},{\"R\": " <<
             m_oReasons.size() << "},{\"T\": " <<
