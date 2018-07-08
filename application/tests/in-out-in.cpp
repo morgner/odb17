@@ -129,7 +129,7 @@ void PrintStatistics(odb::COdb const & croOdb, std::ostream & ros = std::cout)
     ros << " \n";
     }
 
-int main(int argc, char* argv[])
+int main()
     {
     std::cout << "(1) odb-1 initial";
 	{

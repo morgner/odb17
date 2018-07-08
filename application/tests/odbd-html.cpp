@@ -142,7 +142,7 @@ void SendError( long nError, std::ostream & ros )
     TRenderData oHead{g_oHead};
 
     Cte const ote(oHead, "error.html", g_sTemplatePath);
-    ros << "HTTP/1.1 404 Not found" << '\n';
+    ros << "HTTP/1.1 " << nError << " Not found" << '\n';
     ros << "Server: odb/0.9.0 (Linux) CPP" << '\n';
     ros << "Content-Length: " << ote.length() << '\n';
     ros << "Content-Language: en" << '\n';
@@ -276,7 +276,7 @@ bool FindUnuseds(std::string const & crsQuery, tcp::iostream & ros)
 
     if ( crsQuery.length() < 2 ) return false;
 
-    char c = crsQuery[1];
+//  char c = crsQuery[1];
     char d = crsQuery[0];
     std::string sInput = crsQuery.substr(2);
 
@@ -434,7 +434,7 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
                     if (ns.size() == 0) { try { ns = poOdb->FindNodesByProperty(std::regex(sInput)); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
                     d = (d=='p') ? ':' : '.';
                     }
-                  else if ( (d=='i') )
+                  else if (d=='i')
                     {
                     auto oop = poOdb->FindNode(nInput);
                     if ( oop.has_value() )
@@ -449,7 +449,7 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
 		    }
                   SendResult(ns, ros, d, (b)?sInput:""s);
                   break;
-        case 'r': if ( (d=='i') )
+        case 'r': if (d=='i')
                     {
                     auto oop = poOdb->FindReason(nInput);
                     if ( oop.has_value() )
@@ -464,7 +464,7 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
                     }
                   SendResult(rs, ros, d, (b)?sInput:""s);
                   break;
-        case 'p': if ( (d=='i') )
+        case 'p': if (d=='i')
                     {
                     auto oop = poOdb->FindProperty(nInput);
                     if ( oop.has_value() )
@@ -472,7 +472,7 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
                 	ps.insert( oop.value() );
                 	}
                     }
-                  else if ( (d=='n') )
+                  else if (d=='n')
                       {
                       auto oon = poOdb->FindNode(nInput);
                       if ( oon.has_value() )
@@ -492,7 +492,7 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
                     }
                   SendResult(ps, ros, d, (b)?sInput:""s);
                   break;
-        case 'a': if ( (d=='i') )
+        case 'a': if (d=='i')
                     {
                     auto oop = poOdb->FindAtom(nInput);
                     if ( oop.has_value() )

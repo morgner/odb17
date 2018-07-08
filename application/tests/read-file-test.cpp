@@ -55,7 +55,7 @@ int main( int argc, const char* argv[] )
     size_t nReadLimit{1};
     try
         {
-	size_t n = std::stoull( argv[1] );
+	size_t n = (argc > 1) ? std::stoull( argv[1] ) : 100;
 	nReadLimit = n;
 	}
     catch(...)

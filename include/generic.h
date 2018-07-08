@@ -77,7 +77,7 @@ class Identifiable
         
         /// @brief Default move constructor
         /// @param "" The Source
-        explicit Identifiable(Identifiable &&) noexcept = default;
+        explicit Identifiable(Identifiable &&) = default;
         
         /// @brief Constructor initializing predefined ID (load operation)
         /// @param nId A predefined ID, for loading data sets with IDs

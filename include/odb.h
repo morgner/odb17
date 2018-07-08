@@ -194,7 +194,7 @@ class COdb : public IOdb
             @param crsFormat The format for the CAtom in a GUI
          */
 #ifdef __DOXYGEN__
-        PAtom const MakeAtom(
+        PAtom MakeAtom(
             int data,
             std::string const & crsName   = "",
             std::string const & crsPrefix = "",
@@ -202,7 +202,7 @@ class COdb : public IOdb
             std::string const & crsFormat = "")
 #else
         template<typename T>
-        auto const MakeAtom(
+        auto MakeAtom(
             T data,
             std::string const & crsName   = ""s,
             std::string const & crsPrefix = ""s,
@@ -236,7 +236,7 @@ class COdb : public IOdb
             @param crsFormat The format for the CAtom in a GUI
          */
 #ifdef __DOXYGEN__
-        PAtom const LoadAtom(
+        PAtom LoadAtom(
             size_t nId,
             int data,
             std::string const & crsName   = "",
@@ -245,7 +245,7 @@ class COdb : public IOdb
             std::string const & crsFormat = "")
 #else
         template<typename T>
-        auto const LoadAtom(
+        auto LoadAtom(
             size_t nId,
             T data,
             std::string const & crsName   = ""s,
@@ -1001,7 +1001,7 @@ class COdb : public IOdb
             auto oLinksA = (*itNodeA)->Linkets();
             auto oLinksB = (*itNodeB)->Linkets();
 
-            auto it = std::set_intersection (oLinksA.begin(), oLinksA.end(), oLinksB.begin(), oLinksB.end(),
+          /* auto it = */ std::set_intersection (oLinksA.begin(), oLinksA.end(), oLinksB.begin(), oLinksB.end(),
                                              std::inserter(oResult, oResult.begin()));
 
             return std::move(oResult);

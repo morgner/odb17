@@ -43,7 +43,7 @@ class CStrand : public IStrand
 	         CStrand(CStrand const &) = delete;
 
                  /// make_shared<T> moveconstructs
-	         CStrand(CStrand &&) noexcept = default;
+	         CStrand(CStrand &&) = default;
 
         virtual ~CStrand() noexcept = default;
 

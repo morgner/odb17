@@ -67,7 +67,7 @@ class CNode : public std::enable_shared_from_this<CNode>,
                  /// Move-Contructor, noexcept and default.
                  /// make_shared<T> move-constructs.
                  /// Function return of CNode's moves too.
-                 CNode(CNode&&) noexcept = default;
+                 CNode(CNode&&) = default;
 
                  /// Normal constructor, receiving the name of the Node
                  explicit CNode(std::string const & crsName);

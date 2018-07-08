@@ -325,7 +325,7 @@ bool FindUnuseds(std::string const & crsQuery, tcp::iostream & ros)
 
     if ( crsQuery.length() < 2 ) return false;
 
-    char c = crsQuery[0];
+//  char c = crsQuery[0];
     char d = crsQuery[1];
     std::string sInput = crsQuery.substr(2);
 

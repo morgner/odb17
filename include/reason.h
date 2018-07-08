@@ -45,7 +45,7 @@ class CReason : public IReason
                  /// DEFAULT, NOEXCEPT: move constructor, 
                  /// make_shared<T> move-constructs returning objects
                  /// has to move too, we don't want copies!
-                 CReason(CReason &&) noexcept = default;
+                 CReason(CReason &&) = default;
 
                  /// Normal constructor, receiving the name of the reason
                  explicit CReason(std::string const & crsName);

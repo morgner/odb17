@@ -40,7 +40,7 @@ class CProperty : public IProperty
                  CProperty(CProperty const &) = delete;
 
                  /// DEFAULT, NOEXCEP: There is no reason to move-construct a CProperty
-                 CProperty(CProperty &&) noexcept = default;
+                 CProperty(CProperty &&) = default;
 
                  /// Normal constructor, receiving the name of the property
                  explicit CProperty(std::string const & crsName);
