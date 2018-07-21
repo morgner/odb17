@@ -526,7 +526,7 @@ int main(int argc, char* argv[])
         return 1;
         }
 
-    auto const sFilename = "test_out2.json"; // "wwwdb.json";
+    auto const sFilename =  "wwwdb.json"; // "test_out2.json"; // "wwwdb.json";
 
     poOdb->LoadDB(sFilename);
 
