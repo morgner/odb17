@@ -52,11 +52,21 @@ auto poOdb = std::make_unique<odb::COdb>();
 using asio::ip::tcp;
 
 template<typename T>
-size_t CollectDataForTemplate( T const & roContainer, TRenderData & roData, std::string const & crsName)
+size_t CollectDataForTemplate( T const & roContainer, TRenderData & roData, std::string const & crsName, 
+                               size_t const & crnPage = 0, size_t const & crnLinesPerPage = 0 )
     {
     TRenderItem oSubM{};
     std::set<size_t> oReasonCollector;
-    for ( auto const & a:roContainer )
+
+//    if ( (crnLinesPerPage == 0) && (roContainer.size() > 200) ) crnLinesPerPage = 30;
+
+    size_t const cnLineFirst = (crnLinesPerPage == 0) ? 0                  : crnPage * crnLinesPerPage;
+    size_t const cnLineLast  = (crnLinesPerPage == 0) ? roContainer.size() : cnLineFirst + crnLinesPerPage;
+
+    auto const & itStart = std::next(roContainer.begin(), (cnLineFirst > roContainer.size()) ? roContainer.size() : cnLineFirst );
+    auto const & itEnd   = std::next(roContainer.begin(), (cnLineLast  > roContainer.size()) ? roContainer.size() : cnLineLast  );
+    std::for_each(itStart, itEnd, [&](auto const & a)
+//    for ( auto const & a:roContainer )
 	{
 	if constexpr ( std::is_same<T, odb::MLinkets>() )
 	    {
@@ -85,7 +95,19 @@ size_t CollectDataForTemplate( T const & roContainer, TRenderData & roData, std:
 	    }
 	roData.emplace(crsName, oSubM);
 	oSubM.clear();
-	}
+	});
+    if (crnLinesPerPage > 0)
+        {
+                                                                oSubM.emplace("lppg",    std::to_string(crnLinesPerPage));
+        if (roContainer.size() > 0)                             oSubM.emplace("first",   std::to_string(0));
+        if (crnPage > 1)                                        oSubM.emplace("prev",    std::to_string(crnPage-1)); else oSubM.emplace("prev", std::to_string(crnPage));
+                                                                oSubM.emplace("current", std::to_string(crnPage));
+        if (roContainer.size() > crnLinesPerPage * (crnPage+1)) oSubM.emplace("next",    std::to_string(crnPage+1)); else oSubM.emplace("next", std::to_string(crnPage));
+        if (roContainer.size() > 0 )                            oSubM.emplace("last",    std::to_string(roContainer.size()/crnLinesPerPage));
+	
+        roData.emplace(crsName + "-pages", oSubM);
+	oSubM.clear();
+        }
     if ( roContainer.size() )
 	roData.emplace(crsName + "-hits", TRenderItem{ {"", std::to_string(roContainer.size())} } );
     if constexpr ( std::is_same<T, odb::MLinkets>() )
@@ -97,9 +119,10 @@ size_t CollectDataForTemplate( T const & roContainer, TRenderData & roData, std:
     }
 
 template<typename T>
-size_t SortDataForTemplate( T const & roContainer, TRenderData & roData, std::string const & crsName )
+size_t SortDataForTemplate( T const & roContainer, TRenderData & roData, std::string const & crsName,
+                            size_t const & crnPage = 0, size_t const & crnLinesPerPage = 0 )
     {
-    size_t nHits = CollectDataForTemplate( roContainer, roData, crsName);
+    size_t nHits = CollectDataForTemplate( roContainer, roData, crsName );
     if ( 1 == nHits )
 	{
 	for ( auto const & a:roContainer )
@@ -107,25 +130,25 @@ size_t SortDataForTemplate( T const & roContainer, TRenderData & roData, std::st
 	    if constexpr ( std::is_same<T, odb::SNodes>() || std::is_same<T, odb::CNodes>())
 		{
 		g_sTemplate = "node.html";
-		CollectDataForTemplate( a->Linkets(),    roData, "link-to");
-		CollectDataForTemplate( a->Nodes(),      roData, "link-from");
-		CollectDataForTemplate( a->Properties(), roData, "Property");
-		CollectDataForTemplate( a->Atoms(),      roData, "Atom");
+		CollectDataForTemplate( a->Linkets(),    roData, "link-to",   crnPage, crnLinesPerPage);
+		CollectDataForTemplate( a->Nodes(),      roData, "link-from", crnPage, crnLinesPerPage);
+		CollectDataForTemplate( a->Properties(), roData, "Property",  crnPage, crnLinesPerPage);
+		CollectDataForTemplate( a->Atoms(),      roData, "Atom",      crnPage, crnLinesPerPage);
 		}
 	    if constexpr ( std::is_same<T, odb::SProperties>() || std::is_same<T, odb::CProperties>() )
 		{
 		g_sTemplate = "property.html";
-		CollectDataForTemplate( a->Relations(),  roData, "Node");
+		CollectDataForTemplate( a->Relations(),  roData, "Node",      crnPage, crnLinesPerPage);
 		}
 	    if constexpr ( std::is_same<T, odb::SReasons>() || std::is_same<T, odb::CReasons>())
 		{
 		g_sTemplate = "reason.html";
-   		CollectDataForTemplate( a->Relations(),  roData, "Node");
+   		CollectDataForTemplate( a->Relations(),  roData, "Node",      crnPage, crnLinesPerPage);
 		}
 	    if constexpr ( std::is_same<T, odb::SAtoms>() || std::is_same<T, odb::CAtoms>())
 		{
 		g_sTemplate = "atom.html";
-   		CollectDataForTemplate( a->Relations(),  roData, "Node");
+   		CollectDataForTemplate( a->Relations(),  roData, "Node",      crnPage, crnLinesPerPage);
 		}
 	    }
 	}
@@ -167,7 +190,8 @@ void SendResultPage( T const & croContainer, std::ostream & ros )
     }
 
 template<typename T>
-void SendResult(T const & croContainer, std::iostream & ros, char const ccSwitch, std::string const & crsBadQuery = ""s)
+void SendResult(T const & croContainer, std::iostream & ros, char const ccSwitch, std::string const & crsBadQuery = ""s,
+                size_t const & crnPage = 0, size_t const & crnLinesPerPage = 0 )
     {
     TRenderData oData{g_oHead};
     if (crsBadQuery > ""s)
@@ -213,7 +237,7 @@ void SendResult(T const & croContainer, std::iostream & ros, char const ccSwitch
             sPrimKey = "Atom"; g_sTemplate = "atoms.html";
 	    }
 
-        SortDataForTemplate( croContainer, oData, sPrimKey );
+        SortDataForTemplate( croContainer, oData, sPrimKey, crnPage, crnLinesPerPage );
         std::cout << g_sTemplate << '\n';
         Cte ote(oData, g_sTemplate, g_sTemplatePath);
         SendResultPage( ote, ros );
@@ -405,7 +429,8 @@ bool LinkNAppend(std::string const & crsQuery, std::ostream & ros)
     }
 
 
-bool Answer(std::string const & crsQuery, tcp::iostream & ros)
+bool Answer(std::string const & crsQuery, tcp::iostream & ros,
+            size_t const & crnPage = 0, size_t const & crnLinesPerPage = 0 )
     {
 //    ros << "? " + crsQuery;
 
@@ -447,7 +472,7 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
 		    ns = poOdb->FindNodes(sInput);
 		    if (ns.size() == 0)  { try { ns = poOdb->FindNodes(std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
 		    }
-                  SendResult(ns, ros, d, (b)?sInput:""s);
+                  SendResult(ns, ros, d, (b)?sInput:""s, crnPage, crnLinesPerPage);
                   break;
         case 'r': if (d=='i')
                     {
@@ -462,7 +487,7 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
 		    rs = poOdb->FindReasons(std::string( sInput ));
 		    if (rs.size() == 0) { try { rs = poOdb->FindReasons(std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
                     }
-                  SendResult(rs, ros, d, (b)?sInput:""s);
+                  SendResult(rs, ros, d, (b)?sInput:""s, crnPage, crnLinesPerPage);
                   break;
         case 'p': if (d=='i')
                     {
@@ -490,7 +515,7 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
 		    ps = poOdb->FindProperties(std::string( sInput ));
                     if (ps.size() == 0) { try { ps = poOdb->FindProperties(std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
                     }
-                  SendResult(ps, ros, d, (b)?sInput:""s);
+                  SendResult(ps, ros, d, (b)?sInput:""s, crnPage, crnLinesPerPage);
                   break;
         case 'a': if (d=='i')
                     {
@@ -505,7 +530,7 @@ bool Answer(std::string const & crsQuery, tcp::iostream & ros)
 		    as = poOdb->FindAtoms(std::string( sInput ));
                     if (as.size() == 0) { try { as = poOdb->FindAtoms(std::regex( sInput )); } catch(...) { b=true; std::cerr << "E: '" << sInput << "' invalid expression\n"; } }
                     }
-                  SendResult(as, ros, d, (b)?sInput:""s);
+                  SendResult(as, ros, d, (b)?sInput:""s, crnPage, crnLinesPerPage);
                   break;
         default : SendError( 404, ros);
                   return false;
@@ -591,6 +616,25 @@ Cache-Control: no-cache
         	{
                 sQI = "GET /?st=at HTTP/1.1"s;
          	}
+
+            // :: "GET /?p.=3043&page=3,20 HTTP/1.1"s;
+            //     GET /?([^&]+)(&[^&]+)( HTTP/1.1)
+            // => "GET /?p.=3043 HTTP/1.1"s
+	    std::smatch      psm{};
+	    std::regex const pre(R"(/?.*&page=([0-9]{1,6}),([0-9]{1,6}) HTTP.*)");
+	    std::regex_search(sQI, psm, pre);
+            size_t nPage{0};
+            size_t nLppg{0};
+	    if ( psm.size() > 2 )
+		{
+		nPage = std::stoul(psm[1]);
+		nLppg = std::stoul(psm[2]);
+		}
+	    std::regex const rePage ("&page=[0-9]+,[0-9]+");
+	    sQI = std::regex_replace(sQuery, rePage, "");
+	    sQuery = sQI;
+            std::cout << "Qy: |" << "pg=" << nPage << ", lppg=" << nLppg << "|\n";
+
 
 	    std::smatch      sm{};
 //	    std::regex const re(R"(/?(..)=([^ ]+))");
@@ -718,7 +762,7 @@ Cache-Control: no-cache
 			  (sQuery.substr(0,2) == "pn") ||
 			  (sQuery.substr(0,2) == "pn") )
 		    {
-		    if ( not Answer(sQuery, stream) ) stream << ": no result\n";
+		    if ( not Answer(sQuery, stream, nPage, nLppg) ) stream << ": no result\n";
 		    }
                 else if ( sQuery[1] == 'a' )
 		    {

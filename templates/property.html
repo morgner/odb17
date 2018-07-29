@@ -6,9 +6,14 @@
 
 {% if Node %}
 <h3>Nodes ({{ Node-hits }})</h3>
+<!--div name="paginator">
+<a href="/?pi={{ Property.id }}&page={{ Node-pages.first }},{{ Node-pages.lppg }}">First</a>
+<a href="/?pi={{ Property.id }}&page={{ Node-pages.prev  }},{{ Node-pages.lppg }}">Prev</a>
+<a href="/?pi={{ Property.id }}&page={{ Node-pages.next  }},{{ Node-pages.lppg }}">Next</a>
+<a href="/?pi={{ Property.id }}&page={{ Node-pages.last  }},{{ Node-pages.lppg }}">Last</a>
+</div-->
 <ul>{% for Node in nodes %}
     <li><a href="/?ni={{ Node.id }}">{{ Node }}</a></li>{% endfor %}
 </ul>{% endif %}
-
 
 {% endblock %}

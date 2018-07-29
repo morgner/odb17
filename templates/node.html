@@ -6,6 +6,12 @@
 
 {% if link-to %}
 <h3>Links to other nodes ({{ link-to-hits }})</h3>
+<div name="paginator">
+<a href="/?ni={{ Node.id }}&page={{ link-to-pages.first }},{{ link-to-pages.lppg }}">First</a>
+<a href="/?ni={{ Node.id }}&page={{ link-to-pages.prev  }},{{ link-to-pages.lppg }}">Prev</a>
+<a href="/?ni={{ Node.id }}&page={{ link-to-pages.next  }},{{ link-to-pages.lppg }}">Next</a>
+<a href="/?ni={{ Node.id }}&page={{ link-to-pages.last  }},{{ link-to-pages.lppg }}">Last</a>
+</div>
 <ul>{% for link-to in links-to %}
     <li><a href="/?ri={{ link-to.rsn-id }}">{{ link-to.rsn }}</a>: <a href="/?ni={{ link-to.id }}">{{ link-to }}</a></li>{% endfor %}
 </ul>{% endif %}
