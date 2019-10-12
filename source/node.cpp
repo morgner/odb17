@@ -69,7 +69,7 @@ PProperty CNode::Append (PProperty poProperty)
         {
         poProperty->RelationAdd( shared_from_this() );
         }
-    return std::move(poProperty);
+    return poProperty;
     }
 
 PAtom CNode::Append (PAtom poAtom)
@@ -78,7 +78,7 @@ PAtom CNode::Append (PAtom poAtom)
         {
         poAtom->RelatingNodeAdd( shared_from_this() );
         }
-    return std::move(poAtom);
+    return poAtom;
     }
 
 PAtom Append (PNode poNode, PAtom poAtom)
@@ -119,7 +119,7 @@ PNode CNode::Link(PNode po2Node, PReason po4Reason)
         }
 
     if (s_bDebug) std::cout << " 2 RESLT -- " << m_mLink.count(po2Node) << ' ' << m_sName << " (" << me.use_count()-1 << "), " << *po4Reason << " (" << po4Reason.use_count() << "), " << po2Node->m_sName << " (" << po2Node.use_count() << ")\n";
-    return std::move(po2Node);
+    return po2Node;
     }
 
 PNode Link(PNode poNode, PReason po4Reason, PNode po2Node)
@@ -155,7 +155,7 @@ PNode CNode::Unlink(PNode po2Node, PReason po4Reason)
             }
         }
     if (s_bDebug) std::cout << " 6 RESLT -- " << m_mLink.count(po2Node) << ' ' << m_sName << " (" << me.use_count()-1 << "), " << *po4Reason << " (" << po4Reason.use_count() << "), " << po2Node->m_sName << " (" << po2Node.use_count() << ")\n";
-    return std::move(po2Node);
+    return po2Node;
     }
 
 PNode CNode::RelatingNodeAdd(PNode poNode)
@@ -163,7 +163,7 @@ PNode CNode::RelatingNodeAdd(PNode poNode)
     if (s_bDebug) std::cout << " ===> RelatingNodeAdd : " << this->m_sName << " (" << poNode.use_count() << ") -> " << poNode->m_sName << " (" << poNode.use_count() << ")\n";
     m_spoNodesRelating.emplace(poNode);
     if (s_bDebug) std::cout << " <=== RelatingNodeAdd : " << this->m_sName << " (" << poNode.use_count() << ") -> " << poNode->m_sName << " (" << poNode.use_count() << ")\n";
-    return std::move(poNode);
+    return poNode;
     }
 
 PNode CNode::RelatingNodeSub(PNode poNode)
@@ -171,7 +171,7 @@ PNode CNode::RelatingNodeSub(PNode poNode)
     if (s_bDebug) std::cout << " ==== RelatingNodeSub : " << this->m_sName << " -> " << poNode->m_sName << " (" << poNode.use_count() << ")\n";
     m_spoNodesRelating.erase(poNode);
     if (s_bDebug) std::cout << " ==== RelatingNodeSub : " << this->m_sName << " -> " << poNode->m_sName << " (" << poNode.use_count() << ")\n";
-    return std::move(poNode);
+    return poNode;
     }
 
 } // namespace odb

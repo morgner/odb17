@@ -167,7 +167,7 @@ void SendError( long nError, std::ostream & ros )
     Cte const ote(oHead, "error.html", g_sTemplatePath);
     ros << "HTTP/1.1 " << nError << " Not found" << '\n';
     ros << "Server: odb/0.9.0 (Linux) CPP" << '\n';
-    ros << "Content-Length: " << ote.length() << '\n';
+//  ros << "Content-Length: " << ote.length() << '\n';
     ros << "Content-Language: en" << '\n';
     ros << "Connection: close" << '\n';
     ros << "Content-Type: text/html" << '\n';
@@ -181,7 +181,7 @@ void SendResultPage( T const & croContainer, std::ostream & ros )
 //  std::cerr << "======================================" << '\n' << croT << '\n';
     ros << "HTTP/1.1 200 OK"                           << '\n';
     ros << "Server: odb/0.9.0 (Linux) C++"             << '\n';
-    ros << "Content-Length: " << croContainer.length() << '\n';
+//  ros << "Content-Length: " << croContainer.length() << '\n';
     ros << "Content-Language: en"                      << '\n';
     ros << "Connection: close"                         << '\n';
     ros << "Content-Type: text/html"                   << '\n';
@@ -555,6 +555,11 @@ int main(int argc, char* argv[])
 
     poOdb->LoadDB(sFilename);
 
+    std::cout << "---------------- " <<  poOdb->Nodes().size()      << " nodes" << '\n';
+    std::cout << "---------------- " <<  poOdb->Properties().size() << " properties" << '\n';
+    std::cout << "---------------- " <<  poOdb->Reasons().size()    << " reasons" << '\n';
+    std::cout << "---------------- " <<  poOdb->Atoms().size()      << " atoms" << '\n';
+
     std::cout << '\n';
 
     try
@@ -575,12 +580,12 @@ int main(int argc, char* argv[])
 
 std::string sMoz = R"(
 GET /?ai=4 HTTP/1.1
-Host: localhost:8080
+Host: localhost:1025
 User-Agent: Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:59.0) Gecko/20100101 Firefox/59.0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
 Accept-Language: de,en-US;q=0.7,en;q=0.3
 Accept-Encoding: gzip, deflate
-Referer: http://localhost:8080/?pi=2
+Referer: http://localhost:1025/?pi=2
 Connection: keep-alive
 Upgrade-Insecure-Requests: 1
 Pragma: no-cache

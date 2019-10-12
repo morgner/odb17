@@ -4,6 +4,8 @@ style.css
 bin
 obj
 build
+debug
+confconv
 
 *.cbp
 *.depend

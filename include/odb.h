@@ -699,7 +699,7 @@ class COdb : public IOdb
             ros << spcr<1> << "\"Object Database Dump\": " << '\n';
             ros << spcr<2> << '{' << '\n';
 
-            ros << spcr<2> << "\"Alllocate\": [ {\"P\": " <<
+            ros << spcr<2> << "\"Allocate\": [ {\"P\": " <<
             m_oProperties.size() << "},{\"A\": " <<
             m_oAtoms.size() << "},{\"R\": " <<
             m_oReasons.size() << "},{\"T\": " <<
@@ -838,7 +838,7 @@ class COdb : public IOdb
                 for ( size_t i = 0; i < a.size(); ++i )
                     {
                     auto nAId = a[(int)i].get("id", 0).asUInt();
-                    AppendAtom2Node( nAId, nId );
+                    AppendAtom2Node( nId, nAId );
                     }
 
                 auto const & l = nodes[(int)index]["links"];

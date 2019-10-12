@@ -113,3 +113,9 @@ target_link_libraries(odb.server
   ${CMAKE_THREAD_LIBS_INIT}
   )
 
+
+add_executable(e-convert-config-to-json
+  confconconfconv/convert-config-to-json.cpp
+  $<TARGET_OBJECTS:${PROJECT_NAME}>
+  )
+
