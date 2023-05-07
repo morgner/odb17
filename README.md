@@ -66,8 +66,12 @@ int main()
         }
      }
 ```
-The odb depends on boost-containers for boost::multi_index for indexing and 
-libjson for data import. Test- and Samplecode depends partiall on non-boot-asio
-and linenoise
+The odb depends on 
+
+       boost-containers for boost::multi_index for indexing and 
+       libjson for data import. Test- and Samplecode depends partialy on 
+       non-boost-asio and 
+       linenoise and
+       te (the odb HTML-template engine
 
 
